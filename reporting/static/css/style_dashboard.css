@@ -1,0 +1,63 @@
+/* Les cards */
+
+.cards-container {
+display: flex;
+margin-left: 20px;
+
+}
+
+.card {
+background-color: #ffffff; /* Fond blanc */
+padding: 20px;
+margin-right: 20px;
+margin-top: 20px;
+border-radius: 8px;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+margin-top: 0;
+}
+
+.card-content {
+display: flex;
+align-items: center;
+}
+
+.card-content .card-number {
+font-size: 24px;
+margin-right: 10px;
+}
+
+.card-content i {
+font-size: 24px;
+}
+
+.critical-icon {
+color: red;
+}
+
+.important-icon {
+color: orange;
+}
+
+.moderate-icon {
+color: blue;
+}
+
+.low-icon {
+color: green;
+}
+
+
+
+/* les graphes */
+
+#plot{
+    margin-top: 5%;
+    margin-left: 20px;
+    width: 50%;
+    height: 300px;
+
+  }
+  

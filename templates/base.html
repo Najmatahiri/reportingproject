@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<!-- Reporting Web Project -->
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+
+    {% block title %}
+    <title>Accueil du site de reporting</title>
+    {% endblock title %}
+  {% block style %} {% endblock style %}
+  {% block script %} {% endblock script %}
+
+    <link rel="stylesheet" href="{%  static 'css/style.css' %}"/>
+    <!-- Boxicons CDN Link -->
+    <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
+{#    <script src="{% static 'scripts/jquery-3.7.1.js' %}"></script>#}
+    <script src="{% static 'scripts/script.js' %}" defer></script>
+
+    <link href="https://cdn.datatables.net/v/dt/dt-2.0.3/datatables.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/v/dt/dt-2.0.3/datatables.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="logo-details">
+        <span class=" icon" id="logo_sgabs" >
+          <img src="{% static 'images/absLogo.png' %}" alt="logo de SGABS">
+        </span>
+       <!--  <i class="bx bxl-c-plus-plus icon"></i> -->
+        <!-- <div class="logo_name">SGABS</div> -->
+        <i class="bx bx-menu" id="btn"></i>
+      </div>
+      <ul class="nav-list">
+
+        <li>
+          <a href="{% url 'dashboard' %}">
+            <i class="bx bx-grid-alt"></i>
+            <span class="links_name">Rapports</span>
+          </a>
+          <span class="tooltip">Rapports</span>
+        </li>
+
+        <li>
+          <a href="{% url 'inventaires' %}">
+            <i class='bx bxs-report'></i>
+            <span class="links_name">Inventaires</span>
+          </a>
+          <span class="tooltip">Inventaires</span>
+        </li>
+        <li class="profile">
+          <div class="profile-details">
+            <img src="{% static 'images/profile.jpg' %}" alt="profileImg" />
+            <div class="name_job">
+              <div class="name">Echarki Miloud</div>
+              <div class="job">Admin RHS</div>
+            </div>
+          </div>
+          <i class="bx bx-log-out" id="log_out"></i>
+        </li>
+      </ul>
+    </div>
+    <main class="main-content">
+       {% block content %}
+      <div class="text">Le contenu de la page</div>
+      {% endblock content %}
+    </main>
+
+    
+    <footer>
+      tout droit reservé
+    </footer>
+
+  
+  </body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} <title> Inventaire </title> {% endblock title %}
+{% block content %}
+    <h1>Inventaires</h1>
+
+
+{#    <table>#}
+{#        <thead>#}
+{#            <tr>#}
+{#                <th>Host</th>#}
+{#                <th>IP</th>#}
+{#                <th>Host Group</th>#}
+{#                <th>Operting System</th>#}
+{#                <th>Critical</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#            {% for vm in inventaires %}#}
+{#            <tr>#}
+{#                <td>{{vm.nom_machine }}</td>#}
+{#                <td>{{ vm.ip }}</td>#}
+{#                <td>{{ vm.group }}</td>#}
+{#                <td>{{ vm.os }}</td>#}
+{#                <td>{{ vm.critical }}</td>#}
+{#            </tr>#}
+{##}
+{#            {% endfor %}#}
+{##}
+{#        </tbody>#}
+{#        #}
+{##}
+{#    </table>#}
+
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prenom</th>
+
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    
+
+    
+{% endblock content %}
