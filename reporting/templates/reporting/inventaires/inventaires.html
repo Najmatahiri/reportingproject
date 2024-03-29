@@ -5,7 +5,7 @@
 
 {% block script %}
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<script src="{% static 'scripts/inventaire_script.js' %}"></script>
+<script src="{% static 'scripts/inventaire_script.js' %}" defer></script>
 {% endblock script %}
 
 // Visualisation des graphes
@@ -44,12 +44,29 @@
 {#    </div>#}
       <div class="text">
 
-    <div id="myTable">
-        jdjjjd
-    </div>
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Host</th>
+                <th>IP</th>
+                <th>Group</th>
+                <th>Operating System</th>
+                <th>Critical</th>
+                <th>Important</th>
+                <th>Low</th>
+                 <th>Moderate</th>
 
 
-      <p id="para">sao</p>
+
+
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+
 
     </div>
 
