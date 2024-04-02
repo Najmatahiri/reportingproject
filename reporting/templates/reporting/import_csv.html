@@ -5,7 +5,7 @@
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form }}
-    <input type="file" name="fichier_csv">
+{#    <input type="file" name="fichier_csv">#}
     <button type="submit">Importer</button>
     </form>
 {% endblock content %}

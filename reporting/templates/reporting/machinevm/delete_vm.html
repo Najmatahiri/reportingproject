@@ -1,0 +1,12 @@
+{% extends 'base_simple.html' %}
+{% block title %} <title> Delete {{ vm.nom_machine }}</title> {% endblock title %}
+
+{% block content %}
+
+ <form method="post">
+     {% csrf_token %}
+          {{ form.as_p }}
+     <p>Voulez-vous supprimer la machine {{ vm.nom_machine }}? </p>
+    <input type="submit" class="btn btn-submit" value="supprimer" >
+    </form>
+{% endblock content %}

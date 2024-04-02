@@ -29,8 +29,9 @@ class FichierCSV(models.Model):
 
 class MachineVM(models.Model):
     id = models.AutoField(primary_key=True)
-    # slug = models.SlugField(max_length=255, unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=True)
+    date_import = models.DateField()
     ip = models.CharField(max_length=255, unique=True)
     group = models.CharField(max_length=100)
     os = models.CharField(max_length=255)
@@ -48,10 +49,10 @@ class MachineVM(models.Model):
     def __str__(self):
         return self.nom_machine
 
-    # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.nom_machine + self.ip)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nom_machine)
+        super().save(*args, **kwargs)
 
     def is_patched(self):
         if self.critical == 0:

@@ -18,16 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from reporting.views import MachineVMViewset
+from reporting.views import MachineVMViewSet
 
 # Ici nous créons notre routeur
 router = routers.SimpleRouter()
 # Puis lui déclarons une url basée sur le mot clé ‘category’ et notre view
 # afin que l’url générée soit celle que nous souhaitons ‘/api/category/’
-router.register('machines', MachineVMViewset, basename='machines')
+router.register('machines', MachineVMViewSet, basename='machines')
 
 urlpatterns = [
-    path('',include('reporting.urls')),
+    path('reporting/',include('reporting.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),

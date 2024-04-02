@@ -3,73 +3,103 @@
 // le titre de la page
 {% block title %} <title>Inventaires</title> {% endblock title %}
 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/style_inventaires.css' %}"/>
+    <link href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" rel="stylesheet">
+
+    {#    <link href="" rel="stylesheet">#}
+
+
+{% endblock %}
+
 {% block script %}
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
-<script src="{% static 'scripts/inventaire_script.js' %}" defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="{% static 'scripts/inventaire_script.js' %}" defer></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+
+
+    {#    <script src=""></script>#}
+
 {% endblock script %}
 
 // Visualisation des graphes
 
 {% block content %}
 
+    <main class="main-content">
+        <div class="main">
+            <div class="title-and-button">
+                <h1 class="title">Inventaires</h1>
+                <a href="{% url 'importer' %}">
+                    <button class="import-button">
+                        <i class="fas fa-plus"></i> Importer un fichier
+                    </button>
 
-{#    <h1>Inventaires: {{ nb_patched }}</h1>#}
-{##}
-{#     <table>#}
-{#  <thead>#}
-{#    <tr>#}
-{#            <th>Host</th>#}
-{#                <th>IP</th>#}
-{#                <th>Host Group</th>#}
-{#                <th>Operating System</th>#}
-{#                <th>Critical</th>#}
-{#              <th>Actions</th>#}
-{#    </tr>#}
-{#  </thead>#}
-{#  <tbody>#}
-{#    {% for vm in inventaires %}#}
-{#      #}
-{#            <tr>#}
-{#                <td>{{vm.nom_machine }}</td>#}
-{#                <td>{{ vm.ip }}</td>#}
-{#                <td>{{ vm.group }}</td>#}
-{#                <td>{{ vm.os }}</td>#}
-{#                <td>{{ vm.critical }}</td>#}
-{#            </tr>#}
-{##}
-{#            {% endfor %}#}
-{#  </tbody>#}
-{#</table>#}
-{##}
-{#    </div>#}
-      <div class="text">
+                </a>
+            </div>
+            <div class="additional-info">
+                <h3 class="machine-text">Machines VM</h3>
+                <p class="machine-count"> {{ total_machine }}</p>
+            </div>
 
-    <table id="myTable" class="display">
-        <thead>
+
+        </div>
+
+
+        <table id="myTable" class="strip" style="width:100%">
+            <thead>
             <tr>
+
+                <th>Actions</th>
                 <th>Host</th>
                 <th>IP</th>
                 <th>Group</th>
                 <th>Operating System</th>
                 <th>Critical</th>
                 <th>Important</th>
+                <th>Moderate</th>
                 <th>Low</th>
-                 <th>Moderate</th>
-
-
 
 
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
+            {% for vm in inventaires %}
 
-        </tbody>
-    </table>
+                <tr>
+                    <td>
+                        <a href="{% url 'update-vm' vm.slug %}">
+                            <button id="openModalBtn">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </a>
+                        <a href="{% url 'delete-vm' vm.slug %}">
+                            <button>
+                                <i class="fa-solid fa-trash">
+
+                                </i>
+                            </button>
+                        </a>
+
+                    </td>
+                    <td>{{ vm.nom_machine }}</td>
+                    <td>{{ vm.ip }}</td>
+                    <td>{{ vm.group }}</td>
+                    <td>{{ vm.os }}</td>
+                    <td>{{ vm.critical }}</td>
+                    <td>{{ vm.important }}</td>
+                    <td>{{ vm.moderate }}</td>
+                    <td>{{ vm.low }}</td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+        </table>
 
 
-
-    </div>
-
+    </main>
 
 
 

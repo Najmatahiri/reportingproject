@@ -6,7 +6,7 @@ from .ressources import MachineVMResource
 
 class MachineVMAdmin(ImportExportModelAdmin):
     resource_classes = [MachineVMResource]
-    list_display = ('nom_machine', 'ip', 'group', 'os', 'critical')
+    list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
     exclude = ("id",)
 
 
@@ -21,3 +21,5 @@ admin.site.register(MachineVM, MachineVMAdmin)
 @admin.register(FichierCSV)
 class FichierCSVAdmin(admin.ModelAdmin):
     list_display = ['nom', 'contenu', 'date_import']
+
+

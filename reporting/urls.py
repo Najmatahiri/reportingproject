@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import index, InventaireView, Dashboard, MachineVMAPIView, MachineVMViewset, ImportCSV
+from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView, \
+    MachineArchiveView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -9,6 +10,12 @@ urlpatterns = [
                   path('dashboard/', Dashboard.as_view(), name='dashboard'),
                   path('inventaires/', InventaireView.as_view(), name='inventaires'),
                   path('importfile/', ImportCSV.as_view(), name="importer"),
+                  path('inventaires/edit/<str:slug>/', MachineUpdateView.as_view(), name='update-vm'),
+                  path('inventaires/delete/<str:slug>/', MachineDeleteView.as_view(), name='delete-vm'),
+                  path('archive/<int:year>/<int:month>/', MachineArchiveView.as_view(month_format="%m"), name='machine_archive_month'),
+
+
+                  # path('inventaires/<str:slug>/', MachineDetailView.as_view(), name='details-vm'),
                   # path('api/machines/',MachineVMAPIView.as_view(), name='apimachines'),
                   # path('edit/<str:slug>/', MachineUpdate.as_view(), name='modifier')
 

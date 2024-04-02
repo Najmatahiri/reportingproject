@@ -1,63 +1,90 @@
-/* Les cards */
+/* les statistiques */
 
-.cards-container {
-display: flex;
-margin-left: 20px;
+
+.month-picker-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-top: 30px;
+}
+
+
+.download-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.7);
+  margin-left: auto;
 
 }
 
-.card {
-background-color: #ffffff; /* Fond blanc */
-padding: 20px;
-margin-right: 20px;
-margin-top: 20px;
-border-radius: 8px;
-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.month-picker-button {
+  border: none;
+  background-color: white; /* Fond blanc */
+  border-radius: 30px; /* Bord arrondi */
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 12px; /* Ajuster le rembourrage selon vos besoins */
+  margin-right: 10px; /* Espacement avec le bouton Télécharger */
 }
 
-.card h3 {
-margin-top: 0;
+#monthPicker {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
 }
 
-.card-content {
-display: flex;
-align-items: center;
+.info-container {
+  margin-top: 30px;
+  margin-left: 50px;
+  margin-right: 50px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.card-content .card-number {
-font-size: 24px;
-margin-right: 10px;
+.info-container .new-div {
+  flex: 1;
+  margin: 40px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 0 15px;
 }
 
-.card-content i {
-font-size: 24px;
+.info-container .new-div p{
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 14px;
 }
 
-.critical-icon {
-color: red;
+ul li.active a {
+  background-color: #E8EFFE;
+  color: blue;
 }
 
-.important-icon {
-color: orange;
-}
-
-.moderate-icon {
-color: blue;
-}
-
-.low-icon {
-color: green;
-}
 
 
 
 /* les graphes */
 
-#plot{
-    margin-top: 5%;
-    margin-left: 20px;
-    width: 50%;
-    height: 300px;
 
+
+.graph{
+    width: calc(100%/3.6);
+    
+}
+
+.graph-container{
+  width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
+
+
+
+
+
+/*  */
   

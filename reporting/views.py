@@ -1,26 +1,23 @@
-import csv
 import pandas as pd
-from django.urls import reverse, reverse_lazy
+import tablib
+from django.urls import reverse_lazy
 
-from django.db.models import Sum, Min
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, FormView
+from django.db.models import Sum
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, FormView, MonthArchiveView
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import TemplateView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from reporting.models import MachineVM, FichierCSV
 
-from .forms import MachineForm, FileCSVImportForm
+from .forms import MachineForm, UploadFileForm
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
 
-
-# Create your views here.
 
 def index(request):
     return render(request, 'reporting/home.html', context={'nom': "Abdoul Bassit"})
@@ -29,30 +26,25 @@ def index(request):
 # Importer un fichier csv
 
 
-class ImportCSV(TemplateView):
+class ImportCSV(FormView):
     template_name = 'reporting/import_csv.html'
+    form_class = UploadFileForm
+    success_url = reverse_lazy("inventaires")
 
-    def post(self, request, *args, **kwargs):
-        fichier_csv = request.FILES['fichier_csv']
+    def form_valid(self, form):
+        fichier_csv = form.cleaned_data['csv_file']
         df = pd.read_csv(fichier_csv)
         print(df)
-        # Load the pandas dataframe into a tablib dataset
         dataset = Dataset().load(df)
         print(dataset)
-        # Call the machine Resource Model and make its instance
         machinevm_resource = MachineVMResource()
-        # Call the import_data hook and pass the tablib dataset
-        result = machinevm_resource.import_data(dataset,dry_run=True, raise_errors=True)
-
+        result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
         if not result.has_errors():
             result = machinevm_resource.import_data(dataset, dry_run=False)
-            return render(request, "reporting/success_import.html")
+            print(result)
+            return HttpResponseRedirect(self.get_success_url())
 
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
-
-
-
-
 
 
 class Dashboard(ListView):
@@ -80,14 +72,29 @@ class InventaireView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["nb_patched"] = MachineVM.objects.filter(critical__gt=0).count()
+        context["total_machine"] = MachineVM.objects.all().count()
         return context
 
 
-class MachineUpdate(UpdateView):
+class MachineUpdateView(UpdateView):
     model = MachineVM
     form_class = MachineForm
-    template_name = 'reporting/upadate_vm.html'
+    template_name = 'reporting/machinevm/update_vm.html'
     context_object_name = "vm"
+    success_url = reverse_lazy("inventaires")
+
+
+class MachineDetailView(DetailView):
+    model = MachineVM
+    template_name = 'reporting/machinevm/machine_vm_details_view.html'
+    context_object_name = "vm"
+
+
+class MachineDeleteView(DeleteView):
+    model = MachineVM
+    template_name = 'reporting/machinevm/delete_vm.html'
+    context_object_name = "vm"
+    success_url = reverse_lazy("inventaires")
 
 
 class MachineVMAPIView(APIView):
@@ -98,8 +105,21 @@ class MachineVMAPIView(APIView):
         return Response(serializer.data)
 
 
-class MachineVMViewset(ReadOnlyModelViewSet):
+class MachineVMViewSet(ModelViewSet):
     serializer_class = MachineVMSerializer
 
     def get_queryset(self):
         return MachineVM.objects.all()
+
+
+class MachineArchiveView(MonthArchiveView):
+    model = MachineVM
+    date_field = 'date_import'
+    template_name = 'reporting/inventaires/machine_archive.html'
+    context_object_name = 'machines'
+    pass
+    # Définissez les propriétés ici, telles que :
+    # - model (le modèle de données que vous interrogez)
+    # - date_field (le champ de votre modèle qui stocke la date)
+    # - template_name (le fichier de modèle utilisé pour rendre la vue)
+    # - context_object_name (le nom utilisé pour accéder aux données dans le modèle)
