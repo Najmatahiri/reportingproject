@@ -31,7 +31,7 @@ class MachineVM(models.Model):
     id = models.AutoField(primary_key=True)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    date_import = models.DateField()
+
     ip = models.CharField(max_length=255, unique=True)
     group = models.CharField(max_length=100)
     os = models.CharField(max_length=255)
