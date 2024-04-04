@@ -1,9 +1,8 @@
 import pandas as pd
-import tablib
 from django.urls import reverse_lazy
-
+from datetime import datetime
 from django.db.models import Sum
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, FormView, MonthArchiveView
+from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -12,8 +11,6 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from reporting.models import MachineVM, FichierCSV
 
 from .forms import MachineForm, UploadFileForm
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
@@ -54,12 +51,14 @@ class Dashboard(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        date = datetime.today()
         somme_patchs = MachineVM.objects.aggregate(
             total_critical=Sum("critical"),
             total_important=Sum("important"),
             total_moderate=Sum("moderate"),
             total_low=Sum("low"),
         )
+        context["date_now"] = date
         context['somme_patchs'] = somme_patchs
         return context
 
@@ -97,29 +96,15 @@ class MachineDeleteView(DeleteView):
     success_url = reverse_lazy("inventaires")
 
 
-class MachineVMAPIView(APIView):
-
-    def get(self, *args, **kwargs):
-        machines = MachineVM.objects.all()
-        serializer = MachineVMSerializer(machines, many=True)
-        return Response(serializer.data)
-
-
-class MachineVMViewSet(ModelViewSet):
+class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
 
     def get_queryset(self):
-        return MachineVM.objects.all()
+        queryset = MachineVM.objects.all()
+        year = self.request.GET.get('year')
+        month = self.request.GET.get('month')
+        if month is not None and year is not None:
+            queryset = queryset.filter(date_import__month=month, date_import__year=year)
+        return queryset
 
 
-class MachineArchiveView(MonthArchiveView):
-    model = MachineVM
-    date_field = 'date_import'
-    template_name = 'reporting/inventaires/machine_archive.html'
-    context_object_name = 'machines'
-    pass
-    # Définissez les propriétés ici, telles que :
-    # - model (le modèle de données que vous interrogez)
-    # - date_field (le champ de votre modèle qui stocke la date)
-    # - template_name (le fichier de modèle utilisé pour rendre la vue)
-    # - context_object_name (le nom utilisé pour accéder aux données dans le modèle)

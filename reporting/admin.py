@@ -12,12 +12,6 @@ class MachineVMAdmin(ImportExportModelAdmin):
 
 admin.site.register(MachineVM, MachineVMAdmin)
 
-
-# @admin.register(MachineVM)
-# class MachineVMAdmin(admin.ModelAdmin):
-#     list_display = ['nom_machine', 'ip', 'group', 'os']
-
-
 @admin.register(FichierCSV)
 class FichierCSVAdmin(admin.ModelAdmin):
     list_display = ['nom', 'contenu', 'date_import']

@@ -7,7 +7,7 @@
 {% endblock style %}
 {% block script %}
     <script src="{% static 'scripts/plotly.js' %}"></script>
-    <script src="{% static 'scripts/dashboard_script.js' %}"></script>
+    <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -25,10 +25,11 @@
                     <h1 class="title">Rapport</h1>
                 </div>
                 <div class="month-picker-container">
-                    <button class="month-picker-button">
-                        <label for="monthPicker">Mois :</label>
-                        <input type="month" id="monthPicker" name="monthPicker">
-                    </button>
+                    <div class="month-picker-button">
+                        <label for="monthInput">Mois: </label>
+                        <input type="month" id="monthInput" name="monthPicker" onchange="myFunction(this.value)">
+{#                        <h2>Mois en cours :  </h2>  <p id="mois-actuel">{{ date_now| date:"F Y" }}</p>#}
+                    </div>
                     <button class="download-button">
                         <i class="fas fa-download"></i> Télécharger
                     </button>
@@ -64,5 +65,9 @@
         </div>
 
     </main>
+
+
+
+
 
 {% endblock content %}

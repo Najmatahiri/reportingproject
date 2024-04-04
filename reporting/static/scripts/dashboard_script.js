@@ -1,3 +1,22 @@
+
+const monthInput = document.getElementById('monthInput');
+const currentDate = new Date();
+const currentMonth = currentDate.getMonth() + 1; // Mois commence à 0
+const currentYear = currentDate.getFullYear()
+const formattedMonth = `${currentYear}-${currentMonth < 10 ? '0' : ''}${currentMonth}`;
+monthInput.value = formattedMonth;
+
+let parts = monthInput.value.split("-")
+let mois = parts[1];
+let annee = parts[0];
+
+function myFunction(val) {
+    annee = monthInput.value.split('-')[0]
+    mois = monthInput.value.split('-')[1]
+    setTimeout(refreshData,100)
+
+}
+
 /**
  * Compte le nombre d'éléments égaux à zéro et différents de zéro dans un tableau.
  * @param {number[]} tab - Le tableau d'entiers à analyser.
@@ -28,7 +47,7 @@ function patched_tab(tab) {
  * Effectue une requête à une API pour récupérer des données, puis appelle la fonction updatePlot pour mettre à jour les graphiques.
  */
 function fetchData() {
-    fetch("http://127.0.0.1:8000/api/machines/") // Effectue une requête à l'API
+    fetch(`http://127.0.0.1:8000/api/machines/?year=${annee}&month=${mois}`) // Effectue une requête à l'API
         .then(response => response.json()) // Convertit la réponse en JSON
         .then(data => {
             updatePlot(data); // Appelle la fonction pour mettre à jour les graphiques avec les données récupérées
@@ -105,3 +124,6 @@ function refreshData() {
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.
 refreshData();
+
+
+

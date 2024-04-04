@@ -1,9 +1,7 @@
-from django.urls import path
-from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView, \
-    MachineArchiveView
+from django.urls import path, include
+from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView
 from django.conf import settings
 from django.conf.urls.static import static
-
 
 urlpatterns = [
                   path('index/', index, name='index'),
@@ -12,11 +10,5 @@ urlpatterns = [
                   path('importfile/', ImportCSV.as_view(), name="importer"),
                   path('inventaires/edit/<str:slug>/', MachineUpdateView.as_view(), name='update-vm'),
                   path('inventaires/delete/<str:slug>/', MachineDeleteView.as_view(), name='delete-vm'),
-                  path('archive/<int:year>/<int:month>/', MachineArchiveView.as_view(month_format="%m"), name='machine_archive_month'),
-
-
-                  # path('inventaires/<str:slug>/', MachineDetailView.as_view(), name='details-vm'),
-                  # path('api/machines/',MachineVMAPIView.as_view(), name='apimachines'),
-                  # path('edit/<str:slug>/', MachineUpdate.as_view(), name='modifier')
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

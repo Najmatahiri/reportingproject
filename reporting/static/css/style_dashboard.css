@@ -31,7 +31,7 @@
   margin-right: 10px; /* Espacement avec le bouton Télécharger */
 }
 
-#monthPicker {
+#monthInput {
   border: none;
   background: transparent;
   cursor: pointer;
