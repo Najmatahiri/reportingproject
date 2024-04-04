@@ -1,4 +1,3 @@
-
 const monthInput = document.getElementById('monthInput');
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth() + 1; // Mois commence à 0
