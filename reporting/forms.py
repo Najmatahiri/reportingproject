@@ -31,9 +31,7 @@ class UploadFileForm(forms.Form):
 class UserAdminRegistrationForm(UserCreationForm):
     class Meta:
         model = UserAdmin
-        fields = ["email","username"]
+        fields = ["email", "username", "role"]
         widgets = {
             "role": forms.RadioSelect(choices=ROLE)
         },
-
-

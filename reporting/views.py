@@ -15,6 +15,8 @@ from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
+from .decorators import access_required
+
 
 def signup(request):
     if request.method == "POST":
@@ -28,12 +30,16 @@ def signup(request):
     return render(request, "accounts/signup.html", context={"form": form})
 
 
+@login_required
 def index(request):
-    return render(request, 'reporting/utils/home.html', context={"user": request.user})
+    if request.user.give_access:
+        return redirect("dashboard")
+    else:
+        return render(request, "reporting/utils/home.html")
 
 
 # Importer un fichier csv
-
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class ImportCSV(FormView):
     template_name = 'reporting/utils/import_csv.html'
@@ -57,6 +63,7 @@ class ImportCSV(FormView):
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
 
 
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class Dashboard(ListView):
     model = MachineVM
@@ -90,6 +97,7 @@ class InventaireView(ListView):
         return context
 
 
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineUpdateView(UpdateView):
     model = MachineVM
@@ -99,6 +107,7 @@ class MachineUpdateView(UpdateView):
     success_url = reverse_lazy("inventaires")
 
 
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineDetailView(DetailView):
     model = MachineVM
@@ -106,6 +115,7 @@ class MachineDetailView(DetailView):
     context_object_name = "vm"
 
 
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineDeleteView(DeleteView):
     model = MachineVM
@@ -114,6 +124,7 @@ class MachineDeleteView(DeleteView):
     success_url = reverse_lazy("inventaires")
 
 
+@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
@@ -129,7 +140,6 @@ class MachineVMViewSet(ReadOnlyModelViewSet):
 
 class UserLoginView(LoginView):
     template_name = "registration/login.html"
-
 
 class UserLogoutView(LogoutView):
     pass

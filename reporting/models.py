@@ -59,3 +59,4 @@ class MachineVM(models.Model):
 
 class UserAdmin(AbstractUser):
     role = models.CharField()
+    give_access = models.BooleanField(default=False)
