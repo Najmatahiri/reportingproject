@@ -1,6 +1,5 @@
 {% load static %}
 <!DOCTYPE html>
-<!-- Reporting Web Project -->
 <html lang="fr">
 <head>
     <meta charset="UTF-8"/>
@@ -54,7 +53,10 @@
                     <div class="job">Admin RHS</div>
                 </div>
             </div>
-            <i class="bx bx-log-out" id="log_out"></i>
+            <a href="{% url 'logout' %}">
+                <i class="bx bx-log-out" id="log_out"></i>
+            </a>
+
         </li>
     </ul>
 </div>

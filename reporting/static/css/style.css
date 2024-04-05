@@ -173,13 +173,15 @@ body {
     left: 0;
     bottom: -8px;
     padding: 10px 14px;
-    background: #1d1b31;
+    background: #F1FFE7;
     transition: all 0.5s ease;
     overflow: hidden;
 }
 
 .sidebar.open li.profile {
     width: 250px;
+     background: #F1FFE7;
+
 }
 
 .sidebar li .profile-details {
@@ -213,7 +215,7 @@ body {
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    background: #1d1b31;
+    background: #F1FFE7;
     width: 100%;
     height: 60px;
     line-height: 60px;

@@ -1,5 +1,4 @@
 from rest_framework.serializers import ModelSerializer
-
 from reporting.models import MachineVM
 
 

@@ -2,29 +2,41 @@ import pandas as pd
 from django.urls import reverse_lazy
 from datetime import datetime
 from django.db.models import Sum
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView
+from django.contrib.auth.views import LoginView, LogoutView
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-from reporting.models import MachineVM, FichierCSV
-
-from .forms import MachineForm, UploadFileForm
+from django.contrib.auth.decorators import login_required
+from reporting.models import MachineVM
+from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
 
+def signup(request):
+    if request.method == "POST":
+        form = UserAdminRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("index")
+    else:
+        form = UserAdminRegistrationForm()
+
+    return render(request, "accounts/signup.html", context={"form": form})
+
 
 def index(request):
-    return render(request, 'reporting/home.html', context={'nom': "Abdoul Bassit"})
+    return render(request, 'reporting/utils/home.html', context={"user": request.user})
 
 
 # Importer un fichier csv
 
-
+@method_decorator(login_required, name="dispatch")
 class ImportCSV(FormView):
-    template_name = 'reporting/import_csv.html'
+    template_name = 'reporting/utils/import_csv.html'
     form_class = UploadFileForm
     success_url = reverse_lazy("inventaires")
 
@@ -39,11 +51,13 @@ class ImportCSV(FormView):
         if not result.has_errors():
             result = machinevm_resource.import_data(dataset, dry_run=False)
             print(result)
+            print("fichier importer")
             return HttpResponseRedirect(self.get_success_url())
 
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
 
 
+@method_decorator(login_required, name="dispatch")
 class Dashboard(ListView):
     model = MachineVM
     template_name = 'reporting/dashboard/dashboard.html'
@@ -63,6 +77,7 @@ class Dashboard(ListView):
         return context
 
 
+@method_decorator(login_required, name="dispatch")
 class InventaireView(ListView):
     model = MachineVM
     template_name = 'reporting/inventaires/inventaires.html'
@@ -75,6 +90,7 @@ class InventaireView(ListView):
         return context
 
 
+@method_decorator(login_required, name="dispatch")
 class MachineUpdateView(UpdateView):
     model = MachineVM
     form_class = MachineForm
@@ -83,12 +99,14 @@ class MachineUpdateView(UpdateView):
     success_url = reverse_lazy("inventaires")
 
 
+@method_decorator(login_required, name="dispatch")
 class MachineDetailView(DetailView):
     model = MachineVM
     template_name = 'reporting/machinevm/machine_vm_details_view.html'
     context_object_name = "vm"
 
 
+@method_decorator(login_required, name="dispatch")
 class MachineDeleteView(DeleteView):
     model = MachineVM
     template_name = 'reporting/machinevm/delete_vm.html'
@@ -96,6 +114,7 @@ class MachineDeleteView(DeleteView):
     success_url = reverse_lazy("inventaires")
 
 
+@method_decorator(login_required, name="dispatch")
 class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
 
@@ -108,3 +127,9 @@ class MachineVMViewSet(ReadOnlyModelViewSet):
         return queryset
 
 
+class UserLoginView(LoginView):
+    template_name = "registration/login.html"
+
+
+class UserLogoutView(LogoutView):
+    pass

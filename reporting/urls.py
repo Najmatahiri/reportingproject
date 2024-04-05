@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView
+from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView, signup
 from django.conf import settings
 from django.conf.urls.static import static
 

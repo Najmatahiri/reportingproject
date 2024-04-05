@@ -68,7 +68,7 @@ function updatePlot(data) {
     // Extraction des données critiques pour chaque groupe
     let total_critical = data.map(item => item.critical);
     let critical_tab_prod = data.filter(machine => machine.group === "PROD").map(item => item.critical);
-    let critical_tab_hors_prod = data.filter(machine => machine.group === "Hors-Prod").map(item => item.critical);
+    let critical_tab_hors_prod = data.filter(machine => machine.group === "HORS-PROD").map(item => item.critical);
 
     // Appel de la fonction patched_tab pour obtenir les données sur les machines patchées et non patchées
     let total_tab = patched_tab(total_critical);
