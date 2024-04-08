@@ -28,7 +28,6 @@
                     <div class="month-picker-button">
                         <label for="monthInput">Mois: </label>
                         <input type="month" id="monthInput" name="monthPicker" onchange="myFunction(this.value)">
-{#                        <h2>Mois en cours :  </h2>  <p id="mois-actuel">{{ date_now| date:"F Y" }}</p>#}
                     </div>
                     <button class="download-button">
                         <i class="fas fa-download"></i> Télécharger
@@ -37,19 +36,19 @@
                 <div class="info-container">
                     <div class="new-div">
                         <p>Critical</p>
-                        <h2>{{ somme_patchs.total_critical }}</h2>
+                        <h2  id="total_critical">{{ somme_patchs.total_critical }}</h2>
                     </div>
                     <div class="new-div">
                         <p>Important</p>
-                        <h2>{{ somme_patchs.total_important }}</h2>
+                        <h2 id="total_important">{{ somme_patchs.total_important }}</h2>
                     </div>
-                    <div class="new-div">
+                    <div class="new-div" >
                         <p>Moderate</p>
-                        <h2>{{ somme_patchs.total_moderate }}</h2>
+                        <h2 id="total_moderate">{{ somme_patchs.total_moderate }}</h2>
                     </div>
                     <div class="new-div">
                         <p>Low</p>
-                        <h2>{{ somme_patchs.total_low }}</h2>
+                        <h2 id="total_low">{{ somme_patchs.total_low }}</h2>
                     </div>
                 </div>
             </div>

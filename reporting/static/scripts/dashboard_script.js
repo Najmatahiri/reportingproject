@@ -9,6 +9,14 @@ let parts = monthInput.value.split("-")
 let mois = parts[1];
 let annee = parts[0];
 
+
+
+let total_crit = document.getElementById("total_critical")
+let total_imp = document.getElementById("total_important")
+let total_mod = document.getElementById("total_moderate")
+let total_lw = document.getElementById("total_low")
+
+
 function myFunction(val) {
     annee = monthInput.value.split('-')[0]
     mois = monthInput.value.split('-')[1]
@@ -42,6 +50,14 @@ function patched_tab(tab) {
     return tab_two_values;
 }
 
+function somme_tab(tab){
+    let somme = 0
+    tab.forEach(value =>{
+        somme += value
+    });
+    return somme
+}
+
 /**
  * Effectue une requête à une API pour récupérer des données, puis appelle la fonction updatePlot pour mettre à jour les graphiques.
  */
@@ -67,8 +83,21 @@ function updatePlot(data) {
 
     // Extraction des données critiques pour chaque groupe
     let total_critical = data.map(item => item.critical);
+    let total_important = data.map(item => item.important);
+    let total_moderate = data.map(item => item.moderate);
+    let total_low = data.map(item => item.low);
+
     let critical_tab_prod = data.filter(machine => machine.group === "PROD").map(item => item.critical);
     let critical_tab_hors_prod = data.filter(machine => machine.group === "HORS-PROD").map(item => item.critical);
+
+    total_crit.innerText =  somme_tab(total_low)
+    total_imp.innerText = somme_tab(total_important)
+    total_mod.innerText = somme_tab(total_moderate)
+    total_lw.innerText = somme_tab(total_low)
+
+
+
+    console.log(`somme ${somme_tab(total_moderate)}`)
 
     // Appel de la fonction patched_tab pour obtenir les données sur les machines patchées et non patchées
     let total_tab = patched_tab(total_critical);

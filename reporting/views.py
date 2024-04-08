@@ -1,5 +1,6 @@
 import pandas as pd
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
 from datetime import datetime
 from django.db.models import Sum
 from django.utils.decorators import method_decorator
@@ -16,7 +17,7 @@ from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
-
+from reportingauto.settings import EMAIL_HOST_USER
 
 def signup(request):
     if request.method == "POST":
@@ -36,6 +37,15 @@ def index(request):
         return redirect("dashboard")
     else:
         return render(request, "reporting/utils/home.html")
+
+
+def send_welcome_email(request):
+    subject = 'Welcome to My Site'
+    message = 'Thank you for creating an account!'
+    from_email = EMAIL_HOST_USER
+    recipient_list = ['abdelbassitalamine@gmail.com']
+    send_mail(subject, message, from_email, recipient_list)
+    return  HttpResponse("<h1>Le message a été bien envoyé</h1>")
 
 
 # Importer un fichier csv
@@ -140,6 +150,7 @@ class MachineVMViewSet(ReadOnlyModelViewSet):
 
 class UserLoginView(LoginView):
     template_name = "registration/login.html"
+
 
 class UserLogoutView(LogoutView):
     pass

@@ -13,8 +13,8 @@ HOST_GROUP = (
 )
 
 ROLE = (
-    ("ADMIN RSH", "Admin RHS"),
-    ("admin NAGIOS", "Admin Nagios"),
+    ("choix ", "Admin RHS"),
+    ("choix 2", "Admin Nagios"),
 )
 
 
@@ -29,9 +29,13 @@ class UploadFileForm(forms.Form):
 
 
 class UserAdminRegistrationForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model = UserAdmin
-        fields = ["email", "username", "role"]
+        fields = ["first_name", 'last_name', "email", "username", "role"]
         widgets = {
-            "role": forms.RadioSelect(choices=ROLE)
+            "role": forms.RadioSelect(choices=ROLE),
         },
+
