@@ -33,6 +33,7 @@
                         <i class="fas fa-download"></i> Télécharger
                     </button>
                 </div>
+
                 <div class="info-container">
                     <div class="new-div">
                         <p>Critical</p>
@@ -57,9 +58,79 @@
 
 
         <div class="graph-container">
-            <div id="prod-plot" class="graph"></div>
-            <div id="hors_prod-plot" class="graph"></div>
-            <div id="total-plot" class="graph"></div>
+            <div>
+                         <div class="tab">
+                      <table>
+                    <tr>
+                      <th colspan="2">PROD</th>
+                    </tr>
+                    <tr>
+                      <td>Patched</td>
+                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                    </tr>
+                    <tr>
+                      <td>Not Pacthed</td>
+                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                    </tr>
+                    <tr>
+                      <td style="border: none;"></td>
+                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                    </tr>
+                  </table>
+                </div>
+                    <div id="prod-plot" class="graph"></div>
+
+
+            </div>
+
+            <div>
+                   <div class="tab">
+                      <table>
+                    <tr>
+                          <th colspan="2">HORS-ROD</th>
+                    </tr>
+                    <tr>
+                      <td>Patched</td>
+                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                    </tr>
+                    <tr>
+                      <td>Not Pacthed</td>
+                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                    </tr>
+                    <tr>
+                      <td style="border: none;"></td>
+                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                    </tr>
+                  </table>
+                </div>
+                    <div id="hors_prod-plot" class="graph"></div>
+
+            </div>
+
+
+               <div>
+                      <div class="tab">
+                      <table>
+                    <tr>
+                      <th colspan="2">TOTAL</th>
+                    </tr>
+                    <tr>
+                      <td>Patched</td>
+                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                    </tr>
+                    <tr>
+                      <td>Not Pacthed</td>
+                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                    </tr>
+                    <tr>
+                      <td style="border: none;"></td>
+                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                    </tr>
+                  </table>
+                </div>
+                    <div id="total-plot" class="graph"></div>
+
+               </div>
 
         </div>
 

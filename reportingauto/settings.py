@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'reporting',
     'rest_framework',
     'import_export',
+    'django_cron',
+    'django_crontab',
 
 ]
 
@@ -136,7 +138,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "reporting.UserAdmin"
 
-
 LOGIN_REDIRECT_URL = "dashboard"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -146,3 +147,14 @@ EMAIL_HOST_USER = 'abdoulbassitlamine123@gmail.com'
 EMAIL_HOST_PASSWORD = 'pgjnsqobkncxgrdy'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+ALLOW_PARALLEL_RUNS = True
+
+# CRON_CLASSES = [
+#     "reporting.cron.MyCronJob",
+#     # ...
+# ]
+
+CRONJOBS = [
+    ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
+]

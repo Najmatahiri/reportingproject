@@ -31,11 +31,12 @@ class UploadFileForm(forms.Form):
 class UserAdminRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['role'].widget = forms.RadioSelect(choices=ROLE)
 
     class Meta:
         model = UserAdmin
         fields = ["first_name", 'last_name', "email", "username", "role"]
-        widgets = {
-            "role": forms.RadioSelect(choices=ROLE),
-        },
-
+        # widgets = {
+        #     "role": forms.RadioSelect(choices=ROLE),
+        # },
+        #
