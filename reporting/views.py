@@ -5,6 +5,7 @@ from datetime import datetime
 from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView
+from django.views import View
 from django.contrib.auth.views import LoginView, LogoutView
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -18,6 +19,9 @@ from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
 from reportingauto.settings import EMAIL_HOST_USER
+
+from .utils import render_to_pdf
+
 
 def signup(request):
     if request.method == "POST":
@@ -45,7 +49,7 @@ def send_welcome_email(request):
     from_email = EMAIL_HOST_USER
     recipient_list = ['abdelbassitalamine@gmail.com']
     send_mail(subject, message, from_email, recipient_list)
-    return  HttpResponse("<h1>Le message a été bien envoyé</h1>")
+    return HttpResponse("<h1>Le message a été bien envoyé</h1>")
 
 
 # Importer un fichier csv
@@ -154,3 +158,22 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     pass
+
+
+class ViewPDF(View):
+    def get(self, request, *args, **kwargs):
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html')
+        return HttpResponse(pdf, content_type='application/pdf')
+
+
+class DownloadPDF(View):
+    def get(self, request, *args, **kwargs):
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html')
+
+        response = HttpResponse(pdf, content_type='application/pdf')
+        filename = "Rapport_%s.pdf" % ("Mensuel")
+        content = "attachment; filename='%s'" % (filename)
+        response['Content-Disposition'] = content
+        return response
+
+

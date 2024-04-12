@@ -1,0 +1,66 @@
+{% load static %}
+<html>
+<head>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+
+
+
+<style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+</style>
+    <link rel="stylesheet" >
+</head>
+
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+    	<h3>Dennnis Ivanov Company</h3>
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">(c) - page <pdf:pagenumber>
+        of <pdf:pagecount>
+    </div>
+
+    <!-- HTML Content -->
+
+ <div id="prod-plot" class="graph"></div>
+
+<canvas type="graph" width="350" height="150">
+      {
+            "data": [[10, 20, 30, 40, 50, 60]],
+            "labels": ["a", "b", "c", "d", "e", "f"],
+            "title": {"_text": "Horizontal Bar Chart(1 Group)", "x": 290, "y": 155},
+            "type": "horizontalbar",
+            "x": 150, "y": 50,
+            "barLabelFormat": "%2.0f",
+            "bars": {"strokeColor": "#f01f34"},
+            "barLabels": {"nudge": 5},
+            "categoryAxis": {"strokeColor": "#f01f34"}
+      }
+</canvas>
+
+
+  <script src="{% static 'scripts/plotly.js' %}" defer></script>
+    <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
+
+</body>
+</html>

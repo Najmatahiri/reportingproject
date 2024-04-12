@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os.path
 from pathlib import Path
 
+import django.db.models
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,7 +84,7 @@ WSGI_APPLICATION = 'reportingauto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'reporting',
+        'NAME': 'reportingdb',
         'USER': 'reportingadmin',
         'PASSWORD': '123456',
         'HOST': 'localhost',

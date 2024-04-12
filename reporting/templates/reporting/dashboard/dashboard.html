@@ -4,6 +4,22 @@
 {% block title %} <title>Dashboard</title> {% endblock title %}
 {% block style %}
     <link rel="stylesheet" href="{% static 'css/style_dashboard.css' %}"/>
+  <style>
+    @page {
+        size: a4 portrait;
+        @frame header_frame {           /* Static Frame */
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 50pt; height: 40pt;
+        }
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+</style>
 {% endblock style %}
 {% block script %}
     <script src="{% static 'scripts/plotly.js' %}"></script>
@@ -30,7 +46,8 @@
                         <input type="month" id="monthInput" name="monthPicker" onchange="myFunction(this.value)">
                     </div>
                     <button class="download-button">
-                        <i class="fas fa-download"></i> Télécharger
+                        <a href="{% url 'pdf_download' %}"> <i class="fas fa-download"></i> Télécharger</a>
+
                     </button>
                 </div>
 
@@ -66,15 +83,15 @@
                     </tr>
                     <tr>
                       <td>Patched</td>
-                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                      <td  style="background-color: green;" id="td-patched__prod">10</td>
                     </tr>
                     <tr>
                       <td>Not Pacthed</td>
-                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                      <td style="background-color: red;" id="td-notpatched__prod">185</td>
                     </tr>
                     <tr>
                       <td style="border: none;"></td>
-                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                      <td style="background-color: orange;" id="td-total__prod"> 195</td>
                     </tr>
                   </table>
                 </div>
@@ -91,15 +108,15 @@
                     </tr>
                     <tr>
                       <td>Patched</td>
-                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                      <td  style="background-color: green;" id="td-patched__horsprod">10</td>
                     </tr>
                     <tr>
                       <td>Not Pacthed</td>
-                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                      <td style="background-color: red;" id="td-notpatched__horsprod">185</td>
                     </tr>
                     <tr>
                       <td style="border: none;"></td>
-                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                      <td style="background-color: orange;" id="td-total__horsprod"> 195</td>
                     </tr>
                   </table>
                 </div>
@@ -116,15 +133,15 @@
                     </tr>
                     <tr>
                       <td>Patched</td>
-                      <td  style="background-color: green;" id="td-patched__val">10</td>
+                      <td  style="background-color: green;" id="td-patched__total">10</td>
                     </tr>
                     <tr>
                       <td>Not Pacthed</td>
-                      <td style="background-color: red;" id="td-notpatched__val">185</td>
+                      <td style="background-color: red;" id="td-notpatched__total">185</td>
                     </tr>
                     <tr>
                       <td style="border: none;"></td>
-                      <td style="background-color: orange;" id="td-total__val"> 195</td>
+                      <td style="background-color: orange;" id="td-total__total"> 195</td>
                     </tr>
                   </table>
                 </div>

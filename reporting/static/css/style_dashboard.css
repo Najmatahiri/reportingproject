@@ -47,7 +47,7 @@
 }
 
 .info-container .new-div {
-  flex: 1;
+  flex: 0.10;
   margin: 40px;
   background-color: white;
   border-radius: 20px;

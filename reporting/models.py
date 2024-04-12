@@ -30,9 +30,10 @@ from django_cron import CronJobBase, Schedule
 
 class MachineVM(models.Model):
     id = models.AutoField(primary_key=True)
+    modeluuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=True)
-    date_import = models.DateField(auto_now=True)
+    date_import = models.DateField(auto_now=True, editable=True)
     ip = models.CharField(max_length=255, unique=True)
     group = models.CharField(max_length=100)
     os = models.CharField(max_length=255)
@@ -52,7 +53,7 @@ class MachineVM(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.nom_machine)
+            self.slug = slugify(f"{self.modeluuid}{str(self.nom_machine)}")
         super().save(*args, **kwargs)
 
     def is_patched(self):
@@ -64,19 +65,3 @@ class MachineVM(models.Model):
 class UserAdmin(AbstractUser):
     role = models.CharField()
     give_access = models.BooleanField(default=False)
-
-# class MyCronJob(CronJobBase):
-#     RUN_EVERY_MINS = 1  # every 2 hours
-#
-#     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-#     code = 'reporting.my_cron_job'  # a unique code
-#
-#     def do(self):
-#         # Envoyer un email à tous les utilisateurs
-#         send_mail(
-#             'Rapport mensuel',
-#             'Votre rapport mensuel est disponible.',
-#             EMAIL_HOST_USER,
-#             ['abdelbassitalamine@gmail.com'],
-#         )
-#         pass  # do your thing here

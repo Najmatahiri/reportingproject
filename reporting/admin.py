@@ -7,7 +7,7 @@ from .ressources import MachineVMResource
 class MachineVMAdmin(ImportExportModelAdmin):
     resource_classes = [MachineVMResource]
     list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
-    exclude = ("id","slug")
+    exclude = (" id", "slug")
 
 
 admin.site.register(MachineVM, MachineVMAdmin)
