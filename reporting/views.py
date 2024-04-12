@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from datetime import datetime
 from django.db.models import Sum
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView
+from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView, TemplateView
 from django.views import View
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -160,20 +160,26 @@ class UserLogoutView(LogoutView):
     pass
 
 
+data = {
+
+    "tab": [[10, 20, 30, 40, 50, 60]],
+
+}
+
+
 class ViewPDF(View):
+
     def get(self, request, *args, **kwargs):
-        pdf = render_to_pdf('reporting/reportpdf/report_template.html')
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html', data)
         return HttpResponse(pdf, content_type='application/pdf')
 
 
 class DownloadPDF(View):
     def get(self, request, *args, **kwargs):
-        pdf = render_to_pdf('reporting/reportpdf/report_template.html')
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html' ,data)
 
         response = HttpResponse(pdf, content_type='application/pdf')
         filename = "Rapport_%s.pdf" % ("Mensuel")
         content = "attachment; filename='%s'" % (filename)
         response['Content-Disposition'] = content
         return response
-
-

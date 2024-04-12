@@ -20,11 +20,16 @@ from rest_framework import routers
 
 from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutView, index
 
+from django.conf.urls.defaults import url, patterns
+from wkhtmltopdf.views import PDFTemplateView
+
+
 # Ici, nous créons notre routeur
 router = routers.SimpleRouter()
 # Puis lui déclarons une url basée sur le mot clé ‘category’ et notre view
 # afin que l’url générée soit celle que nous souhaitons ‘/api/category/’
 router.register('machines', MachineVMViewSet, basename='machines')
+
 
 urlpatterns = [
     path('', index, name="index"),
@@ -35,6 +40,9 @@ urlpatterns = [
     path('accounts/login/', UserLoginView.as_view(), name='login'),
     path('accounts/logout/', UserLoginView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
+    patterns('',
+             url(r'^pdf/$', PDFTemplateView.as_view(template_name='my_template.html',
+                                                    filename='my_pdf.pdf'), name='pdf'),
 ]
 
-import django.contrib.auth.urls
+

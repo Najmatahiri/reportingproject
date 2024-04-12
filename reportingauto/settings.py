@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_cron',
     'django_crontab',
+    'wkhtmltopdf',
 
 ]
 
