@@ -16,4 +16,5 @@ urlpatterns = [
                   path('pdf_download/', DownloadPDF.as_view(), name="pdf_download"),
 
 
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

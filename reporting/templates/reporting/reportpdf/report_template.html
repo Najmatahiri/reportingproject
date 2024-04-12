@@ -28,7 +28,7 @@
 <body>
     <!-- Content for Static Frame 'header_frame' -->
     <div id="header_content">
-    	<h3>Dennnis Ivanov Company</h3>
+    	<h3>Dennnis Ivanov Company   {{ datab }}</h3>
     </div>
 
     <!-- Content for Static Frame 'footer_frame' -->
@@ -40,10 +40,12 @@
 
  <div id="prod-plot" class="graph"></div>
 
+
+
 <canvas type="graph" width="350" height="150">
       {
-            "data": {{ tab }},
-            "labels": ["a", "a", "a", "b", "b", "b"],
+            "data": {{ datab }},
+            "labels": ["PROD", "HORS-PROD"],
             "title": {"_text": "Horizontal Bar Chart(1 Group)", "x": 290, "y": 155},
             "type": "pie",
             "x": 150, "y": 50,

@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'import_export',
     'django_cron',
     'django_crontab',
-    'wkhtmltopdf',
 
 ]
 
@@ -161,3 +160,4 @@ ALLOW_PARALLEL_RUNS = True
 CRONJOBS = [
     ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
 ]
+

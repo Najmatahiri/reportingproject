@@ -167,19 +167,28 @@ data = {
 }
 
 
-class ViewPDF(View):
+class ViewPDF(TemplateView):
+    template_name = "reporting/reportpdf/report_template.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["datab"] = [25, 166]
+        print(context)
+        return context
 
     def get(self, request, *args, **kwargs):
-        pdf = render_to_pdf('reporting/reportpdf/report_template.html', data)
+        contex = self.get_context_data()
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html', contex)
+        print(contex)
         return HttpResponse(pdf, content_type='application/pdf')
 
 
 class DownloadPDF(View):
     def get(self, request, *args, **kwargs):
-        pdf = render_to_pdf('reporting/reportpdf/report_template.html' ,data)
+        pdf = render_to_pdf('reporting/reportpdf/report_template.html', data)
 
         response = HttpResponse(pdf, content_type='application/pdf')
         filename = "Rapport_%s.pdf" % ("Mensuel")
         content = "attachment; filename='%s'" % (filename)
         response['Content-Disposition'] = content
+
         return response
