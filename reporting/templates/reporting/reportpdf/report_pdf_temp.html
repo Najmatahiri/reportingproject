@@ -1,0 +1,35 @@
+{% load static %}
+<html>
+<head>
+    <script src="{% static 'scripts/plotly.js' %}"></script>
+
+</head>
+
+<body>
+
+
+    <div >
+        <img src="{% static 'images/absLogo-3.jpg' %}">
+    </div>
+
+
+
+    <div id="myDiv"></div>
+
+<script>
+
+    var data = [{
+  values: [19, 26, 55],
+  labels: ['Residential', 'Non-Residential', 'Utility'],
+  type: 'pie'
+}];
+
+var layout = {
+  height: 400,
+  width: 500
+};
+
+Plotly.newPlot('myDiv', data, layout);</script>
+
+</body>
+</html>

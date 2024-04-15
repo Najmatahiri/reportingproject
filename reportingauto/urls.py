@@ -18,15 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutView, index
-
-
+from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Ici, nous créons notre routeur
 router = routers.SimpleRouter()
 # Puis lui déclarons une url basée sur le mot clé ‘category’ et notre view
 # afin que l’url générée soit celle que nous souhaitons ‘/api/category/’
 router.register('machines', MachineVMViewSet, basename='machines')
-
 
 urlpatterns = [
     path('', index, name="index"),
@@ -37,7 +37,6 @@ urlpatterns = [
     path('accounts/login/', UserLoginView.as_view(), name='login'),
     path('accounts/logout/', UserLoginView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
 
-]
-
-
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -2,10 +2,6 @@
 <html>
 <head>
 
-
-
-
-
 <style>
     @page {
         size: a4 portrait;
@@ -15,49 +11,110 @@
         }
         @frame content_frame {          /* Content Frame */
             left: 50pt; width: 512pt; top: 90pt; height: 632pt;
+            margin-top: 20pt;
         }
         @frame footer_frame {           /* Another static Frame */
             -pdf-frame-content: footer_content;
             left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            display: flex;
+            flex-direction: row;
         }
     }
+
 </style>
-    <link rel="stylesheet" >
 </head>
 
 <body>
     <!-- Content for Static Frame 'header_frame' -->
-    <div id="header_content">
-    	<h3>Dennnis Ivanov Company   {{ datab }}</h3>
+    <div style="background-color: green" id="header_content">
+        <hr/>
     </div>
 
     <!-- Content for Static Frame 'footer_frame' -->
     <div id="footer_content">(c) - page <pdf:pagenumber>
         of <pdf:pagecount>
     </div>
-
     <!-- HTML Content -->
 
- <div id="prod-plot" class="graph"></div>
-
-
-
-<canvas type="graph" width="350" height="150">
+<canvas type="graph" width="300" height="200">
       {
-            "data": {{ datab }},
-            "labels": ["PROD", "HORS-PROD"],
-            "title": {"_text": "Horizontal Bar Chart(1 Group)", "x": 290, "y": 155},
-            "type": "pie",
+            "data": {{ datab_prod }},
+            "labels": ["Patched", "Not-Patched"],
+            "title": {"_text": "PROD", "x": 290, "y": 210},
+            "type": "doughnut",
             "x": 150, "y": 50,
-            "barLabelFormat": "%2.0f",
-            "bars": {"strokeColor": "#f01f34"},
-            "barLabels": {"nudge": 5},
-            "categoryAxis": {"strokeColor": "#f01f34"}
+            "legend": {
+                  "alignment": "right",
+                  "boxAnchor": "nw",
+                  "fontSize": 8,
+                  "strokeWidth": 0,
+                  "dy": 6,
+                  "dx": 6,
+                  "dxTextSpace": 4,
+                  "deltay": 6,
+                  "columnMaximum": 99,
+                  "variColumn": 1,
+                  "deltax": 175,
+                  "x": 340,
+                  "y": 125
+            }
+      }
+</canvas>
+<canvas type="graph" width="300" height="200">
+      {
+            "data": {{ datab_hors_prod }},
+            "labels": ["Patched", "Not-Patched"],
+            "title": {"_text": "HORS-PROD", "x": 290, "y": 210},
+            "type": "doughnut",
+            "x": 150, "y": 50,
+            "legend": {
+                  "alignment": "right",
+                  "boxAnchor": "nw",
+                  "fontSize": 8,
+                  "strokeWidth": 0,
+                  "dy": 6,
+                  "dx": 6,
+                  "dxTextSpace": 4,
+                  "deltay": 6,
+                  "columnMaximum": 99,
+                  "variColumn": 1,
+                  "deltax": 175,
+                  "x": 340,
+                  "y": 170,
+                  "fontName": "Helvetica"
+            }
+      }
+</canvas>
+<canvas type="graph" width="300" height="200">
+      {
+            "data": {{ datab_total }},
+            "labels": ["Patched", "Not-Patched"],
+            "title": {"_text": "TOTAL", "x": 290, "y": 210},
+            "type": "doughnut",
+            "x": 150, "y": 50,
+            "legend": {
+                  "alignment": "right",
+                  "boxAnchor": "nw",
+                  "fontSize": 8,
+                  "strokeWidth": 0,
+                  "dy": 6,
+                  "dx": 6,
+                  "dxTextSpace": 4,
+                  "deltay": 6,
+                  "columnMaximum": 99,
+                  "variColumn": 1,
+                  "deltax": 175,
+                  "x": 340,
+                  "y": 170,
+                  "fontName": "Helvetica"
+            }
       }
 </canvas>
 
 
-  <script src="{% static 'scripts/plotly.js' %}" defer></script>
+
+
+
 
 </body>
 </html>

@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     'import_export',
     'django_cron',
     'django_crontab',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig'
+
+
 
 ]
 
@@ -127,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 # Très utiles quand on va mette notre site en production
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, "reportingauto/static")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "reportingauto/static")]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
@@ -161,3 +164,4 @@ CRONJOBS = [
     ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
 ]
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'

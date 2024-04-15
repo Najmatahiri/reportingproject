@@ -1,0 +1,55 @@
+/*La partie Ya*/
+.main {
+
+    padding: 0 20px 20px;
+}
+
+.title-and-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    /* Bordure en bas */
+}
+
+.title {
+    color: black;
+    font-size: 24px;
+    margin-right: 20px;
+}
+
+.import-button {
+    background-color: rgba(35, 35, 255, 0.868);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.import-button:hover {
+    background-color: #0044cc;
+}
+
+.additional-info {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #cccccc3e;
+    margin: 0 30px;
+    margin-bottom: 10px;
+}
+
+.machine-text {
+    font-size: 15px;
+    margin-right: 50px;
+}
+
+.machine-count {
+    color: #777777;
+    font-size: 15px;
+    font-weight: bold;
+}
+
