@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'import_export',
     'django_cron',
     'django_crontab',
-    'django_plotly_dash.apps.DjangoPlotlyDashConfig'
 
 
 
@@ -87,7 +86,7 @@ WSGI_APPLICATION = 'reportingauto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'reportingdb',
+        'NAME': 'reporting',
         'USER': 'reportingadmin',
         'PASSWORD': '123456',
         'HOST': 'localhost',
@@ -164,4 +163,3 @@ CRONJOBS = [
     ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
 ]
 
-X_FRAME_OPTIONS = 'SAMEORIGIN'

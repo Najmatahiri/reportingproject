@@ -21,18 +21,8 @@ from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
 from reportingauto.settings import EMAIL_HOST_USER
-from .utils import render_to_pdf
-from pyppeteer import launch
 
-from wkhtmltopdf.views import PDFTemplateView
-
-from django_weasyprint import WeasyTemplateResponseMixin
-from django_weasyprint.views import WeasyTemplateResponse
-from django_weasyprint.utils import django_url_fetcher
-
-from django.contrib.staticfiles import urls, storage
-import io
-from django.http import FileResponse
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen import canvas
 
 from django.templatetags.static import static
@@ -41,15 +31,15 @@ from django.http import FileResponse
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle
+
 import io
+
+from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
+
+from datetime import datetime
+
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
-from reportlab.graphics.charts.legends import Legend
-
-from reportlab.graphics.shapes import Drawing
-from reporting.pdf_lab import pie_chart_with_legend
 
 APP_ROOT = "reporting"
 
@@ -191,49 +181,10 @@ class UserLogoutView(LogoutView):
     pass
 
 
-class ViewPDF(TemplateView):
-    template_name = "reporting/reportpdf/report_template.html"
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        pdf_temp = render_to_pdf('reporting/reportpdf/report_template.html', context)
-        print(context)
-        return HttpResponse(pdf_temp, content_type='application/pdf')
-
-
-class DownloadPDF(TemplateView):
-    template_name = "reporting/reportpdf/report_template.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["datab"] = [25, 166]
-        print(context)
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        pdf_temp = render_to_pdf('reporting/reportpdf/report_template.html', context)
-        response = HttpResponse(pdf_temp, content_type='application/pdf')
-        filename = "Rapport_%s.pdf" % "Mensuel"
-        content = "attachment; filename='%s'" % filename
-        response['Content-Disposition'] = content
-
-        return response
-
-
 class MyDetailView(TemplateView):
     # vanilla Django DetailView
     template_name = 'reporting/reportpdf/report_pdf_temp.html'
 
-
-class PrintView(WeasyTemplateResponseMixin, MyDetailView):
-    pdf_stylesheets = [settings.STATIC_ROOT / 'css/style_report_template.css']
-    pdf_attachment = False
-
-
-# class ViewPDF1(TemplateView):
-#     template_name = "reporting/reportpdf/report_pdf_temp.html"
-#
 
 def view_pdf(request):
     nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
@@ -247,47 +198,62 @@ def view_pdf(request):
     datab_hors_prod = [nb_hors_prod_patched, nb_hors_prod_not_patched]
     datab_total = [nb_total_patched, nb_total_no_patched]
 
-    labels = ["Prod", "Hors Prod"]
+    datable_prod = data_table(nb_prod_patched, nb_prod_not_patched, "PROD")
+    datable_hors_prod = data_table(nb_hors_prod_patched, nb_hors_prod_not_patched, "HORS PROD")
+    datable_total = data_table(nb_total_patched, nb_total_no_patched, "TOTAL")
 
     image_path = APP_ROOT + static("images/absLogo-3.jpg")
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
 
-    pdf = SimpleDocTemplate(buffer, pagesize=A4)
-    elements = []
+    styles = getSampleStyleSheet()
+    canv = canvas.Canvas(buffer, pagesize=A4)
 
     logo = Image(image_path, width=100, height=100)
     logo.hAlign = "LEFT"
-    elements.append(logo)
+    logo.drawOn(canv, 10, 750)
 
-    legend = Legend()
+    date_style = ParagraphStyle(name='default', fontSize=12, leading=24)
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    date = Paragraph(current_date, date_style)
+    date.wrap(300, 500)
+    date.drawOn(canv, 400, 790)
+    canv.line(10, 780, 580, 780)
 
-    d = pie_chart_with_legend(datab_prod, "PROD")
-    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD")
-    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD")
-    d2 = pie_chart_with_legend(datab_total, "TOTAL")
-    # dc = Doughnut()
-    # dc.sideLabels = True
-    # # dc.x = 65
-    # # dc.y = 15
-    # dc.width = 70
-    # dc.height = 70
-    # dc.data = datab_prod
-    # dc.labels = labels
-    # dc.slices.strokeWidth = 0.5
-    # dc.sideLabels = True
-    # dc.slices[0].fillColor = colors.green
-    # dc.slices[1].fillColor = colors.red
-    # d.add(dc)
-    elements.append(d)
-    elements.append(d1)
-    elements.append(d2)
+    title_style = styles['Title']
+    title = Paragraph("Rapport Mensuel", title_style)
+    title.hAlign = "CENTER"
+    title.wrap(400, 300)
+    title.drawOn(canv, 100, 700)
 
-    # Construire le PDF
-    pdf.build(elements)
+    d = pie_chart_with_legend(datab_prod, "PROD", Doughnut())
+    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD", Doughnut())
+    d2 = pie_chart_with_legend(datab_total, "TOTAL", Pie())
+    table_prod = create_table(datable_prod)
+    table_hors_prod = create_table(datable_hors_prod)
+    table_total = create_table(datable_total)
+    table_prod.wrap(200, 200)
+    table_hors_prod.wrap(200, 200)
+    table_total.wrap(200, 200)
+
+    # les graphes et Tableaux
+
+    # PROD
+    d.drawOn(canv, 10, 500)
+    table_prod.drawOn(canv, 400, 570)
+    #hors prod
+    d1.drawOn(canv, 10, 330)
+    table_hors_prod.drawOn(canv, 400, 390)
+
+    #total
+    d2.drawOn(canv, 10, 160)
+    table_total.drawOn(canv, 400, 220)
 
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.
+    canv.showPage()
+    canv.save()
+
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=False, filename="hello.pdf")
+    return FileResponse(buffer, as_attachment=False, filename="report.pdf")
