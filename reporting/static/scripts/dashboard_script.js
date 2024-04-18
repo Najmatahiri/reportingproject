@@ -16,6 +16,23 @@ let total_imp = document.getElementById("total_important")
 let total_mod = document.getElementById("total_moderate")
 let total_lw = document.getElementById("total_low")
 
+let nb_prod_patched_dom = document.getElementById("td-patched__prod")
+let  nb_prod_not_patched_dom = document.getElementById("td-notpatched__prod")
+let  total_prod_dom = document.getElementById("td-total__prod")
+
+let nb_hors_prod_patched_dom = document.getElementById("td-patched__horsprod")
+let  nb_hors_prod_not_patched_dom = document.getElementById("td-notpatched__horsprod")
+let  total_hors_prod_dom = document.getElementById("td-total__horsprod")
+
+
+
+let nb_total_patched_dom = document.getElementById("td-patched__total")
+let  nb_total_not_patched_dom = document.getElementById("td-notpatched__total")
+let  total_dom = document.getElementById("td-total__total")
+
+
+
+
 
 function myFunction(val) {
     annee = monthInput.value.split('-')[0]
@@ -89,6 +106,36 @@ function updatePlot(data) {
 
     let critical_tab_prod = data.filter(machine => machine.group === "PROD").map(item => item.critical);
     let critical_tab_hors_prod = data.filter(machine => machine.group === "HORS-PROD").map(item => item.critical);
+     let critical_tab_total = data.filter(machine =>  machine.group === "PROD" || machine.group === "HORS-PROD").map(item => item.critical);
+
+
+
+
+
+    let  nb_prod_patched = data.filter(machine => machine.group === "PROD" &&  machine.critical === 0).length
+    let  nb_prod_not_patched = data.filter(machine => machine.group === "PROD" &&  machine.critical > 0).length
+    let  nb_prod = data.filter(machine => machine.group === "PROD").length
+    nb_prod_patched_dom.innerText = nb_prod_patched
+    nb_prod_not_patched_dom.innerText = nb_prod_not_patched
+    total_prod_dom.innerText = nb_prod
+
+    let  nb_hors_prod_patched = data.filter(machine => machine.group === "HORS-PROD" &&  machine.critical === 0).length
+    let  nb_hors_prod_not_patched = data.filter(machine => machine.group === "HORS-PROD" &&  machine.critical > 0).length
+    let  nb_hors_prod = data.filter(machine => machine.group === "HORS-PROD").length
+    nb_hors_prod_patched_dom.innerText = nb_hors_prod_patched.toString()
+    nb_hors_prod_not_patched_dom.innerText = nb_hors_prod_not_patched.toString()
+    total_hors_prod_dom.innerText = nb_hors_prod
+
+    nb_total_patched_dom.innerText = `${nb_prod_patched + nb_hors_prod_patched}`
+    nb_total_not_patched_dom.innerText = `${nb_prod_not_patched + nb_hors_prod_not_patched}`
+    total_dom.innerText = `${nb_prod + nb_hors_prod}`
+
+
+
+
+
+
+    console.log("le nombre critical "+ nb_prod_patched)
 
     total_crit.innerText =  somme_tab(total_low)
     total_imp.innerText = somme_tab(total_important)
@@ -100,7 +147,7 @@ function updatePlot(data) {
     console.log(`somme ${somme_tab(total_moderate)}`)
 
     // Appel de la fonction patched_tab pour obtenir les données sur les machines patchées et non patchées
-    let total_tab = patched_tab(total_critical);
+    let total_tab = patched_tab(critical_tab_total);
     let tab_prod = patched_tab(critical_tab_prod);
     let tab_hors_prod = patched_tab(critical_tab_hors_prod);
 

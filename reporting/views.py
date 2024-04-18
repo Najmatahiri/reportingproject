@@ -21,18 +21,8 @@ from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
 from reportingauto.settings import EMAIL_HOST_USER
-from .utils import render_to_pdf
-from pyppeteer import launch
 
-from wkhtmltopdf.views import PDFTemplateView
-
-from django_weasyprint import WeasyTemplateResponseMixin
-from django_weasyprint.views import WeasyTemplateResponse
-from django_weasyprint.utils import django_url_fetcher
-
-from django.contrib.staticfiles import urls, storage
-import io
-from django.http import FileResponse
+from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen import canvas
 
 from django.templatetags.static import static
@@ -41,35 +31,15 @@ from django.http import FileResponse
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle
+
 import io
+
+from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
+
+from datetime import datetime
+
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
-from reportlab.graphics.charts.legends import Legend
-
-from reportlab.lib.enums import TA_LEFT, TA_RIGHT
-
-from reportlab.graphics.shapes import Drawing
-from reporting.pdf_lab import pie_chart_with_legend
-
-from reportlab.platypus import Spacer, SimpleDocTemplate, Paragraph, Table, TableStyle, ListFlowable
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import inch
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.utils import ImageReader
-import io
-from django.http import FileResponse
-from django.templatetags.static import static
-
-from reportlab.platypus.flowables import BalancedColumns
-from reportlab.platypus.frames import ShowBoundaryValue
-
-import asyncio
-from django.http import FileResponse
-from pyppeteer import launch
 
 APP_ROOT = "reporting"
 
@@ -128,8 +98,8 @@ class ImportCSV(FormView):
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
 
 
-@method_decorator(access_required, name='dispatch')
-@method_decorator(login_required, name="dispatch")
+# @method_decorator(access_required, name='dispatch')
+# @method_decorator(login_required, name="dispatch")
 class Dashboard(ListView):
     model = MachineVM
     template_name = 'reporting/dashboard/dashboard.html'
@@ -137,23 +107,6 @@ class Dashboard(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
-        nb_prod_not_patched = MachineVM.objects.filter(group="PROD", critical__gt=0).count()
-        nb_hors_prod_patched = MachineVM.objects.filter(group="HORS-PROD", critical__exact=0).count()
-        nb_hors_prod_not_patched = MachineVM.objects.filter(group="HORS-PROD", critical__gt=0).count()
-        nb_total_patched = nb_prod_patched + nb_hors_prod_patched
-        nb_total_no_patched = nb_prod_not_patched + nb_hors_prod_not_patched
-
-        context["nb_prod_patched"] = nb_prod_patched
-        context["nb_prod_not_patched"] = nb_prod_not_patched
-        context["total_prod"] = nb_prod_patched + nb_prod_not_patched
-        context["nb_hors_prod_patched"] = nb_hors_prod_patched
-        context["nb_hors_prod_not_patched"] = nb_hors_prod_not_patched
-        context["total_hors_prod"] = nb_hors_prod_patched + nb_hors_prod_not_patched
-        context["nb_total_patched"] = nb_total_patched
-        context["nb_total_no_patched"] = nb_total_no_patched
-        context["total"] = nb_total_patched + nb_total_no_patched
-
         date = datetime.today()
         somme_patchs = MachineVM.objects.aggregate(
             total_critical=Sum("critical"),
@@ -228,55 +181,12 @@ class UserLogoutView(LogoutView):
     pass
 
 
-class ViewPDF(TemplateView):
-    template_name = "reporting/reportpdf/report_template.html"
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        pdf_temp = render_to_pdf('reporting/reportpdf/report_template.html', context)
-        print(context)
-        return HttpResponse(pdf_temp, content_type='application/pdf')
-
-
-class DownloadPDF(TemplateView):
-    template_name = "reporting/reportpdf/report_template.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["datab"] = [25, 166]
-        print(context)
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        pdf_temp = render_to_pdf('reporting/reportpdf/report_template.html', context)
-        response = HttpResponse(pdf_temp, content_type='application/pdf')
-        filename = "Rapport_%s.pdf" % "Mensuel"
-        content = "attachment; filename='%s'" % filename
-        response['Content-Disposition'] = content
-
-        return response
-
-
 class MyDetailView(TemplateView):
     # vanilla Django DetailView
     template_name = 'reporting/reportpdf/report_pdf_temp.html'
 
 
-class PrintView(WeasyTemplateResponseMixin, MyDetailView):
-    pdf_stylesheets = [settings.STATIC_ROOT / 'css/style_report_template.css']
-    pdf_attachment = False
-
-
-class ViewPDF1(TemplateView):
-    template_name = "reporting/reportpdf/report_pdf_temp.html"
-
-
 def view_pdf(request):
-    # Définition du style du paragraphe
-    styles = getSampleStyleSheet()
-    style_normal = styles['Normal']
-    style_normal.alignment = 1  # Centrer le texte
     nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
     nb_prod_not_patched = MachineVM.objects.filter(group="PROD", critical__gt=0).count()
     nb_hors_prod_patched = MachineVM.objects.filter(group="HORS-PROD", critical__exact=0).count()
@@ -287,45 +197,63 @@ def view_pdf(request):
     datab_prod = [nb_prod_patched, nb_prod_not_patched]
     datab_hors_prod = [nb_hors_prod_patched, nb_hors_prod_not_patched]
     datab_total = [nb_total_patched, nb_total_no_patched]
-    image_path = APP_ROOT + static("images/absLogo-3.jpg")
 
-    styles = getSampleStyleSheet()
-    normal_style = styles['Normal']
+    datable_prod = data_table(nb_prod_patched, nb_prod_not_patched, "PROD")
+    datable_hors_prod = data_table(nb_hors_prod_patched, nb_hors_prod_not_patched, "HORS PROD")
+    datable_total = data_table(nb_total_patched, nb_total_no_patched, "TOTAL")
+
+    image_path = APP_ROOT + static("images/absLogo-3.jpg")
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
 
-    pdf = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
-
-    elements = []
+    styles = getSampleStyleSheet()
+    canv = canvas.Canvas(buffer, pagesize=A4)
 
     logo = Image(image_path, width=100, height=100)
+    logo.hAlign = "LEFT"
+    logo.drawOn(canv, 10, 750)
 
-    date = Paragraph(f"Date: {datetime.now().strftime('%Y-%m-%d')}", styles["Normal"])
-    F = [logo, date]
-    date.x = 0
-    date.y = 0
+    date_style = ParagraphStyle(name='default', fontSize=12, leading=24)
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    date = Paragraph(current_date, date_style)
+    date.wrap(300, 500)
+    date.drawOn(canv, 400, 790)
+    canv.line(10, 780, 580, 780)
 
-    elements.append(BalancedColumns(F, nCols=2, ))
+    title_style = styles['Title']
+    title = Paragraph("Rapport Mensuel", title_style)
+    title.hAlign = "CENTER"
+    title.wrap(400, 300)
+    title.drawOn(canv, 100, 700)
 
-    elements.append(Spacer(1, 20))
-    elements.append(Paragraph("Rapport", getSampleStyleSheet()['Title']))
+    d = pie_chart_with_legend(datab_prod, "PROD", Doughnut())
+    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD", Doughnut())
+    d2 = pie_chart_with_legend(datab_total, "TOTAL", Pie())
+    table_prod = create_table(datable_prod)
+    table_hors_prod = create_table(datable_hors_prod)
+    table_total = create_table(datable_total)
+    table_prod.wrap(200, 200)
+    table_hors_prod.wrap(200, 200)
+    table_total.wrap(200, 200)
 
-    elements.append(Spacer(1, 20))
+    # les graphes et Tableaux
 
-    d = pie_chart_with_legend(datab_prod, "PROD")
-    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD")
-    d2 = pie_chart_with_legend(datab_total, "TOTAL")
-    elements.append(d)
-    elements.append(d1)
-    elements.append(d2)
+    # PROD
+    d.drawOn(canv, 10, 500)
+    table_prod.drawOn(canv, 400, 570)
+    #hors prod
+    d1.drawOn(canv, 10, 330)
+    table_hors_prod.drawOn(canv, 400, 390)
 
-    # Construire le PDF
-    pdf.build(elements)
-
-    # Close the PDF object cleanly, and we're done.
+    #total
+    d2.drawOn(canv, 10, 160)
+    table_total.drawOn(canv, 400, 220)
 
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.
+    canv.showPage()
+    canv.save()
+
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=False, filename="Rapport.pdf")
+    return FileResponse(buffer, as_attachment=False, filename="report.pdf")

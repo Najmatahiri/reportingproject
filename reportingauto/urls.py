@@ -37,6 +37,6 @@ urlpatterns = [
     path('accounts/login/', UserLoginView.as_view(), name='login'),
     path('accounts/logout/', UserLoginView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
-    path('django_plotly_dash/', include('django_plotly_dash.urls')),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
