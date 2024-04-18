@@ -13,8 +13,9 @@ class MyCronJob(CronJobBase):
         # Envoyer un email à tous les utilisateurs
         send_mail(
             'Rapport mensuel',
-            'Votre rapport mensuel est disponible.',
+            'Le rapport mensuel est disponible.',
             EMAIL_HOST_USER,
             ['abdelbassitalamine@gmail.com'],
+
         )
     # do your thing here  pass

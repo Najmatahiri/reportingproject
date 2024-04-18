@@ -30,7 +30,7 @@
                         <input type="month" id="monthInput" name="monthPicker" onchange="myFunction(this.value)">
                     </div>
                     <button class="download-button">
-                        <a href="{% url 'pdf_download' %}"> <i class="fas fa-download"></i> Télécharger</a>
+                        <a href="{% url 'view_pdf' %}"> <i class="fas fa-download"></i> Télécharger</a>
 
                     </button>
                 </div>
@@ -67,15 +67,15 @@
                     </tr>
                     <tr>
                       <td>Patched</td>
-                      <td  style="background-color: green;" id="td-patched__prod">10</td>
+                      <td  style="background-color: green;" id="td-patched__prod">{{  nb_prod_patched  }}</td>
                     </tr>
                     <tr>
                       <td>Not Pacthed</td>
-                      <td style="background-color: red;" id="td-notpatched__prod">185</td>
+                      <td style="background-color: red;" id="td-notpatched__prod">{{ nb_prod_not_patched }}</td>
                     </tr>
                     <tr>
                       <td style="border: none;"></td>
-                      <td style="background-color: orange;" id="td-total__prod"> 195</td>
+                      <td style="background-color: orange;" id="td-total__prod">{{ total_prod }}</td>
                     </tr>
                   </table>
                 </div>

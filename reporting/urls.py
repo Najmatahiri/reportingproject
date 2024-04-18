@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView, \
-    signup, send_welcome_email, ViewPDF, DownloadPDF, PrintView, view_pdf
+    signup, send_welcome_email, ViewPDF, DownloadPDF, PrintView, view_pdf, ViewPDF1
 from django.conf import settings
 from django.conf.urls.static import static
 import reporting.plotly_dash
@@ -17,5 +17,9 @@ urlpatterns = [
                   path('pdf_download/', DownloadPDF.as_view(), name="pdf_download"),
                   path('print_view/', PrintView.as_view(), name="print_view"),
                   path("view_pdf/", view_pdf, name="view_pdf"),
+                  path("view_pdf1/", ViewPDF1.as_view(), name="view_pdf1"),
+
+
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

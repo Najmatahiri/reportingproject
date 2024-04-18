@@ -48,8 +48,28 @@ from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
 from reportlab.graphics.charts.legends import Legend
 
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT
+
 from reportlab.graphics.shapes import Drawing
 from reporting.pdf_lab import pie_chart_with_legend
+
+from reportlab.platypus import Spacer, SimpleDocTemplate, Paragraph, Table, TableStyle, ListFlowable
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.utils import ImageReader
+import io
+from django.http import FileResponse
+from django.templatetags.static import static
+
+from reportlab.platypus.flowables import BalancedColumns
+from reportlab.platypus.frames import ShowBoundaryValue
+
+import asyncio
+from django.http import FileResponse
+from pyppeteer import launch
 
 APP_ROOT = "reporting"
 
@@ -108,8 +128,8 @@ class ImportCSV(FormView):
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
 
 
-# @method_decorator(access_required, name='dispatch')
-# @method_decorator(login_required, name="dispatch")
+@method_decorator(access_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class Dashboard(ListView):
     model = MachineVM
     template_name = 'reporting/dashboard/dashboard.html'
@@ -117,6 +137,23 @@ class Dashboard(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
+        nb_prod_not_patched = MachineVM.objects.filter(group="PROD", critical__gt=0).count()
+        nb_hors_prod_patched = MachineVM.objects.filter(group="HORS-PROD", critical__exact=0).count()
+        nb_hors_prod_not_patched = MachineVM.objects.filter(group="HORS-PROD", critical__gt=0).count()
+        nb_total_patched = nb_prod_patched + nb_hors_prod_patched
+        nb_total_no_patched = nb_prod_not_patched + nb_hors_prod_not_patched
+
+        context["nb_prod_patched"] = nb_prod_patched
+        context["nb_prod_not_patched"] = nb_prod_not_patched
+        context["total_prod"] = nb_prod_patched + nb_prod_not_patched
+        context["nb_hors_prod_patched"] = nb_hors_prod_patched
+        context["nb_hors_prod_not_patched"] = nb_hors_prod_not_patched
+        context["total_hors_prod"] = nb_hors_prod_patched + nb_hors_prod_not_patched
+        context["nb_total_patched"] = nb_total_patched
+        context["nb_total_no_patched"] = nb_total_no_patched
+        context["total"] = nb_total_patched + nb_total_no_patched
+
         date = datetime.today()
         somme_patchs = MachineVM.objects.aggregate(
             total_critical=Sum("critical"),
@@ -231,11 +268,15 @@ class PrintView(WeasyTemplateResponseMixin, MyDetailView):
     pdf_attachment = False
 
 
-# class ViewPDF1(TemplateView):
-#     template_name = "reporting/reportpdf/report_pdf_temp.html"
-#
+class ViewPDF1(TemplateView):
+    template_name = "reporting/reportpdf/report_pdf_temp.html"
+
 
 def view_pdf(request):
+    # Définition du style du paragraphe
+    styles = getSampleStyleSheet()
+    style_normal = styles['Normal']
+    style_normal.alignment = 1  # Centrer le texte
     nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
     nb_prod_not_patched = MachineVM.objects.filter(group="PROD", critical__gt=0).count()
     nb_hors_prod_patched = MachineVM.objects.filter(group="HORS-PROD", critical__exact=0).count()
@@ -246,40 +287,35 @@ def view_pdf(request):
     datab_prod = [nb_prod_patched, nb_prod_not_patched]
     datab_hors_prod = [nb_hors_prod_patched, nb_hors_prod_not_patched]
     datab_total = [nb_total_patched, nb_total_no_patched]
-
-    labels = ["Prod", "Hors Prod"]
-
     image_path = APP_ROOT + static("images/absLogo-3.jpg")
+
+    styles = getSampleStyleSheet()
+    normal_style = styles['Normal']
 
     # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
 
-    pdf = SimpleDocTemplate(buffer, pagesize=A4)
+    pdf = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0, bottomMargin=0, leftMargin=0, rightMargin=0)
+
     elements = []
 
     logo = Image(image_path, width=100, height=100)
-    logo.hAlign = "LEFT"
-    elements.append(logo)
 
-    legend = Legend()
+    date = Paragraph(f"Date: {datetime.now().strftime('%Y-%m-%d')}", styles["Normal"])
+    F = [logo, date]
+    date.x = 0
+    date.y = 0
+
+    elements.append(BalancedColumns(F, nCols=2, ))
+
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph("Rapport", getSampleStyleSheet()['Title']))
+
+    elements.append(Spacer(1, 20))
 
     d = pie_chart_with_legend(datab_prod, "PROD")
     d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD")
-    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD")
     d2 = pie_chart_with_legend(datab_total, "TOTAL")
-    # dc = Doughnut()
-    # dc.sideLabels = True
-    # # dc.x = 65
-    # # dc.y = 15
-    # dc.width = 70
-    # dc.height = 70
-    # dc.data = datab_prod
-    # dc.labels = labels
-    # dc.slices.strokeWidth = 0.5
-    # dc.sideLabels = True
-    # dc.slices[0].fillColor = colors.green
-    # dc.slices[1].fillColor = colors.red
-    # d.add(dc)
     elements.append(d)
     elements.append(d1)
     elements.append(d2)
@@ -287,7 +323,9 @@ def view_pdf(request):
     # Construire le PDF
     pdf.build(elements)
 
+    # Close the PDF object cleanly, and we're done.
+
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=False, filename="hello.pdf")
+    return FileResponse(buffer, as_attachment=False, filename="Rapport.pdf")
