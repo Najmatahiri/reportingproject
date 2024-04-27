@@ -7,16 +7,23 @@
 
 {% block content %}
 
-      <h1>Création de compte</h1>
-<form method="post">
-{% csrf_token %}
-    <table>
-         {{ form.as_table }}
-    </table>
+    <div class="container">
+        <h2>Inscription</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
 
-<input type="submit" value="S'inscrire">
+                </div>
+            {% endfor %}
 
-</form>
+            <button type="submit">S'inscrire</button>
+        </form>
+    <a href="{% url 'login' %}">Vous avez déjà un compte? </a>
+    </div>
+
 
 
 {% endblock content %}

@@ -2,7 +2,7 @@ from django import forms
 
 from reporting.models import MachineVM
 
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 from .models import UserAdmin
 
@@ -31,12 +31,15 @@ class UploadFileForm(forms.Form):
 class UserAdminRegistrationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['role'].widget = forms.RadioSelect(choices=ROLE)
+        self.fields['role'].widget = forms.Select(choices=ROLE)
 
     class Meta:
         model = UserAdmin
         fields = ["first_name", 'last_name', "email", "username", "role"]
-        # widgets = {
-        #     "role": forms.RadioSelect(choices=ROLE),
-        # },
-        #
+
+
+class LoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget = forms.TextInput(attrs={'placeholder': 'Username'})
+        self.fields['password'].widget = forms.PasswordInput(attrs={'placeholder': 'Password'})

@@ -35,7 +35,7 @@ class MachineVM(models.Model):
     nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=True)
     date_import = models.DateField(auto_now=True, editable=True)
     ip = models.CharField(max_length=255, unique=True)
-    group = models.CharField(max_length=100)
+    group = models.CharField(max_length=100, default="NS")
     os = models.CharField(max_length=255)
     critical = models.IntegerField(null=True)
     important = models.IntegerField()

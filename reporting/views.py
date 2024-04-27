@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django.contrib.auth.decorators import login_required
 from reporting.models import MachineVM
-from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm
+from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, LoginForm
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
@@ -98,8 +98,8 @@ class ImportCSV(FormView):
         return HttpResponse("<h1> Erreur lors de l'importation</h1>")
 
 
-# @method_decorator(access_required, name='dispatch')
-# @method_decorator(login_required, name="dispatch")
+@method_decorator(access_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class Dashboard(ListView):
     model = MachineVM
     template_name = 'reporting/dashboard/dashboard.html'
@@ -175,6 +175,7 @@ class MachineVMViewSet(ReadOnlyModelViewSet):
 
 class UserLoginView(LoginView):
     template_name = "registration/login.html"
+    form_class = LoginForm
 
 
 class UserLogoutView(LogoutView):
@@ -256,4 +257,4 @@ def view_pdf(request):
     canv.save()
 
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=False, filename="report.pdf")
+    return FileResponse(buffer, as_attachment=True, filename="report.pdf")

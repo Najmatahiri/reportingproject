@@ -94,7 +94,7 @@ function fetchData() {
  */
 function updatePlot(data) {
     // Définition des étiquettes et des groupes pour les graphiques
-    let label_graph = ["PROD", "HORS-PROD", "TOTAL"];
+    let label_graph = ["PROD", "Hors-Prod", "TOTAL"];
     let group = ["Patched", "Not Patched"];
     let couleur = ['green', 'red']; // Couleurs pour les graphiques
 
@@ -105,8 +105,8 @@ function updatePlot(data) {
     let total_low = data.map(item => item.low);
 
     let critical_tab_prod = data.filter(machine => machine.group === "PROD").map(item => item.critical);
-    let critical_tab_hors_prod = data.filter(machine => machine.group === "HORS-PROD").map(item => item.critical);
-     let critical_tab_total = data.filter(machine =>  machine.group === "PROD" || machine.group === "HORS-PROD").map(item => item.critical);
+    let critical_tab_hors_prod = data.filter(machine => machine.group === "Hors-Prod").map(item => item.critical);
+     let critical_tab_total = data.filter(machine =>  machine.group === "PROD" || machine.group === "Hors-Prod").map(item => item.critical);
 
 
 
@@ -119,9 +119,9 @@ function updatePlot(data) {
     nb_prod_not_patched_dom.innerText = nb_prod_not_patched
     total_prod_dom.innerText = nb_prod
 
-    let  nb_hors_prod_patched = data.filter(machine => machine.group === "HORS-PROD" &&  machine.critical === 0).length
-    let  nb_hors_prod_not_patched = data.filter(machine => machine.group === "HORS-PROD" &&  machine.critical > 0).length
-    let  nb_hors_prod = data.filter(machine => machine.group === "HORS-PROD").length
+    let  nb_hors_prod_patched = data.filter(machine => machine.group === "Hors-Prod" &&  machine.critical === 0).length
+    let  nb_hors_prod_not_patched = data.filter(machine => machine.group === "Hors-Prod" &&  machine.critical > 0).length
+    let  nb_hors_prod = data.filter(machine => machine.group === "Hors-Prod").length
     nb_hors_prod_patched_dom.innerText = nb_hors_prod_patched.toString()
     nb_hors_prod_not_patched_dom.innerText = nb_hors_prod_not_patched.toString()
     total_hors_prod_dom.innerText = nb_hors_prod
@@ -137,7 +137,7 @@ function updatePlot(data) {
 
     console.log("le nombre critical "+ nb_prod_patched)
 
-    total_crit.innerText =  somme_tab(total_low)
+    total_crit.innerText =  somme_tab(total_critical)
     total_imp.innerText = somme_tab(total_important)
     total_mod.innerText = somme_tab(total_moderate)
     total_lw.innerText = somme_tab(total_low)

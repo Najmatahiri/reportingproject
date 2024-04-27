@@ -41,10 +41,10 @@
 
         </div>
 
-
-        <table id="myTable" class="strip" style="width:100%">
+      <div class="table-container">
+       <table id="myTable" class="stripe content-table" style="width:100%">
             <thead>
-            <tr>
+            <tr >
 
                 <th>Actions</th>
                 <th>Host</th>
@@ -62,22 +62,28 @@
             <tbody>
             {% for vm in inventaires %}
 
-                <tr>
+                <tr style=" background-color: white">
                     <td>
-                        <a href="{% url 'update-vm' vm.slug %}">
-                            <button id="openModalBtn">
-                                <i class="fa-solid fa-pen"></i>
-                            </button>
-                        </a>
-                        <a href="{% url 'delete-vm' vm.slug %}">
-                            <button>
-                                <i class="fa-solid fa-trash">
+                             <button><i class="fa-solid fa-eye"></i></button>
+                                <button><i class="fa-solid fa-pen"></i></button>
+                                <button><i class="fa-solid fa-trash"></i></button>
+{#                        <a href="{% url 'update-vm' vm.slug %}">#}
+{#                            <button id="openModalBtn">#}
+{#                                <i class="fa-solid fa-pen"></i>#}
+{#                            </button>#}
+{#                        </a>#}
+{#                             <i class='bx bx-edit-alt'></i>#}
+{#                              </a>#}
+{##}
+{##}
+{#                        <a href="{% url 'delete-vm' vm.slug %}">#}
+{#                              <i class='bx bxs-trash'></i>#}
+{#                            <button>#}
+{#                                <i class="fa-solid fa-trash"></i>#}
+{#                            </button>#}
+{#                        </a>#}
+                        </td>
 
-                                </i>
-                            </button>
-                        </a>
-
-                    </td>
                     <td>{{ vm.nom_machine }}</td>
                     <td>{{ vm.ip }}</td>
                     <td>{{ vm.group }}</td>
@@ -92,6 +98,10 @@
 
             </tbody>
         </table>
+      </div>
+
+
+
 
 
     </main>
