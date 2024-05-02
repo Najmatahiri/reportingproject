@@ -1,11 +1,39 @@
 {% extends 'base_simple.html' %}
+{% load static %}
 {% block title %} <title> Importer le fichier csv</title>{% endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/import_file.css' %}">
+{% endblock style %}
 
 {% block content %}
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form }}
-{#    <input type="file" name="fichier_csv">#}
-    <button type="submit">Importer</button>
+        {% for field in form %}
+            <div class="modal-container" id="modalContainer">
+    <div class="modal-content">
+        <h2 class="modal-title">Importation de Fichier</h2>
+        <div class= "modal-input">
+             {{ field }}
+        </div>
+{#        <input type="file" id="fileInput" class="modal-input">#}
+
+        <p class="modal-text" id="errorMessage"></p>
+        <div>
+            <button class="modal-button modal-button-primary" type="submit">Valider</button>
+            <button class="modal-button modal-button-secondary" onclick="closeModal()">Annuler</button>
+        </div>
+    </div>
+</div>
+
+        {% endfor %}
     </form>
+
+    <script>
+
+     function closeModal() {
+     window.location.replace("{% url 'inventaires' %}");
+    }
+
+    </script>
 {% endblock content %}

@@ -107,15 +107,20 @@ class Dashboard(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        date = datetime.today()
-        somme_patchs = MachineVM.objects.aggregate(
-            total_critical=Sum("critical"),
-            total_important=Sum("important"),
-            total_moderate=Sum("moderate"),
-            total_low=Sum("low"),
-        )
-        context["date_now"] = date
-        context['somme_patchs'] = somme_patchs
+        date = datetime.today().strftime('%Y-%m-%d')
+        top_20 = MachineVM.objects.all().order_by('-critical')[:20]
+        machine_hs = MachineVM.objects.filter(os__startswith='RedHat 6.')
+
+        # somme_patchs = MachineVM.objects.aggregate(
+        #     total_critical=Sum("critical"),
+        #     total_important=Sum("important"),
+        #     total_moderate=Sum("moderate"),
+        #     total_low=Sum("low"),
+        # )
+        # context["date_now"] = date
+        # context['somme_patchs'] = somme_patchs
+        context['top_20'] = top_20
+        context['machine_hs'] = machine_hs
         return context
 
 

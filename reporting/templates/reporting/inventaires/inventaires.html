@@ -64,24 +64,24 @@
 
                 <tr style=" background-color: white">
                     <td>
-                             <button><i class="fa-solid fa-eye"></i></button>
-                                <button><i class="fa-solid fa-pen"></i></button>
-                                <button><i class="fa-solid fa-trash"></i></button>
-{#                        <a href="{% url 'update-vm' vm.slug %}">#}
-{#                            <button id="openModalBtn">#}
-{#                                <i class="fa-solid fa-pen"></i>#}
-{#                            </button>#}
-{#                        </a>#}
-{#                             <i class='bx bx-edit-alt'></i>#}
-{#                              </a>#}
-{##}
-{##}
-{#                        <a href="{% url 'delete-vm' vm.slug %}">#}
+{#                             <button><i class="fa-solid fa-eye"></i></button>#}
+{#                                <button><i class="fa-solid fa-pen"></i></button>#}
+{#                                <button><i class="fa-solid fa-trash"></i></button>#}
+                        <a href="{% url 'update-vm' vm.slug %}">
+                            <button id="openModalBtn">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </a>
+
+
+
+
+                        <a href="{% url 'delete-vm' vm.slug %}">
 {#                              <i class='bx bxs-trash'></i>#}
-{#                            <button>#}
-{#                                <i class="fa-solid fa-trash"></i>#}
-{#                            </button>#}
-{#                        </a>#}
+                            <button>
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </a>
                         </td>
 
                     <td>{{ vm.nom_machine }}</td>
@@ -102,7 +102,48 @@
 
 
 
-
+{#     <footer class="footer-distributed">#}
+{#      <div class="footer-left">#}
+{#        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo-img">#}
+{##}
+{#        <p class="footer-links">#}
+{#          <a href="#" class="link-1">Home</a>#}
+{##}
+{#          <a href="#">Inventaires</a>#}
+{##}
+{#          <a href="#">Rapports</a>#}
+{##}
+{##}
+{#        </p>#}
+{##}
+{#        <p class="footer-company-name">Société Générale African Business Services © 2024</p>#}
+{#      </div>#}
+{##}
+{#      <div class="footer-center">#}
+{#        <div>#}
+{#          <i class="fa fa-map-marker"></i>#}
+{#          <p><span>Ivoire 2 marina </span> Bd Sidi Mohamed Ben Abdellah, Casablanca</p>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <i class='bx bxl-linkedin-square'></i>#}
+{#          <p>Société Générale African Business Services</p>#}
+{#        </div>#}
+{##}
+{#        <div>#}
+{#          <i class='bx bx-link' ></i>#}
+{#          <p>https://societegenerale.africa/en/</p>#}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#      <div class="footer-right">#}
+{#        <p class="footer-company-about">#}
+{#          <span>About the company</span>#}
+{#          Présent dans 15 pays africains, le groupe Société Générale présente un positionnement unique sur la région, qui permet d’offrir à ses clients l’expertise et le savoir-faire d’une banque internationale et la proximité d’une banque locale. En Afrique, le Groupe accompagne les économies locales et sert 4,3 millions de clients, dont 175 000 entreprises.#}
+{#        </p>#}
+{##}
+{#      </div>#}
+{#    </footer>#}
 
     </main>
 
