@@ -16,24 +16,8 @@ let total_mod = document.getElementById("total_moderate")
 let total_lw = document.getElementById("total_low")
 
 
-let total_count_hs_dom = document.getElementById("totalCountBadge")
-//
-// let nb_prod_patched_dom = document.getElementById("td-patched__prod")
-// let nb_prod_not_patched_dom = document.getElementById("td-notpatched__prod")
-// let total_prod_dom = document.getElementById("td-total__prod")
-//
-// let nb_hors_prod_patched_dom = document.getElementById("td-patched__horsprod")
-// let nb_hors_prod_not_patched_dom = document.getElementById("td-notpatched__horsprod")
-// let total_hors_prod_dom = document.getElementById("td-total__horsprod")
-//
-//
-// let nb_total_patched_dom = document.getElementById("td-patched__total")
-// let nb_total_not_patched_dom = document.getElementById("td-notpatched__total")
-// let total_dom = document.getElementById("td-total__total")
+// let total_count_hs_dom = document.getElementById("totalCountBadge")
 
-
-// let hs_patched_dom = document.getElementById("hs-patched-count")
-// let hs_not_patched_dom = document.getElementById("hs-not-patched-count")
 
 function myFunction(val) {
     annee = monthInput.value.split('-')[0]
@@ -76,6 +60,9 @@ function somme_tab(tab) {
     return somme
 }
 
+
+
+
 /**
  * Effectue une requête à une API pour récupérer des données, puis appelle la fonction updatePlot pour mettre à jour les graphiques.
  */
@@ -111,32 +98,7 @@ function updatePlot(data) {
 
 
     let nb_prod_patched = data.filter(machine => machine.group === "PROD" && machine.critical === 0).length
-    let nb_prod_not_patched = data.filter(machine => machine.group === "PROD" && machine.critical > 0).length
-    let nb_prod = data.filter(machine => machine.group === "PROD").length
-    // nb_prod_patched_dom.innerText = nb_prod_patched
-    // nb_prod_not_patched_dom.innerText = nb_prod_not_patched
-    // total_prod_dom.innerText = nb_prod
 
-    let nb_hors_prod_patched = data.filter(machine => machine.group === "Hors-Prod" && machine.critical === 0).length
-    let nb_hors_prod_not_patched = data.filter(machine => machine.group === "Hors-Prod" && machine.critical > 0).length
-    let nb_hors_prod = data.filter(machine => machine.group === "Hors-Prod").length
-    // nb_hors_prod_patched_dom.innerText = nb_hors_prod_patched.toString()
-    // nb_hors_prod_not_patched_dom.innerText = nb_hors_prod_not_patched.toString()
-    // total_hors_prod_dom.innerText = nb_hors_prod
-    //
-    // nb_total_patched_dom.innerText = `${nb_prod_patched + nb_hors_prod_patched}`
-    // nb_total_not_patched_dom.innerText = `${nb_prod_not_patched + nb_hors_prod_not_patched}`
-    // total_dom.innerText = `${nb_prod + nb_hors_prod}`
-
-
-    // let nb_hors_support_patched = data.filter(machine => machine.os.startsWith("RedHat 6.") && machine.critical === 0).length;
-    // let nb_hors_support_not_patched = data.filter(machine => machine.os.startsWith("RedHat 6.") && machine.critical > 0).length;
-    //
-    // console.log("hs " + nb_hors_support_patched)
-    // console.log("hs not patched " + nb_hors_support_not_patched)
-    //
-    // hs_patched_dom.innerText = nb_hors_support_patched.toString()
-    // hs_not_patched_dom.innerText = nb_hors_support_not_patched.toString()
 
 
     console.log("le nombre critical " + nb_prod_patched)
@@ -190,26 +152,25 @@ function updatePlot(data) {
     //         colors: couleur
     //     },
     // }], layout3);
- let config = {displayModeBar: false, responsive: true}
+    let config = {displayModeBar: false, responsive: true}
 
     // par verions
     // Tableau de versions de RedHat
 
 
-    let nb_pathed_v6 = data.filter(machine => machine.os.startsWith("RedHat 6.") && machine.critical === 0).length;
     let nb_pathed_v7 = data.filter(machine => machine.os.startsWith("RedHat 7.") && machine.critical === 0).length;
     let nb_pathed_v8 = data.filter(machine => machine.os.startsWith("RedHat 8.") && machine.critical === 0).length;
     let nb_pathed_v9 = data.filter(machine => machine.os.startsWith("RedHat 9.") && machine.critical === 0).length;
-    let nb_not_pathed_v6 = data.filter(machine => machine.os.startsWith("RedHat 6.") && machine.critical > 0).length;
     let nb_not_pathed_v7 = data.filter(machine => machine.os.startsWith("RedHat 7.") && machine.critical > 0).length;
     let nb_not_pathed_v8 = data.filter(machine => machine.os.startsWith("RedHat 8.") && machine.critical > 0).length;
     let nb_not_pathed_v9 = data.filter(machine => machine.os.startsWith("RedHat 9.") && machine.critical > 0).length;
 
     let tab_os_patched = [nb_pathed_v7, nb_pathed_v8, nb_pathed_v9]
-    let tab_os_not_patched = [ nb_not_pathed_v7, nb_not_pathed_v8, nb_not_pathed_v9]
+    let tab_os_not_patched = [nb_not_pathed_v7, nb_not_pathed_v8, nb_not_pathed_v9]
 
     let total_hs = data.filter(machine => machine.os.startsWith("RedHat 6.")).length;
-    total_count_hs_dom.innerText = total_hs.toString()
+    console.log("total hs"+total_hs)
+    // total_count_hs_dom.innerText = total_hs.toString()
 
     console.log(tab_os_patched)
     console.log(tab_os_not_patched)
@@ -240,8 +201,9 @@ function updatePlot(data) {
 
     let date_os = [trace_patched, trace_not_patched];
 
-    var layout_os = {
+    let layout_os = {
         scattermode: 'group',
+        // barmode: 'stack',
         title: 'Patch selon les versions de RedHat',
         xaxis: {title: 'Version de RedHat'},
         yaxis: {title: 'Number Patched'},
@@ -250,11 +212,12 @@ function updatePlot(data) {
     };
 
 
+
+
     Plotly.newPlot('graph-patch-os', date_os, layout_os, config);
 
 
     // global
-
 
 
     let list_couleur = ['green', 'red']
@@ -273,8 +236,8 @@ function updatePlot(data) {
             column: 0
         },
         hoverinfo: 'label+percent+name',
-      textinfo: 'percent',
-         title: {
+        textinfo: 'percent',
+        title: {
             text: 'PROD', // Titre pour le graphe PROD
             font: {
                 size: 18 // Taille de la police du titre
@@ -295,7 +258,7 @@ function updatePlot(data) {
         },
         hoverinfo: 'label+percent+name',
         textinfo: 'percent',
-       title: {
+        title: {
             text: 'HORS-PROD', // Titre pour le graphe Hors prod
             font: {
                 size: 18 // Taille de la police du titre
@@ -326,7 +289,7 @@ function updatePlot(data) {
 
     let layout = {
         height: 400,
-        title: 'Patch selon les versions de RedHat',
+        title: 'Statistique de patch',
         /* width: 900, */
         grid: {rows: 1, columns: 3}
     };

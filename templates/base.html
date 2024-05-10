@@ -18,7 +18,6 @@
     {#    <script src="{% static 'scripts/jquery-3.7.1.js' %}"></script>#}
     <script src="{% static 'scripts/script.js' %}" defer></script>
 
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
@@ -47,27 +46,23 @@
             <span class="tooltip">Inventaires</span>
         </li>
         <li class="profile">
-            <div class="profile-details">
-                <img src="{% static 'images/profile.jpeg' %}" alt="profileImg"/>
-                <div class="name_job">
-                    <div class="name">Echarki Miloud</div>
-                    <div class="job">Admin RHS</div>
-                </div>
-            </div>
-            <a href="{% url 'logout' %}">
-                <i class="bx bx-log-out" id="log_out"></i>
-            </a>
+            {% csrf_token %}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit"> <i class="bx bx-log-out" id="log_out"></i></button>
+
+            </form>
 
         </li>
     </ul>
 </div>
-{% block content %}
+<main class="main-content">
+    {% block content %}
 
-{% endblock content %}
+    {% endblock content %}
 
 
-
-
+</main>
 
 
 </body>

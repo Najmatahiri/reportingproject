@@ -1,15 +1,10 @@
 import pandas as pd
+import io
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
-from datetime import datetime
-from django.db.models import Sum
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView, TemplateView
-from django.views import View
 from django.contrib.auth.views import LoginView, LogoutView
-
-from django.conf import settings
-
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -21,23 +16,15 @@ from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
 from reportingauto.settings import EMAIL_HOST_USER
-
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen import canvas
-
 from django.templatetags.static import static
-
 from django.http import FileResponse
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-
-import io
-
 from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
-
 from datetime import datetime
-
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
 
@@ -110,15 +97,8 @@ class Dashboard(ListView):
         date = datetime.today().strftime('%Y-%m-%d')
         top_20 = MachineVM.objects.all().order_by('-critical')[:20]
         machine_hs = MachineVM.objects.filter(os__startswith='RedHat 6.')
-
-        # somme_patchs = MachineVM.objects.aggregate(
-        #     total_critical=Sum("critical"),
-        #     total_important=Sum("important"),
-        #     total_moderate=Sum("moderate"),
-        #     total_low=Sum("low"),
-        # )
-        # context["date_now"] = date
-        # context['somme_patchs'] = somme_patchs
+        current_username = self.request.user.username
+        context['username'] = current_username
         context['top_20'] = top_20
         context['machine_hs'] = machine_hs
         return context
@@ -184,7 +164,7 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    pass
+    template_name = "registration/logged_out.html"
 
 
 class MyDetailView(TemplateView):
@@ -263,3 +243,6 @@ def view_pdf(request):
 
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename="report.pdf")
+
+
+
