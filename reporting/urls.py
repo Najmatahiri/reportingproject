@@ -3,7 +3,6 @@ from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailVie
     signup, send_welcome_email, view_pdf
 from django.conf import settings
 from django.conf.urls.static import static
-import reporting.plotly_dash
 
 from django.contrib.auth.views import LogoutView
 
