@@ -22,6 +22,8 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.contrib.auth.views import LogoutView
+
 # Ici, nous créons notre routeur
 router = routers.SimpleRouter()
 # Puis lui déclarons une url basée sur le mot clé ‘category’ et notre view
@@ -29,14 +31,15 @@ router = routers.SimpleRouter()
 router.register('machines', MachineVMViewSet, basename='machines')
 
 urlpatterns = [
-    path('', index, name="index"),
-    path('reporting/', include('reporting.urls')),
-    path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls)),
-    path('accounts/signup/', signup, name='signup'),
-    path('accounts/login/', UserLoginView.as_view(), name='login'),
-    path('accounts/logout/', UserLoginView.as_view(), name='logout'),
-    path('admin/', admin.site.urls),
+                  path('', index, name="index"),
+                  path('reporting/', include('reporting.urls')),
+                  path('api-auth/', include('rest_framework.urls')),
+                  path('api/', include(router.urls)),
+                  path('accounts/signup/', signup, name='signup'),
+                  path('accounts/login/', UserLoginView.as_view(), name='login'),
+                  path('accounts/logout/', UserLogoutView.as_view(), name='logout'),
 
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+                  path('admin/', admin.site.urls),
+
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

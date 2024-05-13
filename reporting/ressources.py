@@ -10,4 +10,3 @@ class MachineVMResource(resources.ModelResource):
         skip_unchanged = True
         report_skipped = False
         # exclude = ('id',"date_import", "slug")
-
