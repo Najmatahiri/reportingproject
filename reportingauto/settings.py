@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'reportingauto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'reportingdb',
+        'NAME': 'reporting',
         'USER': 'reportingadmin',
         'PASSWORD': '123456',
         'HOST': 'localhost',

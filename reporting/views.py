@@ -127,12 +127,18 @@ class MachineUpdateView(UpdateView):
     success_url = reverse_lazy("inventaires")
 
 
+
+
+
+
 @method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineDetailView(DetailView):
     model = MachineVM
     template_name = 'reporting/machinevm/machine_vm_details_view.html'
     context_object_name = "vm"
+
+
 
 
 @method_decorator(access_required, name='dispatch')
@@ -142,6 +148,8 @@ class MachineDeleteView(DeleteView):
     template_name = 'reporting/machinevm/delete_vm.html'
     context_object_name = "vm"
     success_url = reverse_lazy("inventaires")
+
+
 
 
 @method_decorator(access_required, name='dispatch')

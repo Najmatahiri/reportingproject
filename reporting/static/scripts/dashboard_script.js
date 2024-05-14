@@ -108,7 +108,6 @@ function updatePlot(data) {
     total_mod.innerText = somme_tab(total_moderate)
     total_lw.innerText = somme_tab(total_low)
 
-
     console.log(`somme ${somme_tab(total_moderate)}`)
 
     // Appel de la fonction patched_tab pour obtenir les données sur les machines patchées et non patchées
