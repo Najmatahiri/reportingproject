@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from django.utils.text import slugify
+from django.urls import reverse
 
 from django.core.mail import send_mail
 from reportingauto.settings import EMAIL_HOST_USER
@@ -50,6 +51,9 @@ class MachineVM(models.Model):
 
     def __str__(self):
         return self.nom_machine
+
+    def get_absolute_url(self):
+        return reverse("inventaires")
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -48,13 +48,15 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'reporting/utils/import_csv.html')
 
+
     def test_machineUpdate_UPDATE(self):
         self.client.login(username="test_username2", password="123456")
-        response = self.client.post(self.machine_update_url, data={"machine": "test_machine_update"})
+        response = self.client.post(self.machine_update_url, {"machine": "test_machine_update"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'reporting/machinevm/update_vm.html')
 
     def test_machineDelete_DELETE(self):
         self.client.login(username="test_username2", password="123456")
-        response = self.client.post(self.machine_delete_url)
+        response = self.client.delete(self.machine_delete_url)
+        print(self.machinevm)
         self.assertRedirects(response, self.inventaire_url)

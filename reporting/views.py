@@ -27,6 +27,7 @@ from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
 from datetime import datetime
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
+from rest_framework.permissions import IsAuthenticated
 
 APP_ROOT = "reporting"
 
@@ -69,20 +70,23 @@ class ImportCSV(FormView):
     success_url = reverse_lazy("inventaires")
 
     def form_valid(self, form):
-        fichier_csv = form.cleaned_data['csv_file']
-        df = pd.read_csv(fichier_csv)
-        print(df)
-        dataset = Dataset().load(df)
-        print(dataset)
-        machinevm_resource = MachineVMResource()
-        result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
-        if not result.has_errors():
-            result = machinevm_resource.import_data(dataset, dry_run=False)
-            print(result)
-            print("fichier importer")
-            return HttpResponseRedirect(self.get_success_url())
-
-        return HttpResponse("<h1> Erreur lors de l'importation</h1>")
+        try:
+            fichier_csv = form.cleaned_data['csv_file']
+            df = pd.read_csv(fichier_csv)
+            print(df)
+            dataset = Dataset().load(df)
+            print(dataset)
+            machinevm_resource = MachineVMResource()
+            result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
+            if not result.has_errors():
+                result = machinevm_resource.import_data(dataset, dry_run=False)
+                print(result)
+                print("fichier importer")
+                return HttpResponseRedirect(self.get_success_url(), status=302)
+            else:
+                raise Exception("Erreur lors de l'importation")
+        except Exception as e:
+            return self.render_to_response(self.get_context_data(form=form, error=str(e)))
 
 
 @method_decorator(access_required, name='dispatch')
@@ -127,18 +131,12 @@ class MachineUpdateView(UpdateView):
     success_url = reverse_lazy("inventaires")
 
 
-
-
-
-
 @method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineDetailView(DetailView):
     model = MachineVM
     template_name = 'reporting/machinevm/machine_vm_details_view.html'
     context_object_name = "vm"
-
-
 
 
 @method_decorator(access_required, name='dispatch')
@@ -150,12 +148,11 @@ class MachineDeleteView(DeleteView):
     success_url = reverse_lazy("inventaires")
 
 
-
-
 @method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = MachineVM.objects.all()
@@ -176,7 +173,6 @@ class UserLogoutView(LogoutView):
 
 
 class MyDetailView(TemplateView):
-    # vanilla Django DetailView
     template_name = 'reporting/reportpdf/report_pdf_temp.html'
 
 
@@ -236,11 +232,11 @@ def view_pdf(request):
     # PROD
     d.drawOn(canv, 10, 500)
     table_prod.drawOn(canv, 400, 570)
-    #hors prod
+    # hors prod
     d1.drawOn(canv, 10, 330)
     table_hors_prod.drawOn(canv, 400, 390)
 
-    #total
+    # total
     d2.drawOn(canv, 10, 160)
     table_total.drawOn(canv, 400, 220)
 
@@ -251,6 +247,3 @@ def view_pdf(request):
 
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename="report.pdf")
-
-
-

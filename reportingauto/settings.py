@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os.path
 from pathlib import Path
-
 import django.db.models
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -158,6 +158,8 @@ ALLOW_PARALLEL_RUNS = True
 #     "reporting.cron.MyCronJob",
 #     # ...
 # ]
+
+SESSION_COOKIE_AGE = 30
 
 CRONJOBS = [
     ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),

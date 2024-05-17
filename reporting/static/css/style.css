@@ -1,18 +1,96 @@
-/* Google Font Link */
-/*@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');*/
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+/*
+--- 01 TYPOGRAPHY SYSTEM
+
+- Font sizes (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 / 52 / 62 / 74 / 86 / 98
+
+- Font weights
+Default: 400
+Medium: 500
+Semi-bold: 600
+Bold: 700
+
+- Line heights
+Default: 1
+Small: 1.05
+Medium: 1.2
+Paragraph default: 1.6
+
+- Letter spacing
+-0.5px
+0.75px
+
+--- 02 COLORS
+
+- Primary: #339af0
+- Tints:
+#ebf5fe --90% 
+#d6ebfc --80%
+#297bc0 --20%
+
+- Shades: 
+#2e8bd8
+#0f2e48
+
+- Accents:
+- Greys
+
+#888
+#767676 (lightest grey allowed on #fff)
+#6f6f6f (lightest grey allowed on #fdf2e9)
+#555
+#333
+
+--- 05 SHADOWS
+
+0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
+
+--- 06 BORDER-RADIUS
+
+Default: 9px
+Medium: 11px
+
+--- 07 WHITESPACE
+
+- Spacing system (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+*/
+
+
+
+:root{
+  --clr-main-blue: #1864ab;
+  --clr-tint-100: #ffffff;
+  --clr-tint-90:  #e8f0f7;
+  --clr-tint-80: #d1e0ee;
+  --clr-tint-20: #4683bc;
+  --clr-shade-10:#165a9a;
+  --clr-shade-70: #071e33;
+  --clr-gray1: #343a40;
+  --clr-grey2: #555;
+  --clr-grey3: #333;
+  --crl-border-1 :  #cccccc8b
+}
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Raleway", sans-serif
+ 
 }
 
+html {
+
+    font-size: 62.5%;
+  }
+
 body {
-    min-width: 814px;
     width: 100vw;
-    overflow: auto;
+    font-family: "Rubik", sans-serif;
+    background: none;
+   
 }
 
 .sidebar {
@@ -20,22 +98,22 @@ body {
     left: 0;
     top: 0;
     height: 100%;
-    width: 78px;
-    background: white;
-    border-radius: 25px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 7.8rem;
+    background: var(--clr-tint-100);
+    border-radius: 2rem;
+    box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075);
     border: 1px solid #cccccc8b;
-    padding: 6px 14px;
+    padding: 0.6rem 1.4rem;
     z-index: 99;
     transition: all 0.5s ease;
 }
 
 .sidebar.open {
-    width: 250px;
+    width: 18rem;
 }
 
 .sidebar .logo-details {
-    height: 60px;
+    height: 6rem;
     display: flex;
     align-items: center;
     position: relative;
@@ -57,10 +135,10 @@ body {
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    font-size: 23px;
+    font-size: 2.3rem;
     text-align: center;
     cursor: pointer;
-    color: black;
+    color: var(--clr-gray1);
     transition: all 0.5s ease;
 }
 
@@ -76,36 +154,36 @@ body {
 }
 
 .sidebar i {
-    color: black;
-    height: 60px;
-    min-width: 50px;
-    font-size: 28px;
+    color:  var(--clr-gray1);;
+    height: 6rem;
+    min-width: 5rem;
+    font-size: 2.8rem;
     text-align: center;
-    line-height: 60px;
+    line-height: 6rem;
 }
 
 .sidebar .nav-list {
-    margin-top: 20px;
+    margin-top: 2rem;
     height: 100%;
 }
 
 .sidebar li {
     position: relative;
-    margin: 8px 0;
+    margin: 0.8rem 0;
     list-style: none;
-    color: black;
+    color: var(--clr-gray1);
 }
 
 .sidebar li .tooltip {
     position: absolute;
     top: -20px;
-    left: calc(100% + 15px);
+    left: calc(100% + 1.5rem);
     z-index: 3;
-    background: #fff;
+    background: var(--clr-tint-90);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-    padding: 6px 12px;
+    padding: 0.6rem 1.2rem;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 1.5rem;
     font-weight: 400;
     opacity: 0;
     white-space: nowrap;
@@ -129,7 +207,7 @@ body {
     display: flex;
     height: 100%;
     width: 100%;
-    border-radius: 12px;
+    border-radius: 1.2rem;
     align-items: center;
     text-decoration: none;
     transition: all 0.4s ease;
@@ -138,11 +216,11 @@ body {
 }
 
 .sidebar li a:hover {
-    background: #E8EFFE;;
+    background: #E8EFFE;
 }
 
 .sidebar li a .links_name {
-    color: black;
+    color: var(--clr-gray1);
     font-size: 15px;
     font-weight: 500;
     white-space: nowrap;
@@ -159,94 +237,76 @@ body {
 .sidebar li a:hover .links_name,
 .sidebar li a:hover i {
     transition: all 0.5s ease;
-    color: blue;
+    color: var(--clr-main-blue);
 }
 
 .sidebar li i {
-    height: 50px;
-    line-height: 50px;
-    font-size: 18px;
-    border-radius: 12px;
+    height: 5rem;
+    line-height: 5rem;
+    font-size: 1.8rem;
+    border-radius: 1.2rem;
 }
 
-.sidebar li.profile {
+.sidebar li.nav-list__logout {
     position: fixed;
-    height: 60px;
-    width: 78px;
+    height: 6rem;
+    width: 7.8rem;
     left: 0;
-    bottom: -8px;
-    padding: 10px 14px;
+    bottom: -0.8rem;
+    padding: 1rem 1.4rem;
     background: #F1FFE7;
     transition: all 0.5s ease;
-    overflow: hidden;
+
 }
 
-.sidebar.open li.profile {
-    width: 250px;
+.sidebar.open li.nav-list__logout {
+    width: 18rem;
      background: #F1FFE7;
 
 }
 
-.sidebar li .profile-details {
+.sidebar li .nav-list__logout-details {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
 }
 
-.sidebar li img {
-    height: 45px;
-    width: 45px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-right: 10px;
-}
 
-.sidebar li.profile .name,
-.sidebar li.profile .job {
-    font-size: 15px;
-    font-weight: 400;
-    color: #fff;
-    white-space: nowrap;
-}
 
-.sidebar li.profile .job {
-    font-size: 12px;
-}
-
-.sidebar .profile #log_out {
+.sidebar .nav-list__logout #log_out {
     position: absolute;
     top: 50%;
     right: 0;
     transform: translateY(-50%);
     background: #F1FFE7;
     width: 100%;
-    height: 60px;
-    line-height: 60px;
-    border-radius: 0px;
+    height: 6rem;
+    line-height: 6rem;
+    border-radius: 0;
     transition: all 0.5s ease;
 }
 
-.sidebar.open .profile #log_out {
-    width: 50px;
+.sidebar.open .nav-list__logout #log_out {
+    width: 5rem;
     background: none;
 }
 
 .main-content {
-    padding: 20px;
+    padding: 2rem 1rem ;
     position: relative;
-    background: whitesmoke;
+    background: var(--clr-tint-100);
     overflow: auto;
     min-height: 100vh;
     top: 0;
-    left: 78px;
-    width: calc(100% - 78px);
+    left: 7.8rem;
+    max-width:  calc(100% - 7.8rem);
     transition: all 0.5s ease;
     z-index: 2;
 }
 
 .sidebar.open ~ .main-content {
-    left: 250px;
-    width: calc(100% - 250px);
+    left: 18rem;
+    max-width: calc(100% - 18rem);
 }
 
 @media (max-width: 420px) {

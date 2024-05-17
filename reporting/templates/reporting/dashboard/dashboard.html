@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-// le titre de la page
 {% block title %} <title>Dashboard</title> {% endblock title %}
 {% block style %}
     <link rel="stylesheet" href="{% static 'css/style_dashboard.css' %}"/>
@@ -8,29 +7,38 @@
 {% block script %}
     <script src="{% static 'scripts/plotly.js' %}"></script>
     <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
 {% endblock script %}
-
 
 {% block content %}
 
-
+    {#HEADER SECTION#}
     <header>
         <div class="logo-header">
-            <img src="https://cdn-icons-png.flaticon.com/512/2720/2720795.png" alt="KPI image">
+            <img
+                    src="https://cdn-icons-png.flaticon.com/512/2720/2720795.png"
+                    alt="KPI image"
+            />
             <span> Tableau de bord</span>
         </div>
         <div class="user-info">
-            <img src="https://wac-cdn.atlassian.com/fr/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=1577"
-                 alt="User Avatar">
+            <img
+                    src="https://wac-cdn.atlassian.com/fr/dam/jcr:ba03a215-2f45-40f5-8540-b2015223c918/Max-R_Headshot%20(1).jpg?cdnVersion=1577"
+                    alt="User Avatar"
+            />
             <span class="username">{{ username }}</span>
         </div>
     </header>
+
     <div class="month-picker-container">
         <div class="month-picker-button">
-            <label for="monthInput">Mois: </label>
+            <label for="monthInput">Mois:</label>
             <input
                     type="month"
                     id="monthInput"
@@ -39,15 +47,18 @@
             />
         </div>
         <div class="download-button">
-            <a href="{% url 'view_pdf' %}"> <i class="fas fa-download"></i> Télécharger</a>
+            <a href="{% url 'view_pdf' %}">
+                <i class="fas fa-download"></i> Télécharger</a
+            >
         </div>
     </div>
 
 
-    <div class="updates-stats-block">
+    {#    SECTION  PRINCIPALE #}
 
+    <div class="updates-stats-block">
         <div class="stat-patch">
-            <div class="card">
+            <div class="card-stat">
                 <div class="icon critical">
                     <i class="fas fa-exclamation-circle"></i>
                 </div>
@@ -56,7 +67,7 @@
                     <p id="total_critical">12</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card-stat">
                 <div class="icon important">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
@@ -65,14 +76,14 @@
                     <p id="total_important">8</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card-stat">
                 <div class="icon moderate"><i class="fas fa-wrench"></i></div>
                 <div class="info">
                     <h2>Moderate</h2>
                     <p id="total_moderate">5</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card-stat">
                 <div class="icon low"><i class="fas fa-check-circle"></i></div>
                 <div class="info">
                     <h2>Low</h2>
@@ -81,93 +92,75 @@
             </div>
         </div>
 
-
-        <div id="graph-patch-os"></div>
-
-           <div class="hors-support">
-            <div class="top-vm__card">
-                <div class="title-top-vm">
-                    <h3>HORS SUPPORT</h3>
-                    <span class="badge" id="totalCountBadge">50</span>
-                </div>
-
-                <div class="scrollable-table">
-                    <table>
-
-                        <thead>
-
-                        <tr>
-                            <th>RedHat 5</th>
-                            <th>RedHat 6</th>
-
-                        </tr>
-                        </thead>
-
-
-                        <tbody>
-                        <!-- Ajoutez les lignes de données ici -->
-                        {% for vm in top_20 %}
-                            <tr>
-                                <td>{{ vm.nom_machine }}</td>
-                                <td>{{ vm.ip }}</td>
-
-                            </tr>
-                        {% endfor %}
-
-
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
+        <div class="wrapper-grap">
+            <div id="graph-all" class="graph"></div>
         </div>
-
-
-
     </div>
 
+    {# SECTION SECONDAIRE #}
     <div class="visualization-block">
 
-        <div class="main-graph">
-            <div id="graph-all"></div>
+        <div class="wrapper-grap-os">
+            <div id="graph-patch-os" class="patch-os"></div>
         </div>
 
-        <div class="top-vm">
-            <div class="top-vm__card">
-                <div class="title-top-vm">Top 20 Machines Critiques</div>
 
-                <div class="scrollable-table">
-                    <table>
-                        <thead>
+    <div class="top-vm">
+        <div class="top-vm__card">
+            <div class="title-top-vm">Top 20 Machines Critiques</div>
+
+            <div class="scrollable-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Adresse IP</th>
+                        <th>Criticité</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for vm in top_20 %}
                         <tr>
-                            <th>Nom</th>
-                            <th>Adresse IP</th>
-                            <th>Criticité</th>
+                            <td>{{ vm.nom_machine }}</td>
+                            <td>{{ vm.ip }}</td>
+                            <td>{{ vm.critical }}</td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Ajoutez les lignes de données ici -->
-                        {% for vm in top_20 %}
-                            <tr>
-                                <td>{{ vm.nom_machine }}</td>
-                                <td>{{ vm.ip }}</td>
-                                <td>{{ vm.critical }}</td>
-                            </tr>
-                        {% endfor %}
-
-
-                        </tbody>
-                    </table>
-                </div>
-
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-
-
     </div>
 
+     <div class="hors-support">
+        <div class="top-vm__card">
+            <div class="title-top-vm">
+                <span class="title-top-hs">HORS SUPPORT</span>
+                <span class="badge" id="totalCountBadge">50</span>
+            </div>
 
+            <div class="scrollable-table">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>OS</th>
+                    </tr>
+                    </thead>
 
+                    <tbody>
+                    {% for vm in machine_hs %}
+                        <tr>
+                            <td>{{ vm.nom_machine }}</td>
+                            <td>{{ vm.os }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    </div>
 
 {% endblock content %}

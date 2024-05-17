@@ -21,6 +21,7 @@ from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutV
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from django.contrib.auth.views import LogoutView
 
@@ -38,7 +39,6 @@ urlpatterns = [
                   path('accounts/signup/', signup, name='signup'),
                   path('accounts/login/', UserLoginView.as_view(), name='login'),
                   path('accounts/logout/', UserLogoutView.as_view(), name='logout'),
-
 
                   path('admin/', admin.site.urls),
 
