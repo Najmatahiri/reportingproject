@@ -27,7 +27,6 @@ from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
 from datetime import datetime
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
-from rest_framework.permissions import IsAuthenticated
 
 APP_ROOT = "reporting"
 

@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'reporting',
     'rest_framework',
     'import_export',
-    'django_cron',
     'django_crontab',
     "corsheaders",
 
