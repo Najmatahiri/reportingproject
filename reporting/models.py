@@ -1,14 +1,9 @@
 import uuid
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
-
-from django.core.mail import send_mail
-from reportingauto.settings import EMAIL_HOST_USER
-from django_cron import CronJobBase, Schedule
 
 
 # Fichier CSV
@@ -60,10 +55,12 @@ class MachineVM(models.Model):
             self.slug = slugify(f"{self.modeluuid}{str(self.nom_machine)}")
         super().save(*args, **kwargs)
 
-    def is_patched(self):
-        if self.critical == 0:
-            return True
-        return False
+
+class Config(models.Model):
+    unsupported_versions = models.CharField(max_length=100, default='')
+
+    def __str__(self):
+        return "Configurations utilisateur"
 
 
 class UserAdmin(AbstractUser):

@@ -13,8 +13,9 @@ HOST_GROUP = (
 )
 
 ROLE = (
-    ("choix ", "Admin RHS"),
-    ("choix 2", "Admin Nagios"),
+    ("role 1", "Admin RHS"),
+    ("role 2", "Admin Nagios"),
+    ("role 3", "")
 )
 
 
@@ -35,7 +36,7 @@ class UserAdminRegistrationForm(UserCreationForm):
 
     class Meta:
         model = UserAdmin
-        fields = ["first_name", 'last_name', "email", "username", "role"]
+        fields = ["first_name", 'last_name', "email", "username"]
 
 
 class LoginForm(AuthenticationForm):

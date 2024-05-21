@@ -17,4 +17,5 @@ urlpatterns = [
                   path("view_pdf/", view_pdf, name="view_pdf"),
 
 
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

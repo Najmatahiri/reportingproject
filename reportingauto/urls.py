@@ -18,12 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutView, index
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from django.contrib.auth.views import LogoutView
 
 # Ici, nous créons notre routeur
 router = routers.SimpleRouter()

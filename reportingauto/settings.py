@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os.path
 from pathlib import Path
 import django.db.models
+from dotenv import load_dotenv
+import os
 
+load_dotenv(".env.dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fsy*85p*pozl0^o@r38x%(tw*e^m3=1q*up7ja0e5w_8)rcw#!'
+SECRET_KEY = "django-insecure-fsy*85p*pozl0^o@r38x%(tw*e^m3=1q*up7ja0e5w_8)rcw#!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -36,15 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'livereload',
+    # 'livereload',
     'django.contrib.staticfiles',
     'reporting',
     'rest_framework',
     'import_export',
     'django_cron',
     'django_crontab',
-
-
+    "corsheaders",
 
 ]
 
@@ -56,7 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'livereload.middleware.LiveReloadScript',
+    # 'livereload.middleware.LiveReloadScript',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'reportingauto.urls'
@@ -86,11 +90,11 @@ WSGI_APPLICATION = 'reportingauto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'reporting',
-        'USER': 'reportingadmin',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
 
     }
 }
@@ -154,14 +158,33 @@ EMAIL_USE_SSL = False
 
 ALLOW_PARALLEL_RUNS = True
 
-# CRON_CLASSES = [
-#     "reporting.cron.MyCronJob",
-#     # ...
-# ]
 
-SESSION_COOKIE_AGE = 30
+SESSION_COOKIE_AGE = 1209600
 
 CRONJOBS = [
     ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
 ]
 

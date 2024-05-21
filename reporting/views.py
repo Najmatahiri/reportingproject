@@ -152,7 +152,6 @@ class MachineDeleteView(DeleteView):
 @method_decorator(login_required, name="dispatch")
 class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = MachineVM.objects.all()
@@ -247,3 +246,4 @@ def view_pdf(request):
 
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename="report.pdf")
+

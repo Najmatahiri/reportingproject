@@ -18,6 +18,9 @@ let total_imp = document.getElementById("total_important")
 let total_mod = document.getElementById("total_moderate")
 let total_lw = document.getElementById("total_low")
 
+let host_dev= "127.0.0.1"
+let host_prod="192.168.220.134"
+
 
 function myFunction(val) {
     annee = monthInput.value.split('-')[0]
@@ -63,7 +66,7 @@ function somme_tab(tab) {
 }
 
 function fetchData() {
-    fetch(`http://127.0.0.1:8000/api/machines/?year=${annee}&month=${mois}`) // Effectue une requête à l'API
+    fetch(`http://${host_dev}:8000/api/machines/?year=${annee}&month=${mois}`) // Effectue une requête à l'API
         .then(response => response.json()) // Convertit la réponse en JSON
         .then(data => {
             updatePlot(data); // Appelle la fonction pour mettre à jour les graphiques avec les données récupérées
@@ -96,7 +99,7 @@ function updatePlot(data) {
     total_mod.innerText = somme_tab(total_moderate)
     total_lw.innerText = somme_tab(total_low)
 
-   
+
 
     // Appel de la fonction patched_tab pour obtenir les données sur les machines patchées et non patchées
     let total_tab = patched_tab(critical_tab_total);
@@ -107,7 +110,7 @@ function updatePlot(data) {
     let config = {displayModeBar: false, responsive: true}
 
     /* GLOBAL GRAHPIC */
-    
+
     let list_couleur = ['#37b24d', '#f03e3e']
     let allLabels = ['Patched', 'Not Pathed'];
     let alldata = [{
@@ -256,5 +259,4 @@ function refreshData() {
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.
 refreshData();
-
 
