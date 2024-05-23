@@ -3,32 +3,31 @@ import io
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.utils.decorators import method_decorator
-from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView, TemplateView
+from django.views.generic import ListView, UpdateView, DetailView, DeleteView, FormView, TemplateView, CreateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django.contrib.auth.decorators import login_required
-from reporting.models import MachineVM
-from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, LoginForm
+from reporting.models import MachineVM, ConfigVersionHS
+from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, LoginForm, ConfigForm
 from reporting.serializers import MachineVMSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
 from .decorators import access_required
 from reportingauto.settings import EMAIL_HOST_USER
-from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen import canvas
-from django.templatetags.static import static
 from django.http import FileResponse
 from reportlab.lib.pagesizes import letter, A4
-from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer
+from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
-from reporting.pdf_lab import pie_chart_with_legend, create_table, data_table
+from reporting.pdf_lab import pie_chart_with_legend, create_table, create_header, create_footer, create_bar_chart, \
+    create_section_title, create_table_for_more_info, create_header_details_paragraph
 from datetime import datetime
 from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.charts.doughnut import Doughnut
-
-APP_ROOT = "reporting"
+from .utils_pdf import create_data_tab, additionner_tableaux, create_sum_criticality_tab
+from .utils import month_year
 
 
 def signup(request):
@@ -99,11 +98,19 @@ class Dashboard(ListView):
         context = super().get_context_data(**kwargs)
         date = datetime.today().strftime('%Y-%m-%d')
         top_20 = MachineVM.objects.all().order_by('-critical')[:20]
-        machine_hs = MachineVM.objects.filter(os__startswith='RedHat 6.')
+        list_hs = ConfigVersionHS.objects.all()
+        tab_hs = [version.unsupported_versions for version in list_hs]
+        machine_hs_filtre = []
+        for version in list_hs:
+            machine_hs = MachineVM.objects.filter(os__startswith=f"{version}.")
+            machine_hs_filtre.extend(machine_hs)
+
+        total_hs = len(machine_hs_filtre)
         current_username = self.request.user.username
         context['username'] = current_username
         context['top_20'] = top_20
-        context['machine_hs'] = machine_hs
+        context['machine_hs'] = machine_hs_filtre
+        context['total_hs'] = total_hs
         return context
 
 
@@ -174,75 +181,196 @@ class MyDetailView(TemplateView):
     template_name = 'reporting/reportpdf/report_pdf_temp.html'
 
 
+class ConfigView(ListView):
+    model = ConfigVersionHS
+    template_name = 'reporting/config/config.html'
+    context_object_name = 'configs'
+
+
+class AddConfigView(CreateView):
+    model = ConfigVersionHS
+    form_class = ConfigForm
+
+
+# Data for the table
+data = [
+    ["Red Hat 5", 10],
+    ["Red Hat 6", 20],
+    ["Total", 30],
+]
+
+data_out_of_support_machines = [
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "PROD", "RedHat 5.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 5.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+    ("deltasig.localdomain", "10.4.1.191", "Hors-Prod", "RedHat 6.10"),
+
+    # Add more rows as needed
+]
+
+
 def view_pdf(request):
-    nb_prod_patched = MachineVM.objects.filter(group="PROD", critical__exact=0).count()
-    nb_prod_not_patched = MachineVM.objects.filter(group="PROD", critical__gt=0).count()
-    nb_hors_prod_patched = MachineVM.objects.filter(group="HORS-PROD", critical__exact=0).count()
-    nb_hors_prod_not_patched = MachineVM.objects.filter(group="HORS-PROD", critical__gt=0).count()
-    nb_total_patched = nb_prod_patched + nb_hors_prod_patched
-    nb_total_no_patched = nb_prod_not_patched + nb_hors_prod_not_patched
+    # les données
+    data_tab_prod = create_data_tab("PROD")
+    data_tab_hors_prod = create_data_tab("Hors-Prod")
+    data_tab_total = additionner_tableaux(data_tab_prod, data_tab_hors_prod)
+    data_tab_criticality = create_sum_criticality_tab()
+    data_tab_stat_path = [
+        ["PROD", data_tab_prod[0], data_tab_prod[1]],
+        ["HORS PROD", data_tab_hors_prod[0], data_tab_hors_prod[1]],
+        ["Total", data_tab_total[0], data_tab_total[1]],
+    ]
+    top_machines = MachineVM.objects.filter(
+        date_import__month=month_year()[0],
+        date_import__year=month_year()[1],
+    ).order_by('-critical')[:20]
 
-    datab_prod = [nb_prod_patched, nb_prod_not_patched]
-    datab_hors_prod = [nb_hors_prod_patched, nb_hors_prod_not_patched]
-    datab_total = [nb_total_patched, nb_total_no_patched]
+    data_tab_top_machine = [
+        (vm.nom_machine, vm.ip, vm.group, vm.os, vm.critical)
+        for vm in top_machines
+    ]
 
-    datable_prod = data_table(nb_prod_patched, nb_prod_not_patched, "PROD")
-    datable_hors_prod = data_table(nb_hors_prod_patched, nb_hors_prod_not_patched, "HORS PROD")
-    datable_total = data_table(nb_total_patched, nb_total_no_patched, "TOTAL")
-
-    image_path = APP_ROOT + static("images/absLogo-3.jpg")
-
-    # Create a file-like buffer to receive PDF data.
     buffer = io.BytesIO()
-
     styles = getSampleStyleSheet()
     canv = canvas.Canvas(buffer, pagesize=A4)
 
-    logo = Image(image_path, width=100, height=100)
-    logo.hAlign = "LEFT"
-    logo.drawOn(canv, 10, 750)
-
-    date_style = ParagraphStyle(name='default', fontSize=12, leading=24)
-    current_date = datetime.today().strftime('%Y-%m-%d')
-    date = Paragraph(current_date, date_style)
-    date.wrap(300, 500)
-    date.drawOn(canv, 400, 790)
-    canv.line(10, 780, 580, 780)
+    """
+    ****************************************************************************************
+     EN TETE
+    ****************************************************************************************
+    """
+    create_header(canv)
+    create_header_details_paragraph(
+        "Equipe",
+        "IAAS",
+        styles, canv, 10, 740, 40
+    )
+    create_header_details_paragraph(
+        "Généré par",
+        f"{request.user.first_name}  {request.user.last_name}",
+        styles, canv, 10, 720, 65
+    )
 
     title_style = styles['Title']
     title = Paragraph("Rapport Mensuel", title_style)
+
     title.hAlign = "CENTER"
     title.wrap(400, 300)
-    title.drawOn(canv, 100, 700)
+    title.drawOn(canv, 100, 690)
 
-    d = pie_chart_with_legend(datab_prod, "PROD", Doughnut())
-    d1 = pie_chart_with_legend(datab_hors_prod, "HORS PROD", Doughnut())
-    d2 = pie_chart_with_legend(datab_total, "TOTAL", Pie())
-    table_prod = create_table(datable_prod)
-    table_hors_prod = create_table(datable_hors_prod)
-    table_total = create_table(datable_total)
-    table_prod.wrap(200, 200)
-    table_hors_prod.wrap(200, 200)
-    table_total.wrap(200, 200)
+    """
+    ****************************************************************************************
+    SECTION 1
+    ****************************************************************************************
+    """
 
-    # les graphes et Tableaux
+    create_section_title(
+        "Statistique de la Criticité  des Vulnérabilités et de l'État des Patches des Machines",
+        styles, canv, 10, 650
+    )
 
-    # PROD
-    d.drawOn(canv, 10, 500)
-    table_prod.drawOn(canv, 400, 570)
-    # hors prod
-    d1.drawOn(canv, 10, 330)
-    table_hors_prod.drawOn(canv, 400, 390)
+    table_data_criticality = [["Niveau", "Nombre"]] + data_tab_criticality
+    create_table(table_data_criticality, canv, 50, 540)
 
-    # total
-    d2.drawOn(canv, 10, 160)
-    table_total.drawOn(canv, 400, 220)
+    table_data_production = [["", "PATCHED", "NOT PATCHED"]] + data_tab_stat_path
+    create_table(table_data_production, canv, 250, 545)
 
-    # FileResponse sets the Content-Disposition header so that browsers
-    # present the option to save the file.
+    """
+    ****************************************************************************************
+    SECTION 2
+    ****************************************************************************************
+     """
+    create_section_title(
+        "Visualisation Graphique des statistiques de Patchs des Machines",
+        styles, canv, 10, 480
+    )
+
+    d = pie_chart_with_legend(data_tab_prod, "PROD", Doughnut(), True)
+    d.drawOn(canv, -10, 280)
+    d1 = pie_chart_with_legend(data_tab_hors_prod, "HORS PROD", Doughnut())
+    d1.drawOn(canv, 110, 280)
+    d2 = pie_chart_with_legend(data_tab_total, "TOTAL", Pie())
+    d2.drawOn(canv, 270, 280)
+
+    """
+     ****************************************************************************************
+     SECTION 3
+     ****************************************************************************************
+      """
+    categorie_names = ['Red Hat 7', 'Red Hat 8', 'Red Hat 9']
+    data_patch_os = [
+        (10, 20, 30),  # Data series 1
+        (15, 25, 10)  # Data series 2
+    ]
+    create_bar_chart(data_patch_os, categorie_names, canv, 100, 100)
+    # drawing1.drawOn(canv, 100, 100)
+
+    # Pied de page 1
+    create_footer(canv, 1)
     canv.showPage()
+
+    create_header(canv)
+
+    """
+      ****************************************************************************************
+      SECTION 4
+      ****************************************************************************************
+    """
+
+    create_section_title(
+        "Top 20 des Machines critiques",
+        styles, canv, 10, 750
+
+    )
+
+    table_data_top_critical = [["Nom", "IP", "Groupe", "OS", "Critical"]] + data_tab_top_machine
+    create_table(table_data_top_critical, canv, 100, 350)
+
+    # Pied Page 2
+    create_footer(canv, 2)
+    canv.showPage()
+
+    create_header(canv)
+    """
+       ****************************************************************************************
+       SECTION 5
+       ****************************************************************************************
+     """
+    create_section_title(
+        "List des machines  Hors support",
+        styles, canv, 10, 730
+    )
+    table_data_out_of_support = [["Nom", "IP", "Groupe", "OS"]] + data_out_of_support_machines
+    create_table(table_data_out_of_support, canv, 10, 240)
+
+    create_table_for_more_info(data, canv, 450, 660)
+
+    # Pied Page 3
+    create_footer(canv, 3)
+
+    # present the option to save the file.
     canv.save()
 
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename="report.pdf")
-
+    return FileResponse(buffer, as_attachment=False, filename="report.pdf")

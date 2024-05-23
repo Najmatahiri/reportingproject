@@ -56,11 +56,17 @@ class MachineVM(models.Model):
         super().save(*args, **kwargs)
 
 
-class Config(models.Model):
+class ConfigVersionHS(models.Model):
     unsupported_versions = models.CharField(max_length=100, default='')
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
 
     def __str__(self):
-        return "Configurations utilisateur"
+        return self.unsupported_versions
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.unsupported_versions}")
+        super().save(*args, **kwargs)
 
 
 class UserAdmin(AbstractUser):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from reporting.models import MachineVM, UserAdmin
+from reporting.models import MachineVM, UserAdmin, ConfigVersionHS
 from import_export.admin import ImportExportModelAdmin
 from .ressources import MachineVMResource
 
@@ -15,6 +15,12 @@ admin.site.register(MachineVM, MachineVMAdmin)
 
 @admin.register(UserAdmin)
 class UserAdminAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(ConfigVersionHS)
+class ConfigAdmin(admin.ModelAdmin):
+    fields = ["unsupported_versions"]
     pass
 
 # @admin.register(FichierCSV)

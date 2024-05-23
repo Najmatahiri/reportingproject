@@ -5,15 +5,14 @@
 
 {% block style %}
     <link rel="stylesheet" href="{% static 'css/style_inventaires.css' %}"/>
-    <link href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" rel="stylesheet">
+    <link href="{% static 'external_labraries/DataTables/datatables.css' %}" rel="stylesheet">
 
 {% endblock style  %}
 
 {% block script %}
-    <script src="https://code.jquery.com/jquery-3.7.1.js"
-            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="{% static 'external_labraries/jquery/jquery-3.7.1.js' %}"></script>
     <script src="{% static 'scripts/inventaire_script.js' %}" defer></script>
-    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+    <script src="{% static 'external_labraries/DataTables/datatables.js' %}"></script>
 
 
 {% endblock script %}
@@ -68,7 +67,7 @@
 {#                                <button><i class="fa-solid fa-trash"></i></button>#}
                         <a href="{% url 'update-vm' vm.slug %}">
                             <button id="openModalBtn">
-                                <i class="fa-solid fa-pen"></i>
+                                <i class="bx bxs-pen"></i>
                             </button>
                         </a>
 
@@ -78,7 +77,7 @@
                         <a href="{% url 'delete-vm' vm.slug %}">
 {#                              <i class='bx bxs-trash'></i>#}
                             <button>
-                                <i class="fa-solid fa-trash"></i>
+                                <i class="bx bxs-trash"></i>
                             </button>
                         </a>
                         </td>

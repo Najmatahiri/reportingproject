@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+// le titre de la page
+{% block title %} <title>Configurations</title> {% endblock title %} {% block content %}
+
+    <h2>Version de Red Hat Hors supportt</h2>
+
+    <ul>
+        {% for version in configs %}
+            <li>{{ version }}</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

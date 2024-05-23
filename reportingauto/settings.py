@@ -15,7 +15,7 @@ import django.db.models
 from dotenv import load_dotenv
 import os
 
-load_dotenv(".env.dev")
+load_dotenv(".env.test")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # 'livereload',
+    # 'livereload'
     'django.contrib.staticfiles',
     'reporting',
     'rest_framework',
@@ -161,7 +161,7 @@ ALLOW_PARALLEL_RUNS = True
 SESSION_COOKIE_AGE = 1209600
 
 CRONJOBS = [
-    ('*/8 * * * *', 'reporting.tasks.send_monthly_email'),
+    ('*/2 * * * *', 'reporting.tasks.send_monthly_email'),
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
