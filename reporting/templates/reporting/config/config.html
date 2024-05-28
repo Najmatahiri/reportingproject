@@ -1,13 +1,50 @@
 {% extends 'base.html' %}
 {% load static %}
 // le titre de la page
-{% block title %} <title>Configurations</title> {% endblock title %} {% block content %}
+{% block title %} <title>Configurations</title> {% endblock title %}
+  {% block style %}
+        <link href="{% static 'css/style_config.css'  %} " rel="stylesheet">
+     {% endblock style %}
 
-    <h2>Version de Red Hat Hors supportt</h2>
+{% block content %}
+ <div class="header">
+        <div class="header-text">
+            <h1>Configuration</h1>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <div class="config-section">
+        <h2>Version de RedHat Hors support</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Version</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>RedHat 5</td>
+                    <td>
+                        <button class="delete-btn"><i class='bx bx-trash'></i> Supprimer</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>RedHat 6</td>
+                    <td>
+                        <button class="delete-btn"><i class='bx bx-trash'></i> Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br/>
+        <form class="add-version-form">
+            <label>
+                <input type="text" name="new_version" placeholder="ex: RedHat 7" required>
+            </label>
+            <button type="submit" class="add-btn"><i class='bx bx-plus-circle'></i> Ajouter</button>
+        </form>
+    </div>
 
-    <ul>
-        {% for version in configs %}
-            <li>{{ version }}</li>
-        {% endfor %}
-    </ul>
 {% endblock content %}

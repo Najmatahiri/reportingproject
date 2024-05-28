@@ -15,7 +15,7 @@ import django.db.models
 from dotenv import load_dotenv
 import os
 
-load_dotenv(".env.test")
+load_dotenv(".env.dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'import_export',
     'django_crontab',
     "corsheaders",
+    "debug_toolbar",
+    # 'simple_history',
 
 ]
 
@@ -60,6 +62,9 @@ MIDDLEWARE = [
     # 'livereload.middleware.LiveReloadScript',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    # "debug_toolbar.middleware.DebugToolbarMiddleware",
+    # 'simple_history.middleware.HistoryRequestMiddleware',
+
 ]
 
 ROOT_URLCONF = 'reportingauto.urls'
@@ -157,7 +162,6 @@ EMAIL_USE_SSL = False
 
 ALLOW_PARALLEL_RUNS = True
 
-
 SESSION_COOKIE_AGE = 1209600
 
 CRONJOBS = [
@@ -187,3 +191,8 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

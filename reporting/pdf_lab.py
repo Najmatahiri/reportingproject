@@ -1,23 +1,17 @@
-from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.validators import Auto, colors
 from reportlab.graphics.charts.legends import Legend
 from reportlab.graphics.charts.piecharts import Pie
-from reportlab.graphics.charts.doughnut import Doughnut
 from reportlab.graphics.shapes import Drawing, String
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from django.templatetags.static import static
-from django.http import FileResponse
 from reportlab.lib.pagesizes import letter, A4
-from reportlab.platypus import SimpleDocTemplate, Image, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Image, Paragraph, Table, TableStyle
 from reportlab.graphics.shapes import Drawing, String
 from datetime import datetime
-from reportlab.graphics.charts.piecharts import Pie
-
 from reportlab.graphics.charts.barcharts import VerticalBarChart
-from reportlab.graphics.charts.doughnut import Doughnut
+
 
 APP_ROOT = "reporting"
 width, height = A4
@@ -25,7 +19,7 @@ width, height = A4
 
 def add_legend(draw_obj, chart, data):
     legend = Legend()
-    legend.alignment = 'right'
+    legend.alignment = "right"
     legend.x = 50
     legend.y = 150
     legend.colorNamePairs = Auto(obj=chart)
@@ -54,15 +48,19 @@ def pie_chart_with_legend(data, title, chart, legend=False):
 
 def create_table(data, canv, x, y):
     table = Table(data=data)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-    ]))
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, 0), 14),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+            ]
+        )
+    )
     table.wrap(900, 900)
     table.drawOn(canv, x, y)
 
@@ -72,8 +70,8 @@ def create_header(canv):
     logo = Image(image_path, width=100, height=100)
     logo.hAlign = "LEFT"
     logo.drawOn(canv, 10, 750)
-    date_style = ParagraphStyle(name='default', fontSize=12, leading=24)
-    current_date = datetime.today().strftime('%d-%m-%Y')
+    date_style = ParagraphStyle(name="default", fontSize=12, leading=24)
+    current_date = datetime.today().strftime("%d-%m-%Y")
     date = Paragraph(f"Date : {current_date}", date_style)
     date.wrap(300, 500)
     date.drawOn(canv, 450, 780)
@@ -83,7 +81,11 @@ def create_header(canv):
 def create_footer(canv, page_number):
     canv.line(10, 100, 570, 100)
     canv.drawString(20, 80, "Société Général African Business Services")
-    canv.drawString(20, 65, "Boulevard Sidi Mohamed Ben Abdellah, Tour Ivoire 2 - Marina, 20030- Casablanca ")
+    canv.drawString(
+        20,
+        65,
+        "Boulevard Sidi Mohamed Ben Abdellah, Tour Ivoire 2 - Marina, 20030- Casablanca ",
+    )
     canv.drawCentredString(width / 2, 25, f"- Page {page_number} -")
 
 
@@ -96,9 +98,9 @@ def create_bar_chart(data, category_names, canv, x, y):
     bar.width = 300
     bar.data = data
     bar.valueAxis.valueMin = 0
-    bar.valueAxis.valueMax = 50
-    bar.valueAxis.valueStep = 10
-    bar.categoryAxis.labels.boxAnchor = 'ne'
+    bar.valueAxis.valueMax = 1000
+    bar.valueAxis.valueStep = 100
+    bar.categoryAxis.labels.boxAnchor = "ne"
     bar.categoryAxis.labels.dx = 8
     bar.categoryAxis.labels.dy = -2
     bar.categoryAxis.labels.angle = 30
@@ -111,19 +113,20 @@ def create_bar_chart(data, category_names, canv, x, y):
 
 
 def create_section_title(title, styles, canv, x, y):
-    heading_style = styles['Heading3']
-    titre_section_5 = Paragraph(
-        f"- {title}", heading_style)
+    heading_style = styles["Heading3"]
+    titre_section_5 = Paragraph(f"- {title}", heading_style)
     titre_section_5.wrap(900, 200)
     titre_section_5.drawOn(canv, x, y)
 
 
 def create_table_for_more_info(data, canv, x, y):
     table = Table(data)
-    style = TableStyle([
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),  # Add borders to all cells
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Center align all cells
-    ])
+    style = TableStyle(
+        [
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),  # Add borders to all cells
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),  # Center align all cells
+        ]
+    )
     table.setStyle(style)
     table.wrap(300, 300)
     table.drawOn(canv, x, y)
@@ -135,9 +138,10 @@ def create_header_details_paragraph(title, text, styles, canv, x, y, text_add_x)
     detail_left.wrap(300, 500)
     detail_left.drawOn(canv, x, y)
 
-    detail_right = Paragraph(text, ParagraphStyle("detail_title", fontSize=9, leading=24))
+    detail_right = Paragraph(
+        text, ParagraphStyle("detail_title", fontSize=9, leading=24)
+    )
     detail_right.wrap(300, 500)
     x_detail = x + text_add_x
     y_detail = y - 12
     detail_right.drawOn(canv, x_detail, y_detail)
-    pass

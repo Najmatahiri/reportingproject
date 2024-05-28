@@ -5,8 +5,10 @@
     <link rel="stylesheet" href="{% static 'css/style_dashboard.css' %}"/>
 {% endblock style %}
 {% block script %}
-    <script src="{% static 'external_labraries/plotly/plotly-2.32.0.min.js' %}"></script>
-    <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
+    <script src="{% static 'external_libraries/plotly/plotly-2.32.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'scripts/dashboard_script.js' %}" defer></script>
+
+
 
 {% endblock script %}
 
@@ -37,7 +39,7 @@
                     type="month"
                     id="monthInput"
                     name="monthPicker"
-                    onchange="myFunction(this.value)"
+                    onchange="handleDateChange(this.value)"
             />
         </div>
         <div class="download-button">
@@ -49,7 +51,6 @@
 
 
     {#    SECTION  PRINCIPALE #}
-
     <div class="updates-stats-block">
         <div class="stat-patch">
             <div class="card-stat">
@@ -87,18 +88,26 @@
                 </div>
             </div>
         </div>
-
-        <div class="wrapper-grap">
-            <div id="graph-all" class="graph"></div>
-        </div>
-    </div>
-
-    {# SECTION SECONDAIRE #}
-    <div class="visualization-block">
-
         <div class="wrapper-grap-os">
             <div id="graph-patch-os" class="patch-os"></div>
+
         </div>
+
+    </div>
+
+
+
+
+    {# SECTION MAIN VISUALIZATION #}
+
+    <div class="main-visualization">
+        <div id="graph_prod" class="main-graph"></div>
+        <div id="graph_hors_prod" class="main-graph"></div>
+        <div id="graph_total" class="main-graph"></div>
+    </div>
+
+    {# SECTION TABLEAU LISTE #}
+    <div class="table-section">
 
 
         <div class="top-vm">
@@ -111,6 +120,7 @@
                         <tr>
                             <th>Nom</th>
                             <th>Adresse IP</th>
+                            <th>Groupe</th>
                             <th>Criticité</th>
                         </tr>
                         </thead>
@@ -119,6 +129,7 @@
                             <tr>
                                 <td>{{ vm.nom_machine }}</td>
                                 <td>{{ vm.ip }}</td>
+                                <td>{{ vm.group }}</td>
                                 <td>{{ vm.critical }}</td>
                             </tr>
                         {% endfor %}
@@ -131,8 +142,8 @@
         <div class="hors-support">
             <div class="top-vm__card">
                 <div class="title-top-vm">
-                    <span class="title-top-hs">HORS SUPPORT</span>
-                    <span class="badge" id="totalCountBadge">50</span>
+                    <span class="">HORS SUPPORT</span>
+                    <span class="badge" id="totalCountBadge">{{ total_hs }}</span>
                 </div>
 
                 <div class="scrollable-table">
@@ -140,6 +151,8 @@
                         <thead>
                         <tr>
                             <th>Nom</th>
+                            <th>Adresse IP</th>
+                            <th>Groupe</th>
                             <th>OS</th>
                         </tr>
                         </thead>
@@ -148,6 +161,8 @@
                         {% for vm in machine_hs %}
                             <tr>
                                 <td>{{ vm.nom_machine }}</td>
+                                <td>{{ vm.ip }}</td>
+                                <td>{{ vm.group }}</td>
                                 <td>{{ vm.os }}</td>
                             </tr>
                         {% endfor %}
@@ -158,5 +173,6 @@
         </div>
 
     </div>
+
 
 {% endblock content %}

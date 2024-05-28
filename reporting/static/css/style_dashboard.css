@@ -8,27 +8,36 @@
 header {
     background-color: var(--clr-tint-90);
     color: var( --clr-gray1);
-    padding: 0.6rem;
+    padding: 0.9rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
- /*    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); */
+    width: 100%;
+    box-sizing: border-box; 
+
 }
 
 
 .logo-header {
     display: flex;
     align-items: center;
+    overflow: hidden;
+    margin-right: 2rem;
+    gap: 1rem;
 }
 
 .logo-header img {
     width: 6rem;
-    margin-right: 1rem;
+    /* margin-right: 1rem; */
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
 }
 
 .logo-header span {
     font-size: 1.8rem;
     font-weight: 700;
+
 }
 
 .user-info {
@@ -102,6 +111,9 @@ header {
 .updates-stats-block {
     margin: 1rem 0 1rem;
     display: flex;
+    justify-content: space-around;
+
+
 
  
 
@@ -118,8 +130,8 @@ header {
 }
 
 .card-stat {
-    width: 13rem;
-    height: 16rem;
+    width: 15rem;
+    height: 17rem;
     border-radius: 10px;
     padding-bottom: 1rem;
     background-color:  var(--clr-tint-100);
@@ -189,36 +201,55 @@ header {
 }
 
 
+/*PATCH EN FONCTION D'OS*/
+
+
+.wrapper-grap-os{
+    width: 50%;
+}
+
+
 
 /**************************/
+/* MAIN VISUALIZATION */
+/**************************/
+.main-visualization{
+    display: flex;
+
+}
+
+.main-graph{
+    width: 33%;
+}
+
+
+/**************************************/
 /* SECTION VISUALISATION ET TOP  20 */
-/**************************/
+/***************************************/
 
 
 
 
 
-.visualization-block {
+
+.table-section {
     /* border: 2px solid #0f172a; */
+    font-size: 2rem;
     margin: 0.3rem;
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: center;
 
 
 }
 
-.wrapper-grap-os{
-    width: 35%;
-}
 
 /* top 20 */
 
 
 .top-vm {
-    width: 35%;
     display: inline-block;
-    margin-right: 2%;
+    margin-right: 20%;
     order: -1;
 
 
@@ -258,8 +289,9 @@ header {
 }
 
 table {
-    width: 100%;
+
     border-collapse: collapse;
+    width: 100%;
 }
 
 th,
@@ -317,8 +349,8 @@ tr:hover {
 
 
 .hors-support {
-    width: 40%;
-    margin-left: 2%;
+  
+  margin-left: -6%;
 
 }
 

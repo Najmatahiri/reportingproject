@@ -292,16 +292,17 @@ body {
 }
 
 .main-content {
-    padding: 2rem 1rem ;
+    padding: 2rem 2rem ;
     position: relative;
     background: var(--clr-tint-100);
-    overflow: auto;
+    overflow: hidden;
     min-height: 100vh;
     top: 0;
     left: 7.8rem;
     max-width:  calc(100% - 7.8rem);
     transition: all 0.5s ease;
     z-index: 2;
+    margin: 0;
 }
 
 .sidebar.open ~ .main-content {

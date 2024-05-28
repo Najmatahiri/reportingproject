@@ -7,24 +7,24 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import UserAdmin, ConfigVersionHS
 
 HOST_GROUP = (
-    "PROD",
-    "HORS-PROD",
-    "HORS-SUPPORT"
+    ("PROD", "PROD",),
+    ("Hors-Prod","Hors-Prod"),
 )
 
 ROLE = (
     ("role 1", "Admin RHS"),
     ("role 2", "Admin Nagios"),
-    ("role 3", "")
+    ("role 3", "Visiteur")
 )
 
-HORS_SUPPORT_LIST = (
-    (f"HORS-SUPPORT {i}", f"Red Hat {i}")
-    for i in range(5, 30)
-)
 
 
 class MachineForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['group'].widget = forms.Select(choices=HOST_GROUP)
+
     class Meta:
         model = MachineVM
         exclude = ["slug", "ip"]
@@ -41,7 +41,7 @@ class UserAdminRegistrationForm(UserCreationForm):
 
     class Meta:
         model = UserAdmin
-        fields = ["first_name", 'last_name', "email", "username"]
+        fields = ["first_name", 'last_name', "email", "username", 'role']
 
 
 class LoginForm(AuthenticationForm):
