@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutView, index, ConfigVersionHSViewSet
+
+import reporting
+from reporting.views import MachineVMViewSet, signup, UserLoginView, UserLogoutView, index, ConfigVersionHSViewSet, \
+    access_denied, landing_page, logout_view
 from django.conf import settings
 from django.conf.urls.static import static
-
 
 # Ici, nous créons notre routeur
 router = routers.SimpleRouter()
@@ -30,15 +32,21 @@ router.register('machines', MachineVMViewSet, basename='machines')
 router.register('config', ConfigVersionHSViewSet, basename='config')
 
 urlpatterns = [
-                  path('', index, name="index"),
+                  path('', landing_page, name='landing_page'),
+                  path('waiting-page', index, name="index"),
+                  path('access-denied/', access_denied, name='access_denied'),
                   path('reporting/', include('reporting.urls')),
                   path('api-auth/', include('rest_framework.urls')),
                   path('api/', include(router.urls)),
                   path('accounts/signup/', signup, name='signup'),
                   path('accounts/login/', UserLoginView.as_view(), name='login'),
+                  path('logout', logout_view, name='logout'),
                   path('accounts/logout/', UserLogoutView.as_view(), name='logout'),
                   path("__debug__/", include("debug_toolbar.urls")),
 
                   path('admin/', admin.site.urls),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# handler404 = 'reporting.views.handler404'
+# handler500 = 'reporting.views.handler500'

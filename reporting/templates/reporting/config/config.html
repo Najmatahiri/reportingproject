@@ -2,12 +2,12 @@
 {% load static %}
 // le titre de la page
 {% block title %} <title>Configurations</title> {% endblock title %}
-  {% block style %}
-        <link href="{% static 'css/style_config.css'  %} " rel="stylesheet">
-     {% endblock style %}
+{% block style %}
+    <link href="{% static 'css/style_config.css' %} " rel="stylesheet">
+{% endblock style %}
 
 {% block content %}
- <div class="header">
+    <div class="header">
         <div class="header-text">
             <h1>Configuration</h1>
         </div>
@@ -18,33 +18,36 @@
         <h2>Version de RedHat Hors support</h2>
         <table>
             <thead>
-                <tr>
-                    <th>Version</th>
-                    <th>Action</th>
-                </tr>
+            <tr>
+                <th>Version</th>
+                <th>Action</th>
+            </tr>
             </thead>
             <tbody>
+            {% for version in configs %}
                 <tr>
-                    <td>RedHat 5</td>
+                    <td>{{ version }}</td>
                     <td>
-                        <button class="delete-btn"><i class='bx bx-trash'></i> Supprimer</button>
+                        <a href="{% url 'delete-config-hs'  version.slug%}">
+                            <button class="delete-btn"><i class='bx bx-trash'></i> Supprimer</button>
+                        </a>
+
                     </td>
                 </tr>
-                <tr>
-                    <td>RedHat 6</td>
-                    <td>
-                        <button class="delete-btn"><i class='bx bx-trash'></i> Supprimer</button>
-                    </td>
-                </tr>
+
+            {% endfor %}
+
             </tbody>
         </table>
         <br/>
-        <form class="add-version-form">
-            <label>
-                <input type="text" name="new_version" placeholder="ex: RedHat 7" required>
-            </label>
-            <button type="submit" class="add-btn"><i class='bx bx-plus-circle'></i> Ajouter</button>
-        </form>
+
+        {#            <label>#}
+        {#                <input type="text" name="new_version" placeholder="ex: RedHat 7" required>#}
+        {#            </label>#}
+        <a href="{% url 'add-config' %}">
+            <button type="submit" class="add-btn"><i class='bx bx-plus-circle'></i></button>
+        </a>
+
     </div>
 
 {% endblock content %}

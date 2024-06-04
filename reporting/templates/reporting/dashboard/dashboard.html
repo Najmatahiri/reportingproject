@@ -6,173 +6,145 @@
 {% endblock style %}
 {% block script %}
     <script src="{% static 'external_libraries/plotly/plotly-2.32.0.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'scripts/dashboard_script.js' %}" defer></script>
-
-
-
+    <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
 {% endblock script %}
-
 {% block content %}
-
     {#HEADER SECTION#}
-    <header>
-        <div class="logo-header">
-            <img
-                    src="{% static 'images/kpi.png' %}"
-                    alt="KPI image"
-            />
-            <span> Tableau de bord</span>
-        </div>
-        <div class="user-info">
-            <img
-                    src="{% static 'images/utilisateur.png' %}"
-                    alt="User Avatar"
-            />
-            <span class="username">{{ username }}</span>
-        </div>
-    </header>
-
-    <div class="month-picker-container">
-        <div class="month-picker-button">
-            <label for="monthInput">Mois:</label>
-            <input
-                    type="month"
-                    id="monthInput"
-                    name="monthPicker"
-                    onchange="handleDateChange(this.value)"
-            />
-        </div>
-        <div class="download-button">
-            <a href="{% url 'view_pdf' %}">
-                <i class='bx bxs-download'></i> Télécharger</a
-            >
-        </div>
-    </div>
-
-
-    {#    SECTION  PRINCIPALE #}
-    <div class="updates-stats-block">
-        <div class="stat-patch">
-            <div class="card-stat">
-                <div class="icon critical">
-                    <i class="bx bxs-error-circle"></i>
-                </div>
-                <div class="info">
-                    <h2>Critical</h2>
-                    <p id="total_critical">12</p>
-                </div>
+    {% if is_in_list_permitted_rhs %}
+        <header>
+            <div class="logo-header">
+                <img src="{% static 'images/kpi.png' %}" alt="KPI image"/>
+                <span>Tableau de bord</span>
             </div>
-            <div class="card-stat">
-                <div class="icon important">
-                    <i class="bx bxs-error"></i>
-                </div>
-                <div class="info">
-                    <h2>Important</h2>
-                    <p id="total_important">8</p>
-                </div>
+            <div class="user-info">
+                <img src="{% static 'images/utilisateur.png' %}" alt="User Avatar"/>
+                <span class="username">{{ username }}</span>
             </div>
-            <div class="card-stat">
-                <div class="icon moderate">
-                    <i class="bx bxs-wrench"></i>
-                </div>
-                <div class="info">
-                    <h2>Moderate</h2>
-                    <p id="total_moderate">5</p>
-                </div>
+        </header>
+        <div class="month-picker-container">
+            <div class="month-picker-button">
+                <label for="monthInput">Mois:</label>
+                <input type="month" id="monthInput" name="monthPicker" onchange="handleDateChange(this.value)"/>
             </div>
-            <div class="card-stat">
-                <div class="icon low"><i class="bx bxs-check-circle"></i></div>
-                <div class="info">
-                    <h2>Low</h2>
-                    <p id="total_low">3</p>
-                </div>
-            </div>
-        </div>
-        <div class="wrapper-grap-os">
-            <div id="graph-patch-os" class="patch-os"></div>
-
-        </div>
-
-    </div>
-
-
-
-
-    {# SECTION MAIN VISUALIZATION #}
-
-    <div class="main-visualization">
-        <div id="graph_prod" class="main-graph"></div>
-        <div id="graph_hors_prod" class="main-graph"></div>
-        <div id="graph_total" class="main-graph"></div>
-    </div>
-
-    {# SECTION TABLEAU LISTE #}
-    <div class="table-section">
-
-
-        <div class="top-vm">
-            <div class="top-vm__card">
-                <div class="title-top-vm">Top 20 Machines Critiques</div>
-
-                <div class="scrollable-table">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Adresse IP</th>
-                            <th>Groupe</th>
-                            <th>Criticité</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for vm in top_20 %}
-                            <tr>
-                                <td>{{ vm.nom_machine }}</td>
-                                <td>{{ vm.ip }}</td>
-                                <td>{{ vm.group }}</td>
-                                <td>{{ vm.critical }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="download-button">
+                <a href="{% url 'view_pdf' %}">
+                    <i class='bx bxs-download'></i> Télécharger
+                </a>
             </div>
         </div>
 
-        <div class="hors-support">
-            <div class="top-vm__card">
-                <div class="title-top-vm">
-                    <span class="">HORS SUPPORT</span>
-                    <span class="badge" id="totalCountBadge">{{ total_hs }}</span>
+        {# MAIN SECTION #}
+        <div class="updates-stats-block">
+            <div class="stat-patch">
+                <div class="card-stat">
+                    <div class="icon critical">
+                        <i class="bx bxs-error-circle"></i>
+                    </div>
+                    <div class="info">
+                        <h2>Critical</h2>
+                        <p id="total_critical">12</p>
+                    </div>
                 </div>
-
-                <div class="scrollable-table">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Adresse IP</th>
-                            <th>Groupe</th>
-                            <th>OS</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for vm in machine_hs %}
-                            <tr>
-                                <td>{{ vm.nom_machine }}</td>
-                                <td>{{ vm.ip }}</td>
-                                <td>{{ vm.group }}</td>
-                                <td>{{ vm.os }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="card-stat">
+                    <div class="icon important">
+                        <i class="bx bxs-error"></i>
+                    </div>
+                    <div class="info">
+                        <h2>Important</h2>
+                        <p id="total_important">8</p>
+                    </div>
                 </div>
+                <div class="card-stat">
+                    <div class="icon moderate">
+                        <i class="bx bxs-wrench"></i>
+                    </div>
+                    <div class="info">
+                        <h2>Moderate</h2>
+                        <p id="total_moderate">5</p>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="icon low">
+                        <i class="bx bxs-check-circle"></i>
+                    </div>
+                    <div class="info">
+                        <h2>Low</h2>
+                        <p id="total_low">3</p>
+                    </div>
+                </div>
+            </div>
+            <div class="wrapper-grap-os">
+                <div id="graph-patch-os" class="patch-os"></div>
             </div>
         </div>
 
-    </div>
+        {# MAIN VISUALIZATION SECTION #}
+        <div class="main-visualization">
+            <div id="graph_prod" class="main-graph"></div>
+            <div id="graph_hors_prod" class="main-graph"></div>
+            <div id="graph_total" class="main-graph"></div>
+        </div>
 
+        {# SECTION TABLEAU LIST #}
+        <div class="table-section">
+            <div class="top-vm">
+                <div class="top-vm__card">
+                    <div class="title-top-vm">Top 20 Machines Critiques</div>
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Adresse IP</th>
+                                    <th>Groupe</th>
+                                    <th>Criticité</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vm in top_20 %}
+                                    <tr>
+                                        <td>{{ vm.nom_machine }}</td>
+                                        <td>{{ vm.ip }}</td>
+                                        <td>{{ vm.group }}</td>
+                                        <td>{{ vm.critical }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            <div class="hors-support">
+                <div class="top-vm__card">
+                    <div class="title-top-vm">
+                        <span class="">HORS SUPPORT</span>
+                        <span class="badge" id="totalCountBadge">{{ total_hs }}</span>
+                    </div>
+                    <div class="scrollable-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Adresse IP</th>
+                                    <th>Groupe</th>
+                                    <th>OS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vm in machine_hs %}
+                                    <tr>
+                                        <td>{{ vm.nom_machine }}</td>
+                                        <td>{{ vm.ip }}</td>
+                                        <td>{{ vm.group }}</td>
+                                        <td>{{ vm.os }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}

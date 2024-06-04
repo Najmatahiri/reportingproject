@@ -1,0 +1,44 @@
+{% extends 'base_simple.html' %}
+
+{% block content%}
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #ff6347;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="container">
+        <h1>Erreur 404 - Page non trouvée</h1>
+        <p>Désolé, la page que vous recherchez est introuvable.</p>
+        <p><a href="{% url 'index' %}">Retour à la page d'accueil</a></p>
+    </div>
+{% endblock content %}

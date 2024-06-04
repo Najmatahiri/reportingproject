@@ -1,0 +1,242 @@
+{% extends 'base_simple.html' %}
+{% load static %}
+{% block title %}
+    <title>Page d'accueil</title>
+{% endblock title %}
+
+{% block style %}
+     <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-size: cover;
+        background-position: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .container {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2em;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: 96%;
+        position: relative;
+      }
+
+      .logo {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+      }
+
+      .logo img {
+        max-width: 7rem;
+        height: auto;
+      }
+
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 0.5em;
+        font-size: 1.8em;
+      }
+
+      p {
+        color: #34495e;
+        margin-bottom: 1.5em;
+        font-size: 1.1em;
+      }
+
+      .benefits {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-bottom: 2em;
+      }
+
+      .benefit {
+        background: #ecf0f1;
+        padding: 1em;
+        border-radius: 10px;
+        width: 30%;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 1em;
+      }
+
+      .benefit:hover {
+        transform: translateY(-5px);
+      }
+
+      .benefit h3 {
+        color: #2980b9;
+        margin-bottom: 0.5em;
+        font-size: 1.2em;
+      }
+
+      .benefit p {
+        color: #34495e;
+        font-size: 1em;
+      }
+
+      .benefit .bx {
+        font-size: 2.5rem;
+        color: #2980b9;
+        margin-bottom: 0.5em;
+      }
+
+      .features_and_image {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+
+      .features {
+        margin-top: 2em;
+        width: 45%;
+      }
+
+      .features h2 {
+        color: #2c3e50;
+        margin-bottom: 1em;
+        font-size: 1.5em;
+      }
+
+      .feature {
+        background: #ecf0f1;
+        padding: 1em;
+        border-radius: 10px;
+        margin-bottom: 1em;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        text-align: left;
+      }
+
+      .feature:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature p {
+        display: flex;
+        align-items: center;
+        color: #34495e;
+        font-size: 1em;
+      }
+
+      .feature .bx {
+        font-size: 1.2rem;
+        color: #2980b9;
+        margin-right: 0.5em;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2em;
+      }
+      .buttons a:first-child{
+        margin-right: 0.5em;
+      }
+      .buttons a {
+        text-decoration: none;
+        color: white;
+        background-color: #3498db;
+        padding: 0.75em 1.5em;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        font-size: 1em;
+      }
+
+      .buttons a:hover {
+        background-color: #2980b9;
+      }
+
+      .image {
+        margin-top: 2em;
+        width: 45%;
+      }
+
+      .image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+      @media screen and (max-width: 772px) {
+        .buttons a:first-child{
+            margin-bottom: 0.5em;
+          }
+    }
+    </style>
+{% endblock style %}
+
+{% block content %}
+
+  <div class="container">
+      <div class="logo">
+        <img src="{% static 'logo-sgab.png' %}" alt="Logo SG ABS" />
+        <!-- Ajouter le logo de la société -->
+      </div>
+      <h1>Optimisez Votre Gestion des KPI et de l'Inventaire</h1>
+      <p>
+        Transformez votre efficacité opérationnelle grâce à l'automatisation
+        intelligente
+      </p>
+      <div class="benefits">
+        <div class="benefit">
+          <i class="bx bx-data"></i>
+          <h3>Information Centralisée</h3>
+          <p>
+            Accédez à toutes vos données en un seul endroit, facilement et
+            rapidement.
+          </p>
+        </div>
+        <div class="benefit">
+          <i class="bx bx-cog"></i>
+          <h3>Processus Automatisés</h3>
+          <p>
+            Libérez-vous des tâches répétitives avec des workflows entièrement
+            automatisés.
+          </p>
+        </div>
+        <div class="benefit">
+          <i class="bx bx-line-chart"></i>
+          <h3>Décisions Éclairées</h3>
+          <p>
+            Faites des choix stratégiques basés sur des analyses précises et à
+            jour.
+          </p>
+        </div>
+      </div>
+      <div class="features_and_image">
+        <div class="features">
+          <h2>Fonctionnalités</h2>
+          <div class="feature">
+            <p><i class="bx bx-chart"></i> Suivi en temps réel des KPI</p>
+          </div>
+          <div class="feature">
+            <p><i class="bx bx-sync"></i> Automatisation des rapports</p>
+          </div>
+          <div class="feature">
+            <p><i class="bx bx-shield"></i> Sécurité des données renforcée</p>
+          </div>
+        </div>
+        <div class="image">
+          <img src="{% static 'undraw_Dashboard_re_3b76.png' %}" alt="Image de reporting" />
+          <div class="buttons">
+            <a href="{% url 'login' %}">Se Connecter</a>
+            <a href="{% url 'signup' %}">Créer un Compte</a>
+          </div>
+         
+        </div>
+      </div>
+      
+     
+    </div>
+{% endblock content %}

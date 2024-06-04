@@ -6,7 +6,6 @@
 {% endblock style %}
 
 {% block content %}
-
     <div class="container">
         <h2>Inscription</h2>
         <form method="post">
@@ -15,15 +14,12 @@
                 <div class="form-group">
                     {{ field.label_tag }}
                     {{ field }}
-
+                    <div class="error">{{ field.errors }}</div>
                 </div>
             {% endfor %}
-
             <button type="submit">S'inscrire</button>
+            <div class="non-field-errors">{{ form.non_field_errors }}</div>
         </form>
-    <a href="{% url 'login' %}">Vous avez déjà un compte? </a>
+        <a href="{% url 'login' %}" class="login-link">Vous avez déjà un compte?</a>
     </div>
-
-
-
 {% endblock content %}

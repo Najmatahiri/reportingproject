@@ -1,5 +1,4 @@
 import uuid
-
 from django.urls import reverse
 from reporting.models import MachineVM, UserAdmin
 from django.test import TestCase, Client
@@ -9,7 +8,7 @@ class TestViews(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = UserAdmin.objects.create_user(username="test_username2", password="123456", give_access=True)
+        self.user = UserAdmin.objects.create_user(username="test_username2", password="123456", give_access=True, role="Admin RHS")
 
         self.dashboard_url = reverse('dashboard')
         self.inventaire_url = reverse('inventaires')
@@ -47,7 +46,6 @@ class TestViews(TestCase):
         response = self.client.get(self.importCSV_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'reporting/utils/import_csv.html')
-
 
     def test_machineUpdate_UPDATE(self):
         self.client.login(username="test_username2", password="123456")

@@ -1,6 +1,8 @@
 from django.urls import path, include
+
+import reporting
 from .views import index, InventaireView, Dashboard, ImportCSV, MachineDetailView, MachineUpdateView, MachineDeleteView, \
-    signup, send_welcome_email, view_pdf, ConfigView, AddConfigView, DeleteView
+    signup, send_welcome_email, view_pdf, ConfigView,  CreateConfigView, DeleteConfigView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -16,5 +18,9 @@ urlpatterns = [
                   path('inventaires/delete/<str:slug>/', MachineDeleteView.as_view(), name='delete-vm'),
                   path('config/', ConfigView.as_view(), name="config"),
                   path("view_pdf/", view_pdf, name="view_pdf"),
+                  path('add-config-version-hs/', CreateConfigView.as_view(), name='add-config'),
+                  path('config/delete/<str:slug>/', DeleteConfigView.as_view(), name='delete-config-hs'),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+

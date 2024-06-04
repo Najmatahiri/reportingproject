@@ -1,130 +1,196 @@
-// LES VARIABLES ET CONSTANTE
+// LES VARIABLES ET CONSTANTES
 
-let  unsupported_versions = []
-let data_tab_patch_os = []
-let redhat_major_version =  new Set()
-
-let vm_supported_list = []
+/** @type {Array} */
+let unsupported_versions = [];
+/** @type {Array} */
+let data_tab_patch_os = [];
+/** @type {Set<any>} */
+let redhat_major_version = new Set();
+/** @type {Array} */
+let vm_supported_list = [];
+/** @const {Object} */
 const host = {
     dev: "127.0.0.1",
     test: "192.168.220.134",
     prod: "10.173.185.242"
-}
-const list_couleur = ['#37b24d', '#f03e3e']
+};
+/** @const {Array} */
+const list_couleur = ['#37b24d', '#f03e3e'];
+/** @const {Array} */
+const allLabels = ['Patched', 'Not Patched'];
+/** @const {Object} */
+const config = {displayModeBar: false, responsive: true};
 
-
-const allLabels = ['Patched', 'Not Pathed'];
-const config = {displayModeBar: false, responsive: true}
-
-
-/* CURRENT DATE */
+/** CURRENT DATE */
 const monthInput = document.getElementById('monthInput');
 const currentDate = new Date();
-const currentMonth = currentDate.getMonth() + 1; //
-const currentYear = currentDate.getFullYear()
+const currentMonth = currentDate.getMonth() + 1;
+const currentYear = currentDate.getFullYear();
 const formattedMonth = `${currentYear}-${currentMonth < 10 ? '0' : ''}${currentMonth}`;
 monthInput.value = formattedMonth;
 
-// let total_count_hs_dom = document.getElementById("totalCountBadge")
-
-let parts = monthInput.value.split("-")
+let parts = monthInput.value.split("-");
 let mois = parts[1];
 let annee = parts[0];
 
-let total_crit = document.getElementById("total_critical")
-let total_imp = document.getElementById("total_important")
-let total_mod = document.getElementById("total_moderate")
-let total_lw = document.getElementById("total_low")
+let total_crit = document.getElementById("total_critical");
+let total_imp = document.getElementById("total_important");
+let total_mod = document.getElementById("total_moderate");
+let total_lw = document.getElementById("total_low");
 
-
-
-
-
-// LES FONCTIONS
-
+/**
+ * Calcule la somme des valeurs d'un tableau.
+ * @param {Array<number>} tab - Tableau des valeurs.
+ * @returns {number} - La somme des valeurs.
+ */
 function somme_tab(tab) {
-    let somme = 0
+    let somme = 0;
     tab.forEach(value => {
-        somme += value
+        somme += value;
     });
-    return somme
+    return somme;
 }
+
+/**
+ * Gère le changement de date.
+ * @param {string} val - La nouvelle valeur de date.
+ */
 function handleDateChange(val) {
-    annee = monthInput.value.split('-')[0]
-    mois = monthInput.value.split('-')[1]
-    setTimeout(refreshData, 100)
-
+    annee = monthInput.value.split('-')[0];
+    mois = monthInput.value.split('-')[1];
+    setTimeout(refreshData, 100);
 }
 
+/**
+ * Crée un tableau de données patchées et non patchées pour un groupe donné.
+ * @param {Array<Object>} data - Tableau des machines.
+ * @param {string} group - Groupe de machines (PROD, Hors-Prod, etc.).
+ * @returns {Array<number>} - Tableau avec le nombre de machines patchées et non patchées.
+ */
 function create_data_tab(data, group) {
-    let nb_patched = data.filter(vm => vm.group === group && vm.critical === 0).length
-    let nb_not_patched = data.filter(vm => vm.group === group && vm.critical > 0).length
-    return [nb_patched, nb_not_patched]
-
+    let nb_patched = data.filter(vm => vm.group === group && vm.critical === 0).length;
+    let nb_not_patched = data.filter(vm => vm.group === group && vm.critical > 0).length;
+    return [nb_patched, nb_not_patched];
 }
 
+/**
+ * Additionne les valeurs de deux tableaux de même taille.
+ * @param {Array<number>} tab1 - Premier tableau de valeurs.
+ * @param {Array<number>} tab2 - Deuxième tableau de valeurs.
+ * @returns {Array<number>} - Tableau résultant de l'addition.
+ * @throws {Error} - Si les tableaux n'ont pas la même taille.
+ */
 function additionnerTableaux(tab1, tab2) {
-  if (tab1.length !== tab2.length) {
-    throw new Error("Les tableaux doivent avoir la même taille");
-  }
+    if (tab1.length !== tab2.length) {
+        throw new Error("Les tableaux doivent avoir la même taille");
+    }
 
-  const resultat = [];
+    const resultat = [];
 
-  for (let i = 0; i < tab1.length; i++) {
-    resultat.push(tab1[i] + tab2[i]);
-  }
+    for (let i = 0; i < tab1.length; i++) {
+        resultat.push(tab1[i] + tab2[i]);
+    }
 
-  return resultat;
+    return resultat;
 }
 
+/**
+ * Crée un graphique en secteurs.
+ * @param {string} id - ID de l'élément HTML où le graphique sera rendu.
+ * @param {Array<number>} values - Valeurs des segments.
+ * @param {string} title - Titre du graphique.
+ * @param {boolean} [hole=true] - Si true, crée un graphique en anneau.
+ */
 function create_pie_chart(id, values, title, hole = true) {
     let data = [{
         values: values,
         labels: allLabels,
         type: 'pie',
-
-        hole: hole && .6,
+        hole: hole && 0.6,
         marker: {
             colors: list_couleur
         },
-
     }];
 
     let layout = {
         title: title,
-        // height: 400,
-        // width: 500
     };
 
     Plotly.newPlot(id, data, layout, config);
-
-
-}
-function  call_back_sum_criticality(a,b) {
-    return a+b
 }
 
+/**
+ * Crée un graphique en barres.
+ * @param {string} id - ID de l'élément HTML où le graphique sera rendu.
+ * @param {Array<number>} data1 - Données pour les machines patchées.
+ * @param {Array<number>} data2 - Données pour les machines non patchées.
+ */
+function create_bar_chart(id, data1, data2) {
+    let trace_patched = {
+        x: redhat_major_version,
+        y: data1,
+        name: 'Patched',
+        type: 'bar',
+        marker: {
+            color: list_couleur[0],
+        }
+    };
 
+    let trace_not_patched = {
+        x: redhat_major_version,
+        y: data2,
+        name: 'Not Patched',
+        type: 'bar',
+        marker: {
+            color: list_couleur[1],
+        }
+    };
 
+    let date_os = [trace_patched, trace_not_patched];
 
+    let layout_os = {
+        scattermode: 'group',
+        title: 'Patchs selon les versions de RedHat',
+        xaxis: {title: 'Version de RedHat'},
+        yaxis: {title: 'Nombre Patché'},
+        barcornerradius: 15
+    };
 
+    Plotly.newPlot(id, date_os, layout_os, config);
+}
+
+/**
+ * Fonction de callback pour sommer les criticités.
+ * @param {number} a - Première valeur.
+ * @param {number} b - Deuxième valeur.
+ * @returns {number} - La somme des deux valeurs.
+ */
+function call_back_sum_criticality(a, b) {
+    return a + b;
+}
+
+/**
+ * Récupère la configuration des données depuis une API.
+ */
 function fetchDataConfig() {
-    fetch('http://127.0.0.1:8000/api/config/') // Effectue une requête à l'API
-        .then(response => response.json()) // Convertit la réponse en JSON
+    fetch('http://127.0.0.1:8000/api/config/')
+        .then(response => response.json())
         .then(data => {
             console.log(data);
             unsupported_versions = data.map(version => {
-                return version.unsupported_versions
-
-            })
-
+                return version.unsupported_versions;
+            });
         })
-        .catch(error => console.error('Erreur lors de la récupération des données :', error)); // Affiche une erreur en cas de problème de récupération des données
+        .catch(error => console.error('Erreur lors de la récupération des données :', error));
 }
 
-function getRedHatMajorVersions(data){
-     const redhatVersions = new Set();
-
+/**
+ * Récupère les versions majeures de RedHat des données.
+ * @param {Array<Object>} data - Données des machines.
+ * @returns {Array<string>} - Versions majeures de RedHat.
+ */
+function getRedHatMajorVersions(data) {
+    const redhatVersions = new Set();
 
     for (const machine of data) {
         const osVersion = machine.os;
@@ -135,22 +201,25 @@ function getRedHatMajorVersions(data){
         }
     }
 
-     for (const version of unsupported_versions) {
+    for (const version of unsupported_versions) {
         redhatVersions.delete(version);
     }
 
     return Array.from(redhatVersions).sort();
-
-
-
 }
 
-function getStatPatchOS(data){
+/**
+ * Récupère les statistiques de patchs des systèmes d'exploitation.
+ * @param {Array<Object>} data - Données des machines.
+ * @returns {Object} - Statistiques des patchs des systèmes d'exploitation.
+ */
+function getStatPatchOS(data) {
     const statPatchsOS = {};
     const dataTabStatOS = [];
+
     for (const version of redhat_major_version) {
-        const nbPatched = data.filter(machine => machine.os.startsWith(version) && machine.critical === 0).length
-        const nbNotPatched = data.filter(machine => machine.os.startsWith(version) && machine.critical > 0).length
+        const nbPatched = data.filter(machine => machine.os.startsWith(version) && machine.critical === 0).length;
+        const nbNotPatched = data.filter(machine => machine.os.startsWith(version) && machine.critical > 0).length;
         dataTabStatOS.push([nbPatched, nbNotPatched]);
     }
 
@@ -161,10 +230,17 @@ function getStatPatchOS(data){
     }, [[], []]);
 
     statPatchsOS["tab_os__patched"] = reorganizedData[0];
-     statPatchsOS["tab_os_not_patched"] =  reorganizedData[1];
+    statPatchsOS["tab_os_not_patched"] = reorganizedData[1];
 
     return statPatchsOS;
 }
+
+/**
+ * Filtre et trie la liste des machines selon les versions supportées et un champ de tri.
+ * @param {Array<Object>} data - Données des machines.
+ * @param {string} orderField - Champ de tri.
+ * @returns {Array<Object>} - Liste des machines supportées et triées.
+ */
 function getListInSupport(data, orderField) {
     const versionSupported = redhat_major_version;
     let machinesSupported = [];
@@ -187,102 +263,54 @@ function getListInSupport(data, orderField) {
     return machinesSupported;
 }
 
-
+/**
+ * Récupère les données des machines depuis une API et met à jour les graphiques.
+ */
 function fetchData() {
-    fetch(`http://${host.dev}:8000/api/machines/?year=${annee}&month=${mois}`) // Effectue une requête à l'API
-        .then(response => response.json()) // Convertit la réponse en JSON
+    fetch(`http://${host.dev}:8000/api/machines/?year=${annee}&month=${mois}`)
+        .then(response => response.json())
         .then(data => {
-             redhat_major_version = getRedHatMajorVersions(data)
-            data_tab_patch_os = getStatPatchOS(data)
-            vm_supported_list = getListInSupport(data, "nom_machine")
-            console.log(vm_supported_list)
+            redhat_major_version = getRedHatMajorVersions(data);
+            data_tab_patch_os = getStatPatchOS(data);
+            vm_supported_list = getListInSupport(data, "nom_machine");
+            console.log(vm_supported_list);
             updatePlot(data);
-
-            // console.log(data_tab_patch_os)
-            // console.log(data);
         })
         .catch(error => console.error('Erreur lors de la récupération des données :', error));
 }
 
-
-
+/**
+ * Met à jour les graphiques avec les nouvelles données.
+ * @param {Array<Object>} data - Données des machines.
+ */
 function updatePlot(data) {
-    // Extraction des données critiques pour chaque groupe
-    let total_critical =data.map(item => item.critical).reduce(call_back_sum_criticality, 0)
-    let total_important = data.map(item => item.important).reduce(call_back_sum_criticality, 0);
-    let total_moderate = data.map(item => item.moderate).reduce(call_back_sum_criticality, 0);
-    let total_low = data.map(item => item.low).reduce(call_back_sum_criticality, 0);
-    total_crit.innerText = total_critical
-    total_imp.innerText = total_important
-    total_mod.innerText = total_moderate
-    total_lw.innerText = total_low
-
+    let total_critical = vm_supported_list.map(item => item.critical).reduce(call_back_sum_criticality, 0);
+    let total_important = vm_supported_list.map(item => item.important).reduce(call_back_sum_criticality, 0);
+    let total_moderate = vm_supported_list.map(item => item.moderate).reduce(call_back_sum_criticality, 0);
+    let total_low = vm_supported_list.map(item => item.low).reduce(call_back_sum_criticality, 0);
+    total_crit.innerText = total_critical;
+    total_imp.innerText = total_important;
+    total_mod.innerText = total_moderate;
+    total_lw.innerText = total_low;
 
     let tab_prod = create_data_tab(vm_supported_list, "PROD");
     let tab_hors_prod = create_data_tab(vm_supported_list, "Hors-Prod");
     let total_tab = additionnerTableaux(tab_prod, tab_hors_prod);
 
-    /* GLOBAL GRAHPIC */
-    create_pie_chart("graph_prod", tab_prod, "PROD")
-    create_pie_chart("graph_hors_prod", tab_hors_prod, "HORS- PROD")
-    create_pie_chart("graph_total", total_tab, "TOTAL", false)
-
-
-    // par verions
-    // Tableau de versions de RedHat
-
-
-    // let total_hs = data.filter(machine => machine.os.startsWith("RedHat 6.")).length;
-    // total_count_hs_dom.innerText = total_hs.toString()
-
-
-    let trace_patched = {
-        x: redhat_major_version,
-        y: data_tab_patch_os.tab_os__patched,
-        name: 'Patched',
-        type: 'bar',
-        marker: {
-            color: 'green',
-        }
-
-
-    };
-
-    let trace_not_patched = {
-        x: redhat_major_version,
-        y: data_tab_patch_os.tab_os_not_patched,
-        name: 'Not Pathed',
-        type: 'bar',
-        marker: {
-            color: 'red',
-        }
-
-    };
-
-
-    let date_os = [trace_patched, trace_not_patched];
-
-    let layout_os = {
-        scattermode: 'group',
-        // barmode: 'stack',
-        title: 'Patchs selon les versions de RedHat',
-        xaxis: {title: 'Version de RedHat'},
-        yaxis: {title: 'Number Patched'},
-        barcornerradius: 15
-
-    };
-
-    Plotly.newPlot('graph-patch-os', date_os, layout_os, config);
+    create_pie_chart("graph_prod", tab_prod, "PROD");
+    create_pie_chart("graph_hors_prod", tab_hors_prod, "HORS- PROD");
+    create_pie_chart("graph_total", total_tab, "TOTAL", false);
+    create_bar_chart("graph-patch-os", data_tab_patch_os.tab_os__patched, data_tab_patch_os.tab_os_not_patched);
 }
 
+/**
+ * Rafraîchit les données périodiquement.
+ */
 function refreshData() {
     fetchData();
-    fetchDataConfig()
-    // Appelle la fonction pour récupérer les données
-    setTimeout(refreshData, 5000); // Programme l'appel de la fonction de rafraîchissement toutes les 5 secondes
+    fetchDataConfig();
+    setTimeout(refreshData, 5000); // Rafraîchit toutes les 5 secondes
 }
-
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.
 refreshData();
-

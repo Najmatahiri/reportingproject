@@ -3,16 +3,15 @@ from django.contrib import admin
 from reporting.models import MachineVM, UserAdmin, ConfigVersionHS
 from import_export.admin import ImportExportModelAdmin
 from .ressources import MachineVMResource
+from simple_history.admin import SimpleHistoryAdmin
 
 
-class MachineVMAdmin(ImportExportModelAdmin):
+@admin.register(MachineVM)
+class MachineVMAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     resource_classes = [MachineVMResource]
     list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
-    history_list_display = ["status"]
+    history_list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
     exclude = (" id", "slug")
-
-
-admin.site.register(MachineVM)
 
 
 @admin.register(UserAdmin)
@@ -21,13 +20,10 @@ class UserAdminAdmin(admin.ModelAdmin):
 
 
 @admin.register(ConfigVersionHS)
-class ConfigAdmin(admin.ModelAdmin):
+class ConfigAdmin(SimpleHistoryAdmin):
     fields = ["unsupported_versions"]
-    history_list_display = ["status"]
-    pass
-
+    history_list_display = ["unsupported_versions"]
 
 # @admin.register(FichierCSV)
 # class FichierCSVAdmin(admin.ModelAdmin):
 #     list_display = ['nom', 'contenu', 'date_import']
-

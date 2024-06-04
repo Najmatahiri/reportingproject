@@ -1,4 +1,8 @@
+import io
+
 import pandas as pd
+from django.core.exceptions import ValidationError
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.utils.decorators import method_decorator
@@ -13,7 +17,7 @@ from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, Login
 from reporting.serializers import MachineVMSerializer, ConfigVersionHSSerializer
 from tablib import Dataset
 from .ressources import MachineVMResource
-from .decorators import access_required
+from .decorators import access_required, role_required
 from reportingauto.settings import EMAIL_HOST_USER
 from django.http import FileResponse
 from .utils_pdf import create_pdf_buffer
@@ -40,6 +44,22 @@ def index(request):
         return render(request, "reporting/utils/home.html")
 
 
+def landing_page(request):
+    return render(request, "landing_page.html")
+
+
+# def handler404(request, exception):
+#     return render(request, '404.html', status=404)
+#
+#
+# def handler500(request):
+#     return render(request, '500.html', status=500)
+
+
+def access_denied(request):
+    return render(request, 'access_denied.html')
+
+
 def send_welcome_email(request):
     subject = 'Welcome to My Site'
     message = 'Thank you for creating an account!'
@@ -49,9 +69,15 @@ def send_welcome_email(request):
     return HttpResponse("<h1>Le message a été bien envoyé</h1>")
 
 
+def logout_view(request):
+    year = month_year()[1]
+    return render(request, 'logout_page.html')
+
+
 # Importer un fichier csv
 @method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class ImportCSV(FormView):
     template_name = 'reporting/utils/import_csv.html'
     form_class = UploadFileForm
@@ -60,25 +86,45 @@ class ImportCSV(FormView):
     def form_valid(self, form):
         try:
             fichier_csv = form.cleaned_data['csv_file']
-            df = pd.read_csv(fichier_csv)
-            print(df)
-            dataset = Dataset().load(df)
-            print(dataset)
-            machinevm_resource = MachineVMResource()
-            result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
-            if not result.has_errors():
-                result = machinevm_resource.import_data(dataset, dry_run=False)
-                print(result)
-                print("fichier importer")
-                return HttpResponseRedirect(self.get_success_url(), status=302)
-            else:
-                raise Exception("Erreur lors de l'importation")
+            chunk_size = 500
+            for chunk in pd.read_csv(fichier_csv, chunksize=chunk_size):
+                dataset = Dataset().load(chunk)
+                machinevm_resource = MachineVMResource()
+                result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
+                if not result.has_errors():
+                    machinevm_resource.import_data(dataset, dry_run=False)
+                else:
+                    raise Exception("Erreur lors de l'importation")
+            print("Fichier importé avec succès")
+            return super().form_valid(form)
         except Exception as e:
             return self.render_to_response(self.get_context_data(form=form, error=str(e)))
 
+    # def form_valid(self, form):
+    #     try:
+    #         fichier_csv = form.cleaned_data['csv_file']
+    #         df = pd.read_csv(fichier_csv)
+    #         print(df)
+    #         dataset = Dataset().load(df)
+    #         print(dataset)
+    #         machinevm_resource = MachineVMResource()
+    #         result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
+    #         if not result.has_errors():
+    #             result = machinevm_resource.import_data(dataset, dry_run=False)
+    #             print(result)
+    #             print("fichier importer")
+    #             return super().form_valid(form)
+    #             # return HttpResponseRedirect(self.get_success_url(), status=302)
+    #         else:
+    #             print("Erreur lors de l'importation")
+    #             raise Exception("Erreur lors de l'importation")
+    #     except Exception as e:
+    #         return self.render_to_response(self.get_context_data(form=form, error=str(e)))
+    #
+
 
 @method_decorator(access_required, name='dispatch')
-@method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS", "Manager"), name='dispatch')
 class Dashboard(ListView):
     model = MachineVM
     template_name = 'reporting/dashboard/dashboard.html'
@@ -90,14 +136,19 @@ class Dashboard(ListView):
         machine_hs_filtre = get_lit_out_of_support()
         total_hs = len(machine_hs_filtre)
         current_username = self.request.user.username
+        role = self.request.user.role
+        context["role"] = role
         context['username'] = current_username
+        # context['list_role'] = ["Admin RHS", "Manager"]
         context['top_20'] = top_20
         context['machine_hs'] = machine_hs_filtre
+        context['is_in_list_permitted_rhs'] = role in ["Admin RHS", "Manager"]
+        context["is_admin_rhs"] = role == "Admin RHS"
         context['total_hs'] = total_hs
         return context
 
 
-@method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class InventaireView(ListView):
     model = MachineVM
     template_name = 'reporting/inventaires/inventaires.html'
@@ -108,12 +159,16 @@ class InventaireView(ListView):
             date_import__month=month_year()[0],
             date_import__year=month_year()[1]
         ).count()
+
+        role = self.request.user.role
+        context["role"] = role
+        context['is_in_list_permitted_rhs'] = role in ["Admin RHS", "Manager"]
+        context["is_admin_rhs"] = role == "Admin RHS"
         context['inventaires'] = get_list_in_support()
         return context
 
 
-@method_decorator(access_required, name='dispatch')
-@method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class MachineUpdateView(UpdateView):
     model = MachineVM
     form_class = MachineForm
@@ -122,16 +177,14 @@ class MachineUpdateView(UpdateView):
     success_url = reverse_lazy("inventaires")
 
 
-@method_decorator(access_required, name='dispatch')
-@method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class MachineDetailView(DetailView):
     model = MachineVM
     template_name = 'reporting/machinevm/machine_vm_details_view.html'
     context_object_name = "vm"
 
 
-@method_decorator(access_required, name='dispatch')
-@method_decorator(login_required, name="dispatch")
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class MachineDeleteView(DeleteView):
     model = MachineVM
     template_name = 'reporting/machinevm/delete_vm.html'
@@ -139,7 +192,6 @@ class MachineDeleteView(DeleteView):
     success_url = reverse_lazy("inventaires")
 
 
-@method_decorator(access_required, name='dispatch')
 @method_decorator(login_required, name="dispatch")
 class MachineVMViewSet(ReadOnlyModelViewSet):
     serializer_class = MachineVMSerializer
@@ -167,22 +219,49 @@ class UserLoginView(LoginView):
 
 
 class UserLogoutView(LogoutView):
-    template_name = "registration/logged_out.html"
+    template_name = "logout_page.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_year'] = month_year()[1]
+        return  context
 
 
 class MyDetailView(TemplateView):
     template_name = 'reporting/reportpdf/report_pdf_temp.html'
 
 
+@method_decorator(role_required("Admin RHS"), name='dispatch')
 class ConfigView(ListView):
     model = ConfigVersionHS
     template_name = 'reporting/config/config.html'
     context_object_name = 'configs'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        role = self.request.user.role
+        # context["role"] = role
+        # context['list_role'] = ["Admin RHS", "Manager"]
+        context['is_in_list_permitted_rhs'] = role in ["Admin RHS", "Manager"]
+        context["is_admin_rhs"] = role == "Admin RHS"
+        return context
 
-class AddConfigView(CreateView):
+
+@method_decorator(role_required("Admin RHS"), name='dispatch')
+class CreateConfigView(CreateView):
     model = ConfigVersionHS
+    template_name = 'reporting/config/add_config.html'
+    context_object_name = 'configs'
     form_class = ConfigForm
+    success_url = reverse_lazy("config")
+
+
+@method_decorator(role_required("Admin RHS"), name='dispatch')
+class DeleteConfigView(DeleteView):
+    model = ConfigVersionHS
+    template_name = 'reporting/config/delete_config.html'
+    context_object_name = 'configs'
+    success_url = reverse_lazy("config")
 
 
 @login_required()

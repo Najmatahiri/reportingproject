@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-fsy*85p*pozl0^o@r38x%(tw*e^m3=1q*up7ja0e5w_8)rcw#!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     # 'livereload'
     'django.contrib.staticfiles',
     'reporting',
+    'reporting_nagios',
+    'reporting_manager',
     'rest_framework',
     'import_export',
     'django_crontab',
     "corsheaders",
     "debug_toolbar",
-    # 'simple_history',
+    'simple_history',
 
 ]
 
@@ -63,7 +65,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     # "debug_toolbar.middleware.DebugToolbarMiddleware",
-    # 'simple_history.middleware.HistoryRequestMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 
 ]
 
@@ -189,6 +191,7 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
+
 ]
 
 INTERNAL_IPS = [

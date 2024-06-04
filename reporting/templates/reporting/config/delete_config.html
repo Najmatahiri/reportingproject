@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_simple.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block style %}
+    <link href="{% static 'external_libraries/boxicons-2.1.0/css/boxicons.min.css' %}" rel="stylesheet"/>
+
+{% endblock style %}
+
+{% block content %}
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-container .btn {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px; /* Ajout de marge en bas pour séparer les boutons */
+        }
+
+        .btn-confirm, .btn-cancel {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+        }
+
+        .btn-cancel:hover {
+            background-color: green;
+        }
+    </style>
+
+    <div class="container">
+        <h2>Confirmation de suppression</h2>
+        <p>Êtes-vous sûr de vouloir supprimer la version {{ configs.unsupported_versions }}</p>
+        <div class="btn-container">
+            <form method="post" action="{% url 'delete-config-hs' configs.slug %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-confirm"><i class="bx bx-trash"></i> Supprimer</button>
+            </form>
+            <a href="{% url 'config' %}" class="btn btn btn-cancel"><i class="bx bx-x-circle"></i> Annuler</a>
+        </div>
+    </div>
+{% endblock content %}

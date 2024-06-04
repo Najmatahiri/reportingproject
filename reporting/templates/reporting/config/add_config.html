@@ -1,10 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_simple.html' %}
+{
+{% load static %}
 
-</body>
-</html>
+{% block style %}
+    <link href="{% static 'external_libraries/boxicons-2.1.0/css/boxicons.min.css' %}" rel="stylesheet"/>
+
+{% endblock style %}
+
+{% block content %}
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+<div class="container">
+    <h1>Ajout de versions hors support</h1>
+    <a href="{% url 'config' %}"><i class='bx bx-chevron-left'></i> Retour</a>
+
+    <form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        {{ field }}
+        {{ field.errors }}
+
+    {% endfor %}
+     <button type="submit" class="add-btn"><i class='bx bx-plus-circle'></i> Ajouter</button>
+    {{ form.non_field_errors }}
+    </form>
+
+</div>
+
+
+{% endblock content %}

@@ -27,48 +27,45 @@
     </div>
     <ul class="nav-list">
 
-        <li>
-            <a href="{% url 'dashboard' %}">
-                <i class='bx bxs-report'></i>
-                <span class="links_name">Rapports</span>
-            </a>
-            <span class="tooltip">Rapports</span>
-        </li>
+        {% if is_in_list_permitted_rhs %}
+            <li>
+                <a href="{% url 'dashboard' %}">
+                    <i class='bx bxs-report'></i>
+                    <span class="links_name">Rapports</span>
+                </a>
+                <span class="tooltip">Rapports</span>
+            </li>
+        {% endif %}
 
-        <li>
-            <a href="{% url 'inventaires' %}">
-                <i class='bx bxs-dashboard'></i>
-                <span class="links_name">Inventaires</span>
-            </a>
-            <span class="tooltip">Inventaires</span>
-        </li>
-         <li>
-            <a href="{% url 'config' %}">
-              <i class='bx bx-cog'></i>
-                <span class="links_name">Configurations</span>
-            </a>
-            <span class="tooltip">Configurations</span>
-        </li>
+        {% if is_admin_rhs %}
+            <li>
+                <a href="{% url 'inventaires' %}">
+                    <i class='bx bxs-dashboard'></i>
+                    <span class="links_name">Inventaires</span>
+                </a>
+                <span class="tooltip">Inventaires</span>
+            </li>
+            <li>
+                <a href="{% url 'config' %}">
+                    <i class='bx bx-cog'></i>
+                    <span class="links_name">Configurations</span>
+                </a>
+                <span class="tooltip">Configurations</span>
+            </li>
+        {% endif %}
+
         <li class="nav-list__logout">
             {% csrf_token %}
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
-                <button type="submit"> <i class="bx bx-log-out" id="log_out"></i></button>
-
+                <button type="submit"><i class="bx bx-log-out" id="log_out"></i></button>
             </form>
-
         </li>
     </ul>
 </div>
 <main class="main-content">
-
     {% block content %}
-
     {% endblock content %}
-
-
 </main>
-
-
 </body>
 </html>

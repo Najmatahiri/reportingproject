@@ -4,14 +4,12 @@ from reportlab.graphics.charts.piecharts import Pie
 from reportlab.graphics.shapes import Drawing, String
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
-from reportlab.pdfgen import canvas
 from django.templatetags.static import static
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.pagesizes import  A4
 from reportlab.platypus import Image, Paragraph, Table, TableStyle
 from reportlab.graphics.shapes import Drawing, String
 from datetime import datetime
 from reportlab.graphics.charts.barcharts import VerticalBarChart
-
 
 APP_ROOT = "reporting"
 width, height = A4

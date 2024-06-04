@@ -13,5 +13,4 @@ class TestMachineVM(TestCase):
             important=10,
             moderate=14,
             low=8,
-
         )

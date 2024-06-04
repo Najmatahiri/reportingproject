@@ -1,0 +1,83 @@
+{% extends 'base_simple.html' %}
+{% load static %}
+{% block title %}
+    <title> Deconnexion</title>
+{% endblock title %}
+
+{% block content %}
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo img {
+            max-width: 150px;
+        }
+        .message {
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="container">
+        <div class="logo">
+            <img src="{% static 'images/the_future_is_you.png' %}" alt="Logo">
+        </div>
+        <div class="message">
+            Vous avez été déconnecté avec succès.
+        </div>
+        <a href="{% url 'login' %}" class="button">Reconnexion</a>
+        <div class="footer">
+            <p>&copy; {{ current_year }} Automatisation du reporting des KPI et de l’inventaire</p>
+            
+        </div>
+    </div>
+
+
+
+{% endblock content %}
