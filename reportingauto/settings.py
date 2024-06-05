@@ -15,7 +15,7 @@ import django.db.models
 from dotenv import load_dotenv
 import os
 
-load_dotenv(".env.dev")
+load_dotenv(".env.prod")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-fsy*85p*pozl0^o@r38x%(tw*e^m3=1q*up7ja0e5w_8)rcw#!"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -155,12 +155,12 @@ AUTH_USER_MODEL = "reporting.UserAdmin"
 LOGIN_REDIRECT_URL = "dashboard"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'abdoulbassitlamine123@gmail.com'
-EMAIL_HOST_PASSWORD = 'pgjnsqobkncxgrdy'
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL")
 
 ALLOW_PARALLEL_RUNS = True
 

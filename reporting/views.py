@@ -1,4 +1,5 @@
 import io
+from datetime import datetime
 
 import pandas as pd
 from django.core.exceptions import ValidationError
@@ -224,7 +225,7 @@ class UserLogoutView(LogoutView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['current_year'] = month_year()[1]
-        return  context
+        return context
 
 
 class MyDetailView(TemplateView):

@@ -57,6 +57,7 @@ class MachineVM(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.modeluuid}{str(self.nom_machine)}")
+
         super().save(*args, **kwargs)
 
 

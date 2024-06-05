@@ -9,11 +9,16 @@ let redhat_major_version = new Set();
 /** @type {Array} */
 let vm_supported_list = [];
 /** @const {Object} */
+
 const host = {
     dev: "127.0.0.1",
     test: "192.168.220.134",
-    prod: "10.173.185.242"
+    prod: "10.173.185.247"
 };
+const port = {
+    dev: 8000,
+    prod: 8080
+}
 /** @const {Array} */
 const list_couleur = ['#37b24d', '#f03e3e'];
 /** @const {Array} */
@@ -173,7 +178,7 @@ function call_back_sum_criticality(a, b) {
  * Récupère la configuration des données depuis une API.
  */
 function fetchDataConfig() {
-    fetch('http://127.0.0.1:8000/api/config/')
+    fetch(`http://${host.prod}:${port.prod}/api/config/`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -267,7 +272,7 @@ function getListInSupport(data, orderField) {
  * Récupère les données des machines depuis une API et met à jour les graphiques.
  */
 function fetchData() {
-    fetch(`http://${host.dev}:8000/api/machines/?year=${annee}&month=${mois}`)
+    fetch(`http://${host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`)
         .then(response => response.json())
         .then(data => {
             redhat_major_version = getRedHatMajorVersions(data);
