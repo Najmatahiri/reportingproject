@@ -39,7 +39,7 @@ class MachineForm(forms.ModelForm):
 
     class Meta:
         model = MachineVM
-        exclude = ["slug", "ip"]
+        exclude = ["slug",]
 
 
 class UploadFileForm(forms.Form):
@@ -65,6 +65,7 @@ class UploadFileForm(forms.Form):
                 if len(df.columns) != len(expected_header):
                     raise forms.ValidationError(f"L'en-tête du fichier CSV doit avoir {len(expected_header)} colonnes.")
                 df.columns = expected_header
+                print(df.columns)
 
             # Vérifier la longueur de chaque ligne et valider les types de données
             for index, row in df.iterrows():
@@ -78,6 +79,7 @@ class UploadFileForm(forms.Form):
 
             # Sauvegarder le DataFrame corrigé dans le champ cleaned_data
             self.cleaned_data['csv_file'] = df
+            print(self.cleaned_data['csv_file'])
 
         except Exception as e:
             raise forms.ValidationError(f"Erreur de lecture du fichier CSV: {str(e)}")

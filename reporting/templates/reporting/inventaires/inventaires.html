@@ -37,7 +37,7 @@
             <table id="myTable" class="stripe content-table" style="width:100%">
                 <thead>
                     <tr>
-{#                        <th>Actions</th>#}
+                        <th>Actions</th>
                         <th>Host</th>
                         <th>IP</th>
                         <th>Group</th>
@@ -48,37 +48,39 @@
                         <th>Low</th>
                     </tr>
                 </thead>
-                <tbody>
-
-                </tbody>
 {#                <tbody>#}
-{#                    {% for vm in inventaires %}#}
-{#                        <tr>#}
-{#                            <td>#}
-{#                                <a href="{% url 'update-vm' vm.slug %}">#}
-{#                                    <button class="action-button">#}
-{#                                        <i class="bx bxs-pen"></i>#}
-{#                                    </button>#}
-{#                                </a>#}
-{#                                <a href="{% url 'delete-vm' vm.slug %}">#}
-{#                                    <button class="action-button delete">#}
-{#                                        <i class="bx bxs-trash"></i>#}
-{#                                    </button>#}
-{#                                </a>#}
-{#                            </td>#}
-{#                            <td>{{ vm.nom_machine }}</td>#}
-{#                            <td>{{ vm.ip }}</td>#}
-{#                            <td>{{ vm.group }}</td>#}
-{#                            <td>{{ vm.os }}</td>#}
-{#                            <td>{{ vm.critical }}</td>#}
-{#                            <td>{{ vm.important }}</td>#}
-{#                            <td>{{ vm.moderate }}</td>#}
-{#                            <td>{{ vm.low }}</td>#}
-{#                        </tr>#}
-{#                    {% endfor %}#}
+{#                #}
+{##}
 {#                </tbody>#}
+                <tbody>
+                    {% for vm in inventaires %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'update-vm' vm.slug %}">
+                                    <button class="action-button">
+                                        <i class="bx bxs-pen"></i>
+                                    </button>
+                                </a>
+                                <a href="{% url 'delete-vm' vm.slug %}">
+                                    <button class="action-button delete">
+                                        <i class="bx bxs-trash"></i>
+                                    </button>
+                                </a>
+                            </td>
+                            <td>{{ vm.nom_machine }}</td>
+                            <td>{{ vm.ip }}</td>
+                            <td>{{ vm.group }}</td>
+                            <td>{{ vm.os }}</td>
+                            <td>{{ vm.critical }}</td>
+                            <td>{{ vm.important }}</td>
+                            <td>{{ vm.moderate }}</td>
+                            <td>{{ vm.low }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-          <button class="add-button"><i class='bx bx-plus'></i> Ajouter</button>
+         <a href="{% url 'create-vm' %}">
+             <button class="add-button"><i class='bx bx-plus'></i> Ajouter</button></a>
         </div>
 
     </main>

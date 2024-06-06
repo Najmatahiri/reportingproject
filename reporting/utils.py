@@ -15,7 +15,10 @@ def month_year(date=datetime.today().strftime('%d-%m-%Y')):
     try:
         current_date__month = date.split('-')[1]
         current_date__year = date.split('-')[2].lstrip('0')
+        print(type(current_date__year))
+        print(current_date__year)
         return current_date__month, current_date__year
+
     except Exception as e:
         print(f"Error in month_year: {e}")
         return None, None
@@ -54,7 +57,7 @@ def get_redhat_major_versions():
             raise ValueError("Invalid date values")
 
         unsupported_versions = ConfigVersionHS.objects.values_list('unsupported_versions', flat=True)
-        machines = MachineVM.objects.filter(date_import__month=current_month, date_import__year=current_year)
+        machines = MachineVM.objects.filter(import_month=current_month, import_year=current_year)
         redhat_versions = set()
 
         for machine in machines:
@@ -86,8 +89,8 @@ def get_lit_out_of_support():
         for version in list_hs:
             machine_hs = MachineVM.objects.filter(
                 os__startswith=f"{version}.",
-                date_import__month=month_year()[0],
-                date_import__year=month_year()[1]
+                import_month=month_year()[0],
+                import_year=month_year()[1]
             )
             machine_hs_filtre.extend(machine_hs)
 
@@ -118,8 +121,8 @@ def get_stat_out_of_support():
         for version in tab_hs:
             machine_hs = MachineVM.objects.filter(
                 os__startswith=f"{version}.",
-                date_import__month=current_month,
-                date_import__year=current_year
+                import_month=current_month,
+                import_year=current_year
             )
             stat_hs = [(version, len(machine_hs))]
             total_hs += len(machine_hs)
@@ -146,14 +149,14 @@ def get_details_patch_os():
             nb_patched = MachineVM.objects.filter(
                 os__startswith=f"{version}.",
                 critical__exact=0,
-                date_import__month=month_year()[0],
-                date_import__year=month_year()[1]
+                import_month=month_year()[0],
+                import_year=month_year()[1]
             ).count()
             nb_not_patched = MachineVM.objects.filter(
                 os__startswith=f"{version}.",
                 critical__gt=0,
-                date_import__month=month_year()[0],
-                date_import__year=month_year()[1]
+                import_month=month_year()[0],
+                import_year=month_year()[1]
             ).count()
 
             stat_version_os = [(nb_patched, nb_not_patched)]
@@ -192,8 +195,8 @@ def get_list_in_support(order_field="nom_machine"):
         for version in version_supported:
             machines_supported = machines_supported | MachineVM.objects.filter(
                 os__startswith=f"{version}.",
-                date_import__month=month,
-                date_import__year=year
+                import_month=month,
+                import_year=year
             )
 
         machines_supported = machines_supported.order_by(f"-{order_field}")

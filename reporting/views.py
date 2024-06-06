@@ -1,4 +1,5 @@
 import io
+import os
 from datetime import datetime
 
 import pandas as pd
@@ -14,15 +15,22 @@ from django.shortcuts import render, redirect
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from django.contrib.auth.decorators import login_required
 from reporting.models import MachineVM, ConfigVersionHS
+from reportingauto import settings
 from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, LoginForm, ConfigForm
 from reporting.serializers import MachineVMSerializer, ConfigVersionHSSerializer
 from tablib import Dataset
+
 from .ressources import MachineVMResource
 from .decorators import access_required, role_required
-from reportingauto.settings import EMAIL_HOST_USER
+from reportingauto.settings import EMAIL_HOST_USER, BASE_DIR
 from django.http import FileResponse
 from .utils_pdf import create_pdf_buffer
 from .utils import get_lit_out_of_support, get_list_in_support, month_year
+from pathlib import Path
+
+temporary_file_folder = BASE_DIR / 'temporary_files'
+if not os.path.exists(temporary_file_folder):
+    os.makedirs(temporary_file_folder)
 
 
 def signup(request):
@@ -85,10 +93,34 @@ class ImportCSV(FormView):
     success_url = reverse_lazy("inventaires")
 
     def form_valid(self, form):
+        expected_header = ["nom_machine", "ip", "group", "os", "critical", "important", "moderate", "low"]
         try:
             fichier_csv = form.cleaned_data['csv_file']
+
+            # Lire le fichier CSV
+            df = pd.read_csv(fichier_csv)
+            df.columns = expected_header
+
+            # Ajouter les champs month_import et year_import
+            current_date = datetime.now()
+            import_month = current_date.strftime('%m')
+            import_year = current_date.strftime('%Y')
+            df['import_month'] = import_month
+            df['import_year'] = import_year
+
+            # Sauvegarder le fichier modifié dans le répertoire temporaire
+            modified_csv_path = os.path.join(temporary_file_folder, 'modified_import.csv')
+            df.to_csv(modified_csv_path, index=False)
+
+            # verifcation
+            with open(modified_csv_path, 'r') as file:
+                first_line = file.readline()
+                print(f"En-têtes du fichier modifié: {first_line.strip()}")
+
+            # Importer les données du fichier CSV modifié par chunks
             chunk_size = 500
-            for chunk in pd.read_csv(fichier_csv, chunksize=chunk_size):
+            for chunk in pd.read_csv(modified_csv_path, chunksize=chunk_size,
+                                     dtype={"nom_machine": str, "import_month": str, "import_year": str}):
                 dataset = Dataset().load(chunk)
                 machinevm_resource = MachineVMResource()
                 result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
@@ -96,33 +128,17 @@ class ImportCSV(FormView):
                     machinevm_resource.import_data(dataset, dry_run=False)
                 else:
                     raise Exception("Erreur lors de l'importation")
+            print(df)
             print("Fichier importé avec succès")
+            messages.success(self.request, 'Importation réussie!')
             return super().form_valid(form)
         except Exception as e:
+            print(e)
             return self.render_to_response(self.get_context_data(form=form, error=str(e)))
-
-    # def form_valid(self, form):
-    #     try:
-    #         fichier_csv = form.cleaned_data['csv_file']
-    #         df = pd.read_csv(fichier_csv)
-    #         print(df)
-    #         dataset = Dataset().load(df)
-    #         print(dataset)
-    #         machinevm_resource = MachineVMResource()
-    #         result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
-    #         if not result.has_errors():
-    #             result = machinevm_resource.import_data(dataset, dry_run=False)
-    #             print(result)
-    #             print("fichier importer")
-    #             return super().form_valid(form)
-    #             # return HttpResponseRedirect(self.get_success_url(), status=302)
-    #         else:
-    #             print("Erreur lors de l'importation")
-    #             raise Exception("Erreur lors de l'importation")
-    #     except Exception as e:
-    #         return self.render_to_response(self.get_context_data(form=form, error=str(e)))
-    #
-
+        finally:
+            # Supprimer le fichier temporaire
+            if os.path.exists(modified_csv_path):
+                os.remove(modified_csv_path)
 
 @method_decorator(access_required, name='dispatch')
 @method_decorator(role_required("Admin RHS", "Manager"), name='dispatch')
@@ -157,8 +173,8 @@ class InventaireView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["total_machine"] = MachineVM.objects.all().filter(
-            date_import__month=month_year()[0],
-            date_import__year=month_year()[1]
+            import_month=month_year()[0],
+            import_year=month_year()[1]
         ).count()
 
         role = self.request.user.role
@@ -168,6 +184,14 @@ class InventaireView(ListView):
         context['inventaires'] = get_list_in_support()
         return context
 
+
+@method_decorator(role_required("Admin RHS"), name='dispatch')
+class MachineCreateView(CreateView):
+    model = MachineVM
+    form_class = MachineForm
+    template_name = 'reporting/machinevm/add_machine.html'
+    context_object_name = "vm"
+    success_url = reverse_lazy("inventaires")
 
 @method_decorator(role_required("Admin RHS"), name='dispatch')
 class MachineUpdateView(UpdateView):
@@ -202,7 +226,7 @@ class MachineVMViewSet(ReadOnlyModelViewSet):
         year = self.request.GET.get('year')
         month = self.request.GET.get('month')
         if month is not None and year is not None:
-            queryset = queryset.filter(date_import__month=month, date_import__year=year)
+            queryset = queryset.filter(import_month=month, import_year=year)
         return queryset
 
 
@@ -267,5 +291,8 @@ class DeleteConfigView(DeleteView):
 
 @login_required()
 def view_pdf(request):
+    day = datetime.today().strftime('%d')
+    month = datetime.today().strftime('%m')
+    year = datetime.today().strftime('%Y')
     buffer = create_pdf_buffer(request.user.first_name, request.user.last_name)
-    return FileResponse(buffer, as_attachment=False, filename="report.pdf")
+    return FileResponse(buffer, as_attachment=True, filename=f"rapport-{year}-{month}-{day}.pdf")

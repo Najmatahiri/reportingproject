@@ -1,8 +1,5 @@
-import io
-
 from django.core.mail import send_mail, EmailMessage
 from reportingauto.settings import EMAIL_HOST_USER
-
 from .utils_pdf import create_pdf_buffer
 
 

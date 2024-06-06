@@ -7,9 +7,8 @@ from simple_history.admin import SimpleHistoryAdmin
 
 
 @admin.register(MachineVM)
-class MachineVMAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
-    resource_classes = [MachineVMResource]
-    list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
+class MachineVMAdmin( SimpleHistoryAdmin):
+    list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import', 'import_month')
     history_list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
     exclude = (" id", "slug")
 

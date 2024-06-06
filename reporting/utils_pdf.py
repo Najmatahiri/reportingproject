@@ -236,4 +236,12 @@ def create_pdf_buffer(user_firstname, user_lastname):
         return buffer
 
     except Exception as e:
-        raise RuntimeError("Une erreur s'est produite lors de la génération du PDF")
+        buffer = io.BytesIO()
+        canv = canvas.Canvas(buffer, pagesize=A4)
+
+        styles = getSampleStyleSheet()
+        canv.drawString(100,100, "Pas de donnée à afficher")
+        canv.save()
+        buffer.seek(0)
+        return buffer
+

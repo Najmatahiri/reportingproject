@@ -1,7 +1,5 @@
 from reportlab.lib.validators import Auto, colors
 from reportlab.graphics.charts.legends import Legend
-from reportlab.graphics.charts.piecharts import Pie
-from reportlab.graphics.shapes import Drawing, String
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from django.templatetags.static import static

@@ -1,4 +1,6 @@
 import uuid
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User, AbstractUser
 from django.core.validators import MinValueValidator
@@ -32,15 +34,17 @@ class MachineVM(models.Model):
     modeluuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     history = HistoricalRecords()
-    nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=True)
+    nom_machine = models.CharField(max_length=255, null=False, blank=False, unique=False)
     date_import = models.DateField(auto_now=True, editable=True)
-    ip = models.CharField(max_length=255, unique=True)
+    ip = models.CharField(max_length=255, unique=False)
     group = models.CharField(max_length=100, default="NS")
     os = models.CharField(max_length=255)
     critical = models.IntegerField(null=True, validators=[MinValueValidator(0)])
     important = models.IntegerField(validators=[MinValueValidator(0)])
     moderate = models.IntegerField(validators=[MinValueValidator(0)])
     low = models.IntegerField(validators=[MinValueValidator(0)])
+    import_month = models.CharField(max_length=10, editable=False)
+    import_year = models.CharField(max_length=4, editable=False)
 
     # fichier_csv = models.ForeignKey('FichierCSV', on_delete=models.CASCADE, null=True)
 
@@ -57,7 +61,10 @@ class MachineVM(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.modeluuid}{str(self.nom_machine)}")
-
+        if not self.import_month:
+            self.import_month = datetime.today().strftime('%m')
+        if not self.import_year:
+            self.import_year = datetime.today().strftime('%Y')
         super().save(*args, **kwargs)
 
 

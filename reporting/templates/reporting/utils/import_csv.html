@@ -7,6 +7,7 @@
 {% endblock style %}
 
 {% block content %}
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
@@ -14,8 +15,8 @@
                 <div class="modal-content">
                     <h2 class="modal-title">Importation de Fichier</h2>
                     <div class="modal-input">
-                        {{ field.errors }}
                         {{ field }}
+                        {{ field.errors }}
 
                     </div>
                     {#        <input type="file" id="fileInput" class="modal-input">#}
@@ -34,12 +35,28 @@
     </form>
 
 
+<div class="loader-container" id="loaderContainer">
+    <div class="loader"></div>
+</div>
 
-    <script>
 
-        function closeModal() {
-            window.location.replace("{% url 'inventaires' %}");
-        }
+<script>
+  function closeModal() {
+                window.location.replace("{% url 'inventaires' %}");
+            }
 
+        document.addEventListener("DOMContentLoaded", function() {
+
+            function displayLoader() {
+                document.getElementById("loaderContainer").style.display = "flex";
+            }
+
+            document.querySelector("form").addEventListener("submit", function() {
+                displayLoader();
+            });
+
+
+        });
     </script>
+
 {% endblock content %}
