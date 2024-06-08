@@ -10,12 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os.path
+import sys
 from pathlib import Path
+
+import dj_database_url
 import django.db.models
+from django.utils import asyncio
 from dotenv import load_dotenv
 import os
+from celery.schedules import crontab
 
-load_dotenv(".env.prod")
+load_dotenv(".env.dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,16 +29,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-fsy*85p*pozl0^o@r38x%(tw*e^m3=1q*up7ja0e5w_8)rcw#!"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 # Application definition
 
 INSTALLED_APPS = [
+    # 'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,13 +54,13 @@ INSTALLED_APPS = [
     'import_export',
     'django_crontab',
     "corsheaders",
-    "debug_toolbar",
     'simple_history',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,7 +70,6 @@ MIDDLEWARE = [
     # 'livereload.middleware.LiveReloadScript',
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
-    # "debug_toolbar.middleware.DebugToolbarMiddleware",
     'simple_history.middleware.HistoryRequestMiddleware',
 
 ]
@@ -94,15 +99,9 @@ WSGI_APPLICATION = 'reportingauto.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
 }
 
 # Password validation
@@ -145,30 +144,35 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTH_USER_MODEL = "reporting.UserAdmin"
-
 LOGIN_REDIRECT_URL = "dashboard"
 
+# Mail configurations
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL")
-
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'abdoulbassitlamine123@gmail.com'
+EMAIL_HOST_PASSWORD = 'pgjnsqobkncxgrdy'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 ALLOW_PARALLEL_RUNS = True
 
 SESSION_COOKIE_AGE = 1209600
 
-CRONJOBS = [
-    ('*/2 * * * *', 'reporting.tasks.send_monthly_email'),
-]
+# CRONJOBS = [
+#     ('*/2 * * * *', 'reporting.tasks.send_monthly_email'),
+# ]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -199,3 +203,11 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+# Celery Configuration
+CELERY_BEAT_SCHEDULE = {
+    'envoi_mail_periodique': {
+        'task': 'reporting.tasks.send_monthly_email_task',
+        'schedule': crontab(minute='*/2'),  # Envoyer tous les jours à 8h00
+    },
+}

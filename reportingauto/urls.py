@@ -42,11 +42,9 @@ urlpatterns = [
                   path('accounts/login/', UserLoginView.as_view(), name='login'),
                   path('logout', logout_view, name='logout'),
                   path('accounts/logout/', UserLogoutView.as_view(), name='logout'),
-                  path("__debug__/", include("debug_toolbar.urls")),
-
                   path('admin/', admin.site.urls),
 
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-# handler404 = 'reporting.views.handler404'
-# handler500 = 'reporting.views.handler500'
+handler404 = 'reporting.views.handler404'
+handler500 = 'reporting.views.handler500'

@@ -291,6 +291,12 @@ tr:hover {
     margin-left: 1rem;
 }
 
+.dark-month {
+        color: #555; /* Couleur du texte sombre */
+        background-color: #f2f2f2; /* Couleur de fond gris clair */
+        /* Ajoutez d'autres styles pour rendre les mois sombres */
+    }
+
 .hors-support .top-vm__card .title-top-vm {
     display: flex;
     justify-content: space-between; /* Adjusted alignment */
@@ -334,3 +340,5 @@ tr:hover {
 .card-body {
     padding: 0.5rem; /* Adjusted padding */
 }
+
+

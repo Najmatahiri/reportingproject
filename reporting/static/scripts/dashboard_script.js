@@ -24,10 +24,23 @@ const list_couleur = ['#37b24d', '#f03e3e'];
 /** @const {Array} */
 const allLabels = ['Patched', 'Not Patched'];
 /** @const {Object} */
-const config = {displayModeBar: false, responsive: true};
+const config = {
+    displayModeBar: true,
+    responsive: true,
+    toImageButtonOptions: {
+        format: 'png', // one of png, svg, jpeg, webp
+        filename: 'custom_image',
+        height: 500,
+        width: 700,
+        scale: 1
+    },
+    displaylogo: false
+};
 
 /** CURRENT DATE */
 const monthInput = document.getElementById('monthInput');
+console.log(monthInput)
+monthInput.classList.add("dark-month");
 const currentDate = new Date();
 const currentMonth = currentDate.getMonth() + 1;
 const currentYear = currentDate.getFullYear();
@@ -63,6 +76,7 @@ function somme_tab(tab) {
 function handleDateChange(val) {
     annee = monthInput.value.split('-')[0];
     mois = monthInput.value.split('-')[1];
+
     setTimeout(refreshData, 100);
 }
 
@@ -115,10 +129,12 @@ function create_pie_chart(id, values, title, hole = true) {
         marker: {
             colors: list_couleur
         },
+        textinfo: "percent+value"
     }];
 
     let layout = {
-        title: title,
+        title: title.concat(" : ").concat(values.reduce((acc, x) => acc + x, 0))
+
     };
 
     Plotly.newPlot(id, data, layout, config);
@@ -138,7 +154,8 @@ function create_bar_chart(id, data1, data2) {
         type: 'bar',
         marker: {
             color: list_couleur[0],
-        }
+        },
+        text: data1.map(String)
     };
 
     let trace_not_patched = {
@@ -148,7 +165,8 @@ function create_bar_chart(id, data1, data2) {
         type: 'bar',
         marker: {
             color: list_couleur[1],
-        }
+        },
+        text: data2.map(String)
     };
 
     let date_os = [trace_patched, trace_not_patched];
@@ -178,7 +196,7 @@ function call_back_sum_criticality(a, b) {
  * Récupère la configuration des données depuis une API.
  */
 function fetchDataConfig() {
-    fetch(`http://${host.prod}:${port.prod}/api/config/`)
+    fetch(`http://${host.dev}:${port.dev}/api/config/`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -272,7 +290,7 @@ function getListInSupport(data, orderField) {
  * Récupère les données des machines depuis une API et met à jour les graphiques.
  */
 function fetchData() {
-    fetch(`http://${host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`)
+    fetch(`http://${host.dev}:${port.dev}/api/machines/?year=${annee}&month=${mois}`)
         .then(response => response.json())
         .then(data => {
             redhat_major_version = getRedHatMajorVersions(data);
@@ -314,7 +332,7 @@ function updatePlot(data) {
 function refreshData() {
     fetchData();
     fetchDataConfig();
-    setTimeout(refreshData, 5000); // Rafraîchit toutes les 5 secondes
+    setTimeout(refreshData, 60000); // Rafraîchit toutes les 5 secondes
 }
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.

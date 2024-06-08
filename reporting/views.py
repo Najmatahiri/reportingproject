@@ -57,12 +57,12 @@ def landing_page(request):
     return render(request, "landing_page.html")
 
 
-# def handler404(request, exception):
-#     return render(request, '404.html', status=404)
-#
-#
-# def handler500(request):
-#     return render(request, '500.html', status=500)
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+
+def handler500(request):
+    return render(request, '500.html', status=500)
 
 
 def access_denied(request):
@@ -140,6 +140,7 @@ class ImportCSV(FormView):
             if os.path.exists(modified_csv_path):
                 os.remove(modified_csv_path)
 
+
 @method_decorator(access_required, name='dispatch')
 @method_decorator(role_required("Admin RHS", "Manager"), name='dispatch')
 class Dashboard(ListView):
@@ -163,7 +164,6 @@ class Dashboard(ListView):
         context["is_admin_rhs"] = role == "Admin RHS"
         context['total_hs'] = total_hs
         return context
-
 
 @method_decorator(role_required("Admin RHS"), name='dispatch')
 class InventaireView(ListView):
@@ -192,6 +192,7 @@ class MachineCreateView(CreateView):
     template_name = 'reporting/machinevm/add_machine.html'
     context_object_name = "vm"
     success_url = reverse_lazy("inventaires")
+
 
 @method_decorator(role_required("Admin RHS"), name='dispatch')
 class MachineUpdateView(UpdateView):
