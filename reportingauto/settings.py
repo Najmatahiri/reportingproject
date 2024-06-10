@@ -20,7 +20,7 @@ from dotenv import load_dotenv
 import os
 from celery.schedules import crontab
 
-load_dotenv(".env.dev")
+load_dotenv(".env.prod")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -206,6 +206,6 @@ INTERNAL_IPS = [
 CELERY_BEAT_SCHEDULE = {
     'envoi_mail_periodique': {
         'task': 'reporting.tasks.send_monthly_email_task',
-        'schedule': crontab(minute='*/2'),  # Envoyer tous les jours à 8h00
+        'schedule': crontab(minute='*/5'),
     },
 }
