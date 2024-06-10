@@ -3,7 +3,7 @@ services:
     image: reportingauto:1.0
     command: gunicorn --bind 0.0.0.0:8000 reportingauto.wsgi:application
     env_file:
-      - .env.test
+      - .env.prod
     ports:
       - "8080:8000"
     depends_on:
@@ -15,17 +15,16 @@ services:
     image: reportingauto:1.0
     command: celery -A reportingauto worker -l INFO
     env_file:
-      - .env.test
+      - .env.prod
     depends_on:
       - web
       - broker
-
 
   celery_beat:
     image: reportingauto:1.0
     command: celery -A reportingauto beat -l INFO
     env_file:
-      - .env.test
+      - .env.prod
     depends_on:
       - web
       - broker
@@ -36,7 +35,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env.test
+      - .env.prod
 
   broker:
     image: redis:7.2.5

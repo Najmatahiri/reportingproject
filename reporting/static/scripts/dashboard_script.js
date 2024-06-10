@@ -196,7 +196,7 @@ function call_back_sum_criticality(a, b) {
  * Récupère la configuration des données depuis une API.
  */
 function fetchDataConfig() {
-    fetch(`http://${host.dev}:${port.dev}/api/config/`)
+    fetch(`http://${host.prod}:${port.prod}/api/config/`)
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -290,7 +290,7 @@ function getListInSupport(data, orderField) {
  * Récupère les données des machines depuis une API et met à jour les graphiques.
  */
 function fetchData() {
-    fetch(`http://${host.dev}:${port.dev}/api/machines/?year=${annee}&month=${mois}`)
+    fetch(`http://${host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`)
         .then(response => response.json())
         .then(data => {
             redhat_major_version = getRedHatMajorVersions(data);
@@ -332,7 +332,7 @@ function updatePlot(data) {
 function refreshData() {
     fetchData();
     fetchDataConfig();
-    setTimeout(refreshData, 60000); // Rafraîchit toutes les 5 secondes
+    setTimeout(refreshData, 60000); 
 }
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.
