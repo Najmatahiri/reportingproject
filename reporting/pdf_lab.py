@@ -3,28 +3,31 @@ from reportlab.graphics.charts.legends import Legend
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
 from django.templatetags.static import static
-from reportlab.lib.pagesizes import  A4
+from reportlab.lib.pagesizes import A4
 from reportlab.platypus import Image, Paragraph, Table, TableStyle
 from reportlab.graphics.shapes import Drawing, String
 from datetime import datetime
 from reportlab.graphics.charts.barcharts import VerticalBarChart
+from reportingauto.settings import BASE_DIR
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 APP_ROOT = "reporting"
 width, height = A4
 
 
-def add_legend(draw_obj, chart, data):
+def add_legend(draw_obj, chart, data, labels):
     legend = Legend()
     legend.alignment = "right"
-    legend.x = 50
+    legend.x = 55
     legend.y = 150
-    legend.colorNamePairs = Auto(obj=chart)
+    # legend.colorNamePairs = Auto(obj=chart)
+    legend.colorNamePairs = [(chart.slices[i].fillColor, label) for i, label in enumerate(labels)]
     draw_obj.add(legend)
 
 
 def pie_chart_with_legend(data, title, chart, legend=False):
     labels = ["Patched", "Not Patched"]
-    data = data
+
     drawing = Drawing(width=200, height=150)
     my_title = String(170, 40, title, fontSize=15)
     chart.sideLabels = True
@@ -33,12 +36,19 @@ def pie_chart_with_legend(data, title, chart, legend=False):
     chart.data = data
     chart.slices[0].fillColor = colors.green
     chart.slices[1].fillColor = colors.red
-    chart.labels = labels
+    # chart.labels = labels
+
+    # Calculate total for percentage
+    total = sum(data)
+
+    # Create percentage labels
+    chart.labels = [f'{label} ({value / total * 100:.1f}%)' for label, value in zip(labels, data)]
     chart.slices.strokeWidth = 0.5
+
     drawing.add(my_title)
     drawing.add(chart)
     if legend:
-        add_legend(drawing, chart, data)
+        add_legend(drawing, chart, data, labels)
     return drawing
 
 
@@ -62,7 +72,9 @@ def create_table(data, canv, x, y):
 
 
 def create_header(canv):
-    image_path = APP_ROOT + static("images/absLogo1.jpg")
+    path = APP_ROOT + static("images/absLogo1.jpg")
+    image_path = staticfiles_storage.path("images/absLogo1.jpg")
+    print(image_path)
     logo = Image(image_path, width=100, height=100)
     logo.hAlign = "LEFT"
     logo.drawOn(canv, 10, 750)
@@ -104,7 +116,20 @@ def create_bar_chart(data, category_names, canv, x, y):
     bar.bars[0].fillColor = colors.green
     bar.bars[1].fillColor = colors.red
     bar.categoryAxis.categoryNames = category_names
+
     drawing1.add(bar)
+
+    # Add value labels on each bar
+    for i, category_data in enumerate(data):
+        for j, value in enumerate(category_data):
+            # Calculate the position of each bar
+            bar_x = bar.x + (bar.width / len(category_names)) * j + (
+                        i * (bar.width / len(data)) / len(category_data)) + 20
+            bar_y = bar.y + (value / bar.valueAxis.valueMax) * bar.height
+
+            label = String(bar_x + bar.barWidth / 2, bar_y + 10, str(value), fontSize=10, textAnchor='middle')
+            drawing1.add(label)
+
     drawing1.drawOn(canv, x, y)
 
 

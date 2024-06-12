@@ -7,9 +7,24 @@ from simple_history.admin import SimpleHistoryAdmin
 
 
 @admin.register(MachineVM)
-class MachineVMAdmin( SimpleHistoryAdmin):
-    list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import', 'import_month')
-    history_list_display = ('nom_machine', 'ip', 'group', 'os', 'critical', 'date_import')
+class MachineVMAdmin(SimpleHistoryAdmin):
+    list_display = (
+        "nom_machine",
+        "ip",
+        "group",
+        "os",
+        "critical",
+        "date_import",
+        "import_month",
+    )
+    history_list_display = (
+        "nom_machine",
+        "ip",
+        "group",
+        "os",
+        "critical",
+        "date_import",
+    )
     exclude = (" id", "slug")
 
 
@@ -22,6 +37,7 @@ class UserAdminAdmin(admin.ModelAdmin):
 class ConfigAdmin(SimpleHistoryAdmin):
     fields = ["unsupported_versions"]
     history_list_display = ["unsupported_versions"]
+
 
 # @admin.register(FichierCSV)
 # class FichierCSVAdmin(admin.ModelAdmin):

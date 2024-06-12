@@ -129,11 +129,19 @@ def create_pdf_buffer(user_firstname, user_lastname):
         data_tab_prod = create_data_tab("PROD")
         data_tab_hors_prod = create_data_tab("Hors-Prod")
         data_tab_total = additionner_tableaux(data_tab_prod, data_tab_hors_prod)
-        data_tab_criticality = create_sum_criticality_tab()
+        data_tab_criticality = create_sum_criticality_tab()[:2]
         data_tab_stat_path = [
             ["PROD", data_tab_prod[0], data_tab_prod[1]],
             ["HORS PROD", data_tab_hors_prod[0], data_tab_hors_prod[1]],
             ["Total", data_tab_total[0], data_tab_total[1]],
+
+        ]
+
+        data_tab_stat_path_total = [
+            ["PROD", data_tab_prod[0], data_tab_prod[1], data_tab_prod[0] + data_tab_prod[1]],
+            ["HORS PROD", data_tab_hors_prod[0], data_tab_hors_prod[1], data_tab_hors_prod[0] + data_tab_hors_prod[1]],
+            ["Total", data_tab_total[0], data_tab_total[1], data_tab_total[0] + data_tab_total[1]]
+
         ]
         top_machines = get_list_in_support("critical")[:20]
 
@@ -177,9 +185,9 @@ def create_pdf_buffer(user_firstname, user_lastname):
             "Statistique de la Criticité  des Vulnérabilités et de l'État des Patches des Machines",
             styles, canv, 10, 650
         )
-        table_data_criticality = [["Niveau", "Nombre"]] + data_tab_criticality
-        create_table(table_data_criticality, canv, 50, 540)
-        table_data_production = [["", "PATCHED", "NOT PATCHED"]] + data_tab_stat_path
+        table_data_criticality = [["Sévérité", "Nombre"]] + data_tab_criticality
+        create_table(table_data_criticality, canv, 50, 562)
+        table_data_production = [["", "PATCHED", "NOT PATCHED", "SUM"]] + data_tab_stat_path_total
         create_table(table_data_production, canv, 250, 545)
 
         # Section 2 : Visualisation graphique des statistiques de patchs
@@ -188,11 +196,11 @@ def create_pdf_buffer(user_firstname, user_lastname):
             styles, canv, 10, 480
         )
         d = pie_chart_with_legend(data_tab_prod, "PROD", Doughnut(), True)
-        d.drawOn(canv, -10, 280)
+        d.drawOn(canv, -52, 280)
         d1 = pie_chart_with_legend(data_tab_hors_prod, "HORS PROD", Doughnut())
-        d1.drawOn(canv, 110, 280)
+        d1.drawOn(canv, 60, 285)
         d2 = pie_chart_with_legend(data_tab_total, "TOTAL", Pie())
-        d2.drawOn(canv, 270, 280)
+        d2.drawOn(canv, 252, 280)
 
         # Section 3 : Graphique des détails des patchs
         categorises = data_tab_patch_os['os_versions']
@@ -236,12 +244,12 @@ def create_pdf_buffer(user_firstname, user_lastname):
         return buffer
 
     except Exception as e:
+        print(e)
         buffer = io.BytesIO()
         canv = canvas.Canvas(buffer, pagesize=A4)
 
         styles = getSampleStyleSheet()
-        canv.drawString(100,100, "Pas de donnée à afficher")
+        canv.drawString(100, 100, "Pas de donnée à afficher")
         canv.save()
         buffer.seek(0)
         return buffer
-
