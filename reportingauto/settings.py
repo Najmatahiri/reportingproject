@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 import os
 from celery.schedules import crontab
 
-load_dotenv(".env.dev")
+load_dotenv(".env.prod")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -128,7 +128,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 # Très utiles quand on va mette notre site en production
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "reportingauto/static")]
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -136,11 +136,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-STORAGES = {
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
@@ -150,20 +150,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "reporting.UserAdmin"
 LOGIN_REDIRECT_URL = "dashboard"
 
-EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == True
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == True
+# Mail configurations
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='abdoulbassitlamine123@gmail.com'
+EMAIL_HOST_PASSWORD='pgjnsqobkncxgrdy'
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+ALLOW_PARALLEL_RUNS=True
 
 ALLOW_PARALLEL_RUNS = True
 
 SESSION_COOKIE_AGE = 1209600
 
-
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = ["http://192.168.220.134:1337", "http://10.173.185.247:1337"]
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -193,9 +196,9 @@ INTERNAL_IPS = [
 ]
 
 # Celery Configuration
-CELERY_BEAT_SCHEDULE = {
-    "envoi_mail_periodique": {
-        "task": "reporting.tasks.send_monthly_email_task",
-        "schedule": crontab(minute="*/5"),
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "envoi_mail_periodique": {
+#         "task": "reporting.tasks.send_monthly_email_task",
+#         "schedule": crontab(minute="*/5"),
+#     },
+# }

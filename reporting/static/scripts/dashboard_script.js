@@ -17,7 +17,8 @@ const host = {
 };
 const port = {
   dev: 8000,
-  prod: 8080,
+  prod: 1337,
+  test: 1337
 };
 /** @const {Array} */
 const list_couleur = ["#37b24d", "#f03e3e"];
@@ -216,7 +217,7 @@ function call_back_sum_criticality(a, b) {
  * Récupère la configuration des données depuis une API.
  */
 function fetchDataConfig() {
-  fetch(`http://${host.dev}:${port.dev}/api/config/`)
+  fetch(`http://${host.prod}:${port.prod}/api/config/`)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -320,7 +321,7 @@ function getListInSupport(data, orderField) {
  */
 function fetchData() {
   fetch(
-    `http://${host.dev}:${port.dev}/api/machines/?year=${annee}&month=${mois}`
+    `http://${host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`
   )
     .then((response) => response.json())
     .then((data) => {
