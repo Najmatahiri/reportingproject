@@ -378,7 +378,7 @@ function updatePlot(data) {
 function refreshData() {
   fetchData();
   fetchDataConfig();
-  setTimeout(refreshData, 60000);
+  setTimeout(refreshData, 4000);
 }
 
 // Appelle la fonction de rafraîchissement des données pour la première fois.
