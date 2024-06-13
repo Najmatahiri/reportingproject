@@ -22,6 +22,9 @@ services:
     depends_on:
       - web
       - broker
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
 
   celery_beat:
     image: reportingauto:1.0
@@ -31,6 +34,9 @@ services:
     depends_on:
       - web
       - broker
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
 
   db:
     image: postgres:16

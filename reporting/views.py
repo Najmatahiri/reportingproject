@@ -19,7 +19,6 @@ from reportingauto import settings
 from .forms import MachineForm, UploadFileForm, UserAdminRegistrationForm, LoginForm, ConfigForm
 from reporting.serializers import MachineVMSerializer, ConfigVersionHSSerializer
 from tablib import Dataset
-MachineVM.objects.all().delete()
 from .ressources import MachineVMResource
 from .decorators import access_required, role_required
 from reportingauto.settings import EMAIL_HOST_USER, BASE_DIR
