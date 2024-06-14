@@ -17,8 +17,8 @@ const host = {
 };
 const port = {
   dev: 8000,
-  prod: 1337,
-  test: 1337
+  prod: 8443,
+  test: 8443
 };
 /** @const {Array} */
 const list_couleur = ["#37b24d", "#f03e3e"];
@@ -376,8 +376,8 @@ function updatePlot(data) {
  * Rafraîchit les données périodiquement.
  */
 function refreshData() {
-  fetchData();
   fetchDataConfig();
+  fetchData();
   setTimeout(refreshData, 4000);
 }
 
