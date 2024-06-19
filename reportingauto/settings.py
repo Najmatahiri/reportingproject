@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 import os
 from celery.schedules import crontab
 
-load_dotenv(".env.prod")
+load_dotenv(".env.dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "reporting",
     "reporting_nagios",
-    "reporting_manager",
     "rest_framework",
     "import_export",
     "django_crontab",
@@ -167,7 +166,7 @@ SESSION_COOKIE_AGE = 1209600
 CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = False
 CSRF_COOKIE_HTTPONLY = True  # Le cookie CSRF n'est pas accessible via JavaScript
-CSRF_TRUSTED_ORIGINS = ["http://192.168.220.134:8443", "http://10.173.185.247:8443"]
+CSRF_TRUSTED_ORIGINS = ["http://192.168.220.134:8443", "http://10.173.185.247:8443", "http://localhost:8080/"]
 
 CORS_ALLOW_METHODS = [
     "DELETE",

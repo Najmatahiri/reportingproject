@@ -2,3 +2,7 @@
 venv/
 .gitignore
 .vscode/
+.env.test2
+.idea
+.env.dev
+.env.test

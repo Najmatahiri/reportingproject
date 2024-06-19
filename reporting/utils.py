@@ -15,8 +15,6 @@ def month_year(date=datetime.today().strftime('%d-%m-%Y')):
     try:
         current_date__month = date.split('-')[1]
         current_date__year = date.split('-')[2].lstrip('0')
-        print(type(current_date__year))
-        print(current_date__year)
         return current_date__month, current_date__year
 
     except Exception as e:

@@ -1,7 +1,7 @@
 services:
   web:
     image: reportingauto:1.0
-    command: gunicorn --bind 0.0.0.0:8080 reportingauto.wsgi:application
+    command: gunicorn -w 2 -k gevent --bind 0.0.0.0:8080 reportingauto.wsgi:application
     env_file:
       - .env.test
     ports:
@@ -9,10 +9,10 @@ services:
     depends_on:
       - db
       - broker
-
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
+
 
   celery_worker:
     image: reportingauto:1.0
@@ -42,8 +42,7 @@ services:
     image: postgres:16
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-#    volumes:
-#      - /najma/posgtres: /var/lib/postgresql/data/
+
     env_file:
       - .env.prod.db
 

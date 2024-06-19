@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 from django.db.models import Sum
 from .pdf_lab import create_header, create_header_details_paragraph, create_section_title, create_table, \
-    create_bar_chart, create_footer, create_table_for_more_info, pie_chart_with_legend
+    create_bar_chart_with_legend, create_footer, create_table_for_more_info, pie_chart_with_legend
 from reporting.utils import month_year, get_lit_out_of_support, get_stat_out_of_support, get_details_patch_os, \
     get_list_in_support
 
@@ -195,31 +195,35 @@ def create_pdf_buffer(user_firstname, user_lastname):
             "Visualisation Graphique des statistiques de Patchs des Machines",
             styles, canv, 10, 480
         )
-        d = pie_chart_with_legend(data_tab_prod, "PROD", Doughnut(), True)
-        d.drawOn(canv, -52, 280)
-        d1 = pie_chart_with_legend(data_tab_hors_prod, "HORS PROD", Doughnut())
-        d1.drawOn(canv, 60, 285)
-        d2 = pie_chart_with_legend(data_tab_total, "TOTAL", Pie())
-        d2.drawOn(canv, 252, 280)
-
-        # Section 3 : Graphique des détails des patchs
-        categorises = data_tab_patch_os['os_versions']
-        data_patch_os = data_tab_patch_os['data']
-        create_bar_chart(data_patch_os, categorises, canv, 100, 100)
+        d = pie_chart_with_legend(data_tab_prod, "PROD", Doughnut(), legend_x=-15)
+        d.drawOn(canv, 40, 280)
+        d1 = pie_chart_with_legend(data_tab_hors_prod, "HORS PROD", Doughnut(), legend_x=50)
+        d1.drawOn(canv, 280, 280)
+        d2 = pie_chart_with_legend(data_tab_total, "TOTAL", Pie(), legend_x=-30)
+        d2.drawOn(canv, 50, 100)
 
         # Pied de page 1
         create_footer(canv, 1)
         canv.showPage()
 
         create_header(canv)
+        # Section 3 : Graphique des détails des patchs
+        create_section_title(
+            "Visualisation en fonctions des versions de Red Hat",
+            styles, canv, 10, 740
+        )
+
+        categorises = data_tab_patch_os['os_versions']
+        data_patch_os = data_tab_patch_os['data']
+        create_bar_chart_with_legend(data_patch_os, categorises, canv, 130, 535)
 
         # Section 4 : Top 20 des Machines critiques
         create_section_title(
             "Top 20 des Machines critiques",
-            styles, canv, 10, 750
+            styles, canv, 10, 530
         )
         table_data_top_critical = [["Nom", "IP", "Groupe", "OS", "Critical"]] + data_tab_top_machine
-        create_table(table_data_top_critical, canv, 100, 350)
+        create_table(table_data_top_critical, canv, 100, 130)
 
         # Pied de page 2
         create_footer(canv, 2)
@@ -238,6 +242,15 @@ def create_pdf_buffer(user_firstname, user_lastname):
 
         # Pied de page 3
         create_footer(canv, 3)
+
+        # Métadonnées
+
+        canv.setTitle("KPI Reporting")
+        canv.setAuthor(f"{user_firstname} {user_lastname}")
+        canv.setSubject("Reporting des KPI et de l'inventaire")
+        canv.setCreator("ReportLab")
+        canv.setProducer("ReportLab PDF Library")
+
         # Enregistrement du fichier PDF
         canv.save()
         buffer.seek(0)

@@ -8,28 +8,36 @@ from reportlab.platypus import Image, Paragraph, Table, TableStyle
 from reportlab.graphics.shapes import Drawing, String
 from datetime import datetime
 from reportlab.graphics.charts.barcharts import VerticalBarChart
-from reportingauto.settings import BASE_DIR
+from reportingauto.settings import DEBUG
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 APP_ROOT = "reporting"
 width, height = A4
 
 
-def add_legend(draw_obj, chart, data, labels):
+def add_legend(draw_obj, chart, data, labels, x, y):
     legend = Legend()
     legend.alignment = "right"
-    legend.x = 55
-    legend.y = 150
+    legend.x = x
+    legend.y = y
     # legend.colorNamePairs = Auto(obj=chart)
     legend.colorNamePairs = [(chart.slices[i].fillColor, label) for i, label in enumerate(labels)]
     draw_obj.add(legend)
 
 
-def pie_chart_with_legend(data, title, chart, legend=False):
-    labels = ["Patched", "Not Patched"]
+def add_legend_bar(draw_obj, chart, x, y):
+    legend = Legend()
+    legend.alignment = "right"
+    legend.x = x
+    legend.y = y
+    # legend.colorNamePairs = Auto(obj=chart)
+    legend.colorNamePairs = [(colors.green, 'Patched'), (colors.red, 'Not Patched')]
+    draw_obj.add(legend)
 
-    drawing = Drawing(width=200, height=150)
-    my_title = String(170, 40, title, fontSize=15)
+
+def pie_chart_with_legend(data, title, chart, legend_x=80, legend_y=150):
+    drawing = Drawing(width=500, height=500)
+
     chart.sideLabels = True
     chart.x = 150
     chart.y = 65
@@ -40,15 +48,16 @@ def pie_chart_with_legend(data, title, chart, legend=False):
 
     # Calculate total for percentage
     total = sum(data)
-
+    labels = ["Patched ", "Not Patched"]
     # Create percentage labels
-    chart.labels = [f'{label} ({value / total * 100:.1f}%)' for label, value in zip(labels, data)]
-    chart.slices.strokeWidth = 0.5
+    chart.labels = [f'{label}  ({value / total * 100:.1f}%)' for label, value in zip(labels, data)]
 
+    chart.slices.strokeWidth = 0.5
+    my_title = String(170, 30, f"{title} : {total} ", fontSize=15)
     drawing.add(my_title)
     drawing.add(chart)
-    if legend:
-        add_legend(drawing, chart, data, labels)
+
+    add_legend(drawing, chart, data, labels, legend_x, legend_y)
     return drawing
 
 
@@ -73,8 +82,9 @@ def create_table(data, canv, x, y):
 
 def create_header(canv):
     path = APP_ROOT + static("images/absLogo1.jpg")
-    image_path = staticfiles_storage.path("images/absLogo1.jpg")
+    image_path = path if DEBUG else staticfiles_storage.path("images/absLogo1.jpg")
     print(image_path)
+    print(DEBUG)
     logo = Image(image_path, width=100, height=100)
     logo.hAlign = "LEFT"
     logo.drawOn(canv, 10, 750)
@@ -97,10 +107,10 @@ def create_footer(canv, page_number):
     canv.drawCentredString(width / 2, 25, f"- Page {page_number} -")
 
 
-def create_bar_chart(data, category_names, canv, x, y):
+def create_bar_chart_with_legend(data, category_names, canv, x, y, legend_x=-80, legend_y=170):
     drawing1 = Drawing(400, 200)
     bar = VerticalBarChart()
-    bar.x = 50
+    bar.x = 80
     bar.y = 50
     bar.height = 125
     bar.width = 300
@@ -116,15 +126,22 @@ def create_bar_chart(data, category_names, canv, x, y):
     bar.bars[0].fillColor = colors.green
     bar.bars[1].fillColor = colors.red
     bar.categoryAxis.categoryNames = category_names
+    print("avant  : "+ bar.getSeriesName(1))
+
 
     drawing1.add(bar)
+
+    print("après  : " + bar.getSeriesName(1))
+    add_legend_bar(drawing1, bar, legend_x, legend_y)
+
+
 
     # Add value labels on each bar
     for i, category_data in enumerate(data):
         for j, value in enumerate(category_data):
             # Calculate the position of each bar
             bar_x = bar.x + (bar.width / len(category_names)) * j + (
-                        i * (bar.width / len(data)) / len(category_data)) + 20
+                    i * (bar.width / len(data)) / len(category_data)) + 20
             bar_y = bar.y + (value / bar.valueAxis.valueMax) * bar.height
 
             label = String(bar_x + bar.barWidth / 2, bar_y + 10, str(value), fontSize=10, textAnchor='middle')
