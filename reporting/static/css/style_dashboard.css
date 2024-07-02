@@ -216,7 +216,7 @@ header {
     padding: 1rem; /* Adjusted padding */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Added shadow */
     border-radius: 10px; /* Added border radius */
-    max-height: 400px;
+    /*max-height: 400px;*/
     overflow: hidden;
 }
 
@@ -231,9 +231,9 @@ header {
 .scrollable-table {
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
-    overflow: hidden;
-    max-height: 300px;
-    overflow-y: auto;
+    /*overflow: hidden;*/
+    /*max-height: 300px;*/
+    /*overflow-y: auto;*/
 }
 
 table {
@@ -265,27 +265,27 @@ tr:hover {
     background-color: #dbeafe; /* Light blue background on hover */
 }
 
-.scrollable-table::-webkit-scrollbar {
-    display: none;
-}
+/*.scrollable-table::-webkit-scrollbar {*/
+/*    display: none;*/
+/*}*/
 
-.scrollable-table:hover::-webkit-scrollbar {
-    display: block;
-    width: 8px;
-    height: 10px;
-}
+/*.scrollable-table:hover::-webkit-scrollbar {*/
+/*    display: block;*/
+/*    width: 8px;*/
+/*    height: 10px;*/
+/*}*/
 
-.scrollable-table::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
+/*.scrollable-table::-webkit-scrollbar-track {*/
+/*    background: #f1f5f9;*/
+/*}*/
 
-.scrollable-table::-webkit-scrollbar-thumb {
-    background: #94a3b8;
-}
+/*.scrollable-table::-webkit-scrollbar-thumb {*/
+/*    background: #94a3b8;*/
+/*}*/
 
-.scrollable-table::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-}
+/*.scrollable-table::-webkit-scrollbar-thumb:hover {*/
+/*    background: #64748b;*/
+/*}*/
 
 .hors-support {
     flex: 1;

@@ -126,15 +126,12 @@ def create_bar_chart_with_legend(data, category_names, canv, x, y, legend_x=-80,
     bar.bars[0].fillColor = colors.green
     bar.bars[1].fillColor = colors.red
     bar.categoryAxis.categoryNames = category_names
-    print("avant  : "+ bar.getSeriesName(1))
-
+    print("avant  : " + bar.getSeriesName(1))
 
     drawing1.add(bar)
 
     print("après  : " + bar.getSeriesName(1))
     add_legend_bar(drawing1, bar, legend_x, legend_y)
-
-
 
     # Add value labels on each bar
     for i, category_data in enumerate(data):

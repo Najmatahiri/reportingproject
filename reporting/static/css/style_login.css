@@ -126,3 +126,16 @@ body {
 .signup-link:hover {
     color: #fff;
 }
+
+
+.forgot-password-link {
+    display: block;
+    margin-top: 10px;
+    color: #66b2ff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.forgot-password-link:hover {
+    color: #fff;
+}

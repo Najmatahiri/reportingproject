@@ -95,7 +95,6 @@ class ImportCSV(FormView):
         expected_header = ["nom_machine", "ip", "group", "os", "critical", "important", "moderate", "low"]
         try:
             fichier_csv = form.cleaned_data['csv_file']
-
             # Lire le fichier CSV
             df = pd.read_csv(fichier_csv)
             df.columns = expected_header
@@ -117,17 +116,28 @@ class ImportCSV(FormView):
                 print(f"En-têtes du fichier modifié: {first_line.strip()}")
 
             # Importer les données du fichier CSV modifié par chunks
-            chunk_size = 500
-            for chunk in pd.read_csv(modified_csv_path, chunksize=chunk_size,
-                                     dtype={"nom_machine": str, "import_month": str, "import_year": str}):
-                dataset = Dataset().load(chunk)
-                machinevm_resource = MachineVMResource()
-                result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
-                if not result.has_errors():
-                    machinevm_resource.import_data(dataset, dry_run=False)
-                else:
-                    raise Exception("Erreur lors de l'importation")
-            print(df)
+
+            df1 = pd.read_csv(modified_csv_path,  dtype={"nom_machine": str, "import_month": str, "import_year": str})
+            dataset = Dataset().load(df1)
+            machinevm_resource = MachineVMResource()
+            result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
+            if not result.has_errors():
+                MachineVM.objects.filter(import_month=import_month, import_year=import_year).delete()
+                machinevm_resource.import_data(dataset, dry_run=False)
+            else:
+                raise Exception("Erreur lors de l'importation")
+
+            # chunk_size = 500
+            # for chunk in pd.read_csv(modified_csv_path, chunksize=chunk_size,
+            #                          dtype={"nom_machine": str, "import_month": str, "import_year": str}):
+            #     dataset = Dataset().load(chunk)
+            #     machinevm_resource = MachineVMResource()
+            #     result = machinevm_resource.import_data(dataset, dry_run=True, raise_errors=True)
+            #     if not result.has_errors():
+            #         machinevm_resource.import_data(dataset, dry_run=False)
+            #     else:
+            #         raise Exception("Erreur lors de l'importation")
+            print(df1)
             print("Fichier importé avec succès")
 
             return super().form_valid(form)
@@ -163,6 +173,7 @@ class Dashboard(ListView):
         context["is_admin_rhs"] = role == "Admin RHS"
         context['total_hs'] = total_hs
         return context
+
 
 @method_decorator(role_required("Admin RHS"), name='dispatch')
 class InventaireView(ListView):
