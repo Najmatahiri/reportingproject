@@ -7,7 +7,7 @@ db.sqlite3
 .idea
 ./db.sqlite3
 venv/
-python_package/
+#python_package/
 docker/
 
 

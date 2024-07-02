@@ -30,8 +30,8 @@ $(document).ready(function () {
     };
 
 
-    // let apiUrl = `http://${host.prod}:${port.prod}/api/machines/?format=json&month=${mois}&year=${annee}`
-    let apiUrl = `http://${host.prod}:${port.prod}/api/machines/?format=json&month=${mois}&year=${annee}`
+    // let apiUrl = `http://${host.dev}:${port.dev}/api/machines/?format=json&month=${mois}&year=${annee}`
+    let apiUrl = `http://${host.dev}:${port.dev}/api/machines/?format=json&month=${mois}&year=${annee}`
     console.log(apiUrl)
 
 
