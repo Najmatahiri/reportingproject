@@ -180,7 +180,10 @@
 
             var element = document.getElementById('top-vm-div');
 
-            html2canvas(element).then(function (canvas) {
+            html2canvas(element, {
+                scale: 3, // Augmenter l'échelle pour une meilleure qualité
+                useCORS: true // Activer CORS si des images externes sont utilisées
+            }).then(function (canvas) {
                 {#downloadImage(canvas, 'top-20-machines.png');#}
                 document.getElementById('output').appendChild(canvas);
             });
@@ -189,7 +192,10 @@
 
             var element = document.getElementById('hs-div');
 
-            html2canvas(element).then(function (canvas) {
+            html2canvas(element,{
+                scale: 2, // Augmenter l'échelle pour une meilleure qualité
+                useCORS: true // Activer CORS si des images externes sont utilisées
+            }).then(function (canvas) {
                 {#downloadImage(canvas, 'vm-hors-support.png');#}
             });
         });
