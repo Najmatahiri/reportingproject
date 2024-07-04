@@ -7,9 +7,7 @@
 {% block script %}
     <script src="{% static 'external_libraries/plotly/plotly-2.32.0.min.js' %}"></script>
     <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
-            integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'external_libraries/html2canvas/html2canvas.min.js' %}"></script>
 {% endblock script %}
 {% block content %}
     {#HEADER SECTION#}
@@ -125,6 +123,8 @@
                         </table>
                     </div>
                 </div>
+             <!-- Image capturée -->
+    <div id="output"></div>
             </div>
 
             <div class="hors-support">
@@ -184,6 +184,7 @@
 
             html2canvas(element).then(function (canvas) {
                 downloadImage(canvas, 'top-20-machines.png');
+               document.getElementById('output').appendChild(canvas);
             });
         });
           document.getElementById('captureButtonHS').addEventListener('click', function () {
