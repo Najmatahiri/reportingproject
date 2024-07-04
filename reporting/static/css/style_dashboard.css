@@ -214,10 +214,10 @@ header {
 .top-vm__card {
     background-color: #ffffff;
     padding: 1rem; /* Adjusted padding */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Added shadow */
-    border-radius: 10px; /* Added border radius */
+    /*box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    /*border-radius: 10px;*/
     /*max-height: 400px;*/
-    overflow: hidden;
+    /*overflow: hidden;*/
 
 }
 
@@ -230,13 +230,11 @@ header {
 
 }
 
-.scrollable-table {
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow */
-    /*overflow: hidden;*/
-    /*max-height: 300px;*/
-    /*overflow-y: auto;*/
-}
+/*.scrollable-table {*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+/*  */
+/*}*/
 
 table {
     border-collapse: collapse;
@@ -256,11 +254,11 @@ th {
     color: #ffffff; /* White text for better readability */
     position: sticky;
     top: 0;
-    z-index: 10;
+    /*z-index: 10;*/
 }
 
 tr:nth-child(even) {
-    background-color: #f9fafb; /* Light background for even rows */
+    background-color: #f9fafb;
 }
 
 tr:hover {

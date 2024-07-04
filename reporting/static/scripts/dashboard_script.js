@@ -217,7 +217,7 @@ function call_back_sum_criticality(a, b) {
  * Récupère la configuration des données depuis une API.
  */
 function fetchDataConfig() {
-  fetch(`http://${host.prod}:${port.prod}/api/config/`)
+  fetch(`http://$host.prod}:${port.prod}/api/config/`)
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
@@ -321,7 +321,7 @@ function getListInSupport(data, orderField) {
  */
 function fetchData() {
   fetch(
-    `http://${host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`
+    `http://$host.prod}:${port.prod}/api/machines/?year=${annee}&month=${mois}`
   )
     .then((response) => response.json())
     .then((data) => {

@@ -100,31 +100,30 @@
                 <div class="top-vm__card" id="top-vm-div">
 
                     <div class="title-top-vm">Top 20 Machines Critiques</div>
-                    <div class="scrollable-table">
-                        <table>
-                            <thead>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Adresse IP</th>
+                            <th>Groupe</th>
+                            <th>Criticité</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for vm in top_20 %}
                             <tr>
-                                <th>Nom</th>
-                                <th>Adresse IP</th>
-                                <th>Groupe</th>
-                                <th>Criticité</th>
+                                <td>{{ vm.nom_machine }}</td>
+                                <td>{{ vm.ip }}</td>
+                                <td>{{ vm.group }}</td>
+                                <td>{{ vm.critical }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for vm in top_20 %}
-                                <tr>
-                                    <td>{{ vm.nom_machine }}</td>
-                                    <td>{{ vm.ip }}</td>
-                                    <td>{{ vm.group }}</td>
-                                    <td>{{ vm.critical }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
                 </div>
-             <!-- Image capturée -->
-    <div id="output"></div>
+                <!-- Image capturée -->
+                <div id="output"></div>
             </div>
 
             <div class="hors-support">
@@ -138,28 +137,27 @@
                         <span class="">HORS SUPPORT</span>
                         <span class="badge" id="totalCountBadge">{{ total_hs }}</span>
                     </div>
-                    <div class="scrollable-table">
-                        <table>
-                            <thead>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Adresse IP</th>
+                            <th>Groupe</th>
+                            <th>OS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for vm in machine_hs %}
                             <tr>
-                                <th>Nom</th>
-                                <th>Adresse IP</th>
-                                <th>Groupe</th>
-                                <th>OS</th>
+                                <td>{{ vm.nom_machine }}</td>
+                                <td>{{ vm.ip }}</td>
+                                <td>{{ vm.group }}</td>
+                                <td>{{ vm.os }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for vm in machine_hs %}
-                                <tr>
-                                    <td>{{ vm.nom_machine }}</td>
-                                    <td>{{ vm.ip }}</td>
-                                    <td>{{ vm.group }}</td>
-                                    <td>{{ vm.os }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
         </div>
@@ -183,16 +181,16 @@
             var element = document.getElementById('top-vm-div');
 
             html2canvas(element).then(function (canvas) {
-                downloadImage(canvas, 'top-20-machines.png');
-               document.getElementById('output').appendChild(canvas);
+                {#downloadImage(canvas, 'top-20-machines.png');#}
+                document.getElementById('output').appendChild(canvas);
             });
         });
-          document.getElementById('captureButtonHS').addEventListener('click', function () {
+        document.getElementById('captureButtonHS').addEventListener('click', function () {
 
             var element = document.getElementById('hs-div');
 
             html2canvas(element).then(function (canvas) {
-                downloadImage(canvas, 'vm-hors-support.png');
+                {#downloadImage(canvas, 'vm-hors-support.png');#}
             });
         });
     </script>
