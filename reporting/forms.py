@@ -39,7 +39,7 @@ class MachineForm(forms.ModelForm):
 
     class Meta:
         model = MachineVM
-        exclude = ["slug",]
+        exclude = ["slug", ]
 
 
 class UploadFileForm(forms.Form):
@@ -72,7 +72,7 @@ class UploadFileForm(forms.Form):
                 if len(row) != expected_length:
                     raise forms.ValidationError(f"La ligne {index + 1} n'a pas le bon nombre de colonnes.")
                 if not isinstance(row['nom_machine'], str) or not isinstance(row['ip'], str) or \
-                        not isinstance(row['group'], str) or not isinstance(row['os'], str) or \
+                        not isinstance(row['os'], str) or \
                         not isinstance(row['critical'], int) or not isinstance(row['important'], int) or \
                         not isinstance(row['moderate'], int) or not isinstance(row['low'], int):
                     raise forms.ValidationError(f"Les types de données de la ligne {index + 1} ne sont pas corrects.")

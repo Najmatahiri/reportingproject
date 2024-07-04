@@ -306,4 +306,4 @@ def view_pdf(request):
     month = datetime.today().strftime('%m')
     year = datetime.today().strftime('%Y')
     buffer = create_pdf_buffer(request.user.first_name, request.user.last_name)
-    return FileResponse(buffer, as_attachment=False, filename=f"rapport-{year}-{month}-{day}.pdf")
+    return FileResponse(buffer, as_attachment=True, filename=f"rapport-{year}-{month}-{day}.pdf")

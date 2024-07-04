@@ -1,11 +1,11 @@
 services:
   web:
     image: reportingauto:1.0
-    command: gunicorn -w 2 -k gevent --bind 0.0.0.0:8080 reportingauto.wsgi:application
+    command: gunicorn -w 2 -k gevent --bind 0.0.0.0:8000 reportingauto.wsgi:application
     env_file:
-      - .env.test
+      - .env.prod
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - db
       - broker
@@ -18,7 +18,7 @@ services:
     image: reportingauto:1.0
     command: celery -A reportingauto worker -l INFO
     env_file:
-      - .env.test
+      - .env.prod
     depends_on:
       - web
       - broker
@@ -30,7 +30,7 @@ services:
     image: reportingauto:1.0
     command: celery -A reportingauto beat -l INFO
     env_file:
-      - .env.test
+      - .env.prod
     depends_on:
       - web
       - broker

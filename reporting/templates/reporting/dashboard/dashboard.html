@@ -7,6 +7,9 @@
 {% block script %}
     <script src="{% static 'external_libraries/plotly/plotly-2.32.0.min.js' %}"></script>
     <script src="{% static 'scripts/dashboard_script.js' %}" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+            integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock script %}
 {% block content %}
     {#HEADER SECTION#}
@@ -86,29 +89,38 @@
         </div>
 
         {# SECTION TABLEAU LIST #}
+
         <div class="table-section">
+
             <div class="top-vm">
-                <div class="top-vm__card">
+                <div>
+                    <button id="captureButtonTop20" class="capture-button">
+
+                        <i class='bx bx-camera'></i>
+                    </button>
+                </div>
+                <div class="top-vm__card" id="top-vm-div">
+
                     <div class="title-top-vm">Top 20 Machines Critiques</div>
                     <div class="scrollable-table">
                         <table>
                             <thead>
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Adresse IP</th>
-                                    <th>Groupe</th>
-                                    <th>Criticité</th>
-                                </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Adresse IP</th>
+                                <th>Groupe</th>
+                                <th>Criticité</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for vm in top_20 %}
-                                    <tr>
-                                        <td>{{ vm.nom_machine }}</td>
-                                        <td>{{ vm.ip }}</td>
-                                        <td>{{ vm.group }}</td>
-                                        <td>{{ vm.critical }}</td>
-                                    </tr>
-                                {% endfor %}
+                            {% for vm in top_20 %}
+                                <tr>
+                                    <td>{{ vm.nom_machine }}</td>
+                                    <td>{{ vm.ip }}</td>
+                                    <td>{{ vm.group }}</td>
+                                    <td>{{ vm.critical }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -116,7 +128,12 @@
             </div>
 
             <div class="hors-support">
-                <div class="top-vm__card">
+                <button id="captureButtonHS" class="capture-button">
+
+                    <i class='bx bx-camera'></i>
+                </button>
+                <div class="top-vm__card" id="hs-div">
+
                     <div class="title-top-vm">
                         <span class="">HORS SUPPORT</span>
                         <span class="badge" id="totalCountBadge">{{ total_hs }}</span>
@@ -124,22 +141,22 @@
                     <div class="scrollable-table">
                         <table>
                             <thead>
-                                <tr>
-                                    <th>Nom</th>
-                                    <th>Adresse IP</th>
-                                    <th>Groupe</th>
-                                    <th>OS</th>
-                                </tr>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Adresse IP</th>
+                                <th>Groupe</th>
+                                <th>OS</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for vm in machine_hs %}
-                                    <tr>
-                                        <td>{{ vm.nom_machine }}</td>
-                                        <td>{{ vm.ip }}</td>
-                                        <td>{{ vm.group }}</td>
-                                        <td>{{ vm.os }}</td>
-                                    </tr>
-                                {% endfor %}
+                            {% for vm in machine_hs %}
+                                <tr>
+                                    <td>{{ vm.nom_machine }}</td>
+                                    <td>{{ vm.ip }}</td>
+                                    <td>{{ vm.group }}</td>
+                                    <td>{{ vm.os }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -147,4 +164,35 @@
             </div>
         </div>
     {% endif %}
+
+
+    <script>
+        // Fonction pour télécharger l'image
+        function downloadImage(canvas, filename) {
+            // Convertir le canvas en URL de données
+            var link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = filename;
+            // Déclencher le téléchargement
+            link.click();
+        }
+
+
+        document.getElementById('captureButtonTop20').addEventListener('click', function () {
+
+            var element = document.getElementById('top-vm-div');
+
+            html2canvas(element).then(function (canvas) {
+                downloadImage(canvas, 'top-20-machines.png');
+            });
+        });
+          document.getElementById('captureButtonHS').addEventListener('click', function () {
+
+            var element = document.getElementById('hs-div');
+
+            html2canvas(element).then(function (canvas) {
+                downloadImage(canvas, 'vm-hors-support.png');
+            });
+        });
+    </script>
 {% endblock content %}

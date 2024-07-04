@@ -218,6 +218,7 @@ header {
     border-radius: 10px; /* Added border radius */
     /*max-height: 400px;*/
     overflow: hidden;
+
 }
 
 .title-top-vm {
@@ -226,6 +227,7 @@ header {
     color: #1f2937; /* Darker text for readability */
     margin-bottom: 0.5rem; /* Adjusted margin */
     text-align: center;
+
 }
 
 .scrollable-table {
@@ -342,4 +344,25 @@ tr:hover {
     padding: 0.5rem; /* Adjusted padding */
 }
 
+
+.capture-button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.capture-button i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+.capture-button:hover {
+    background-color: #1d4ed8;
+}
 
