@@ -150,14 +150,14 @@ AUTH_USER_MODEL = "reporting.UserAdmin"
 LOGIN_REDIRECT_URL = "dashboard"
 
 # Mail configurations
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST='smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_HOST_USER='abdoulbassitlamine123@gmail.com'
-EMAIL_HOST_PASSWORD='pgjnsqobkncxgrdy'
-EMAIL_USE_TLS=True
-EMAIL_USE_SSL=False
-ALLOW_PARALLEL_RUNS=True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'abdoulbassitlamine123@gmail.com'
+EMAIL_HOST_PASSWORD = 'pgjnsqobkncxgrdy'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+ALLOW_PARALLEL_RUNS = True
 
 ALLOW_PARALLEL_RUNS = True
 
@@ -196,9 +196,20 @@ INTERNAL_IPS = [
 ]
 
 # Celery Configuration
-# CELERY_BEAT_SCHEDULE = {
-#     "envoi_mail_periodique": {
-#         "task": "reporting.tasks.send_monthly_email_task",
-#         "schedule": crontab(minute="*/5"),
-#     },
-# }
+CELERY_BEAT_SCHEDULE = {
+    "mise_a_jour_patch": {
+        "task": "reporting.tasks.update_path_task",
+        "schedule": crontab(minute="*/2"),
+    },
+    # "envoi_mail_periodique": {
+    #     "task": "reporting.tasks.send_monthly_email_task",
+    #     "schedule": crontab(minute="*/5"),
+    # },
+
+}
+
+SELENIUM_HOST = "http://192.168.220.134:4444/wd/hub"
+# Folder
+CSV_DOWNLOAD_PATH = BASE_DIR / 'csv_download'
+if not os.path.exists(CSV_DOWNLOAD_PATH):
+    os.makedirs(CSV_DOWNLOAD_PATH)

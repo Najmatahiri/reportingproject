@@ -3,13 +3,13 @@ FROM python:3.12
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV http_proxy http://tahirin:Nn2200011****@pxy-mcafee:8080
-ENV https_proxy http://tahirin:Nn2200011****@pxy-mcafee:8080
+#ENV http_proxy http://tahirin:Nn2200011****@pxy-mcafee:8080
+#ENV https_proxy http://tahirin:Nn2200011****@pxy-mcafee:8080
 
 
 RUN apt-get update && apt-get install -y cron
 RUN apt-get install -y vim
-RUN apt-get install -y supervisor
+#RUN apt-get install -y supervisor
 
 RUN mkdir -p /home/app
 
@@ -25,11 +25,11 @@ WORKDIR $APP_HOME
 
 
 COPY ./requirements.txt .
-#RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
-RUN mkdir -p $APP_HOME/python_package
-ADD ./python_package/ $APP_HOME/python_package/
-RUN pip3 install --no-index --find-links=$APP_HOME/python_package/ -r ./requirements.txt
+#RUN mkdir -p $APP_HOME/python_package
+#ADD ./python_package/ $APP_HOME/python_package/
+#RUN pip3 install --no-index --find-links=$APP_HOME/python_package/ -r requirements.txt
 
 
 RUN touch /var/log/cron.log
