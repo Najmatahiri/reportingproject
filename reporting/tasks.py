@@ -18,5 +18,7 @@ def send_monthly_email_task():
 
 @shared_task
 def update_path_task():
+    download_csv()
+    import_csv()
     pass
 

@@ -1,4 +1,3 @@
-
 from reportingauto.settings import CSV_DOWNLOAD_PATH, SELENIUM_HOST
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium import webdriver
@@ -10,7 +9,6 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from datetime import datetime
-
 
 
 def download_csv():
@@ -31,7 +29,7 @@ def download_csv():
     try:
         driver = webdriver.Remote(command_executor=SELENIUM_HOST, options=chrome_options)
         print("Connexion établie")
-        driver.get("http://192.168.220.134:8443/accounts/login/")
+        driver.get("http://127.0.0.1:8000/accounts/login/")
         username = driver.find_element(By.ID, "id_username")
         username.send_keys("abdoulbassit")
         password = driver.find_element(By.ID, "id_password")
@@ -49,6 +47,7 @@ def download_csv():
         file = driver.get_downloadable_files()
         print(type(file[0]))
         driver.download_file(filename, download_dir)
+        return "SUCCESS"
 
     except Exception as e:
         print(f"Une exception s'est produite : {str(e)}")
