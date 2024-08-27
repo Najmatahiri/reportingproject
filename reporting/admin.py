@@ -39,6 +39,7 @@ class ConfigAdmin(SimpleHistoryAdmin):
     history_list_display = ["unsupported_versions"]
 
 
+
 # @admin.register(FichierCSV)
 # class FichierCSVAdmin(admin.ModelAdmin):
 #     list_display = ['nom', 'contenu', 'date_import']

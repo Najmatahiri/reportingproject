@@ -1,4 +1,3 @@
-from reportlab.lib.validators import Auto, colors
 from reportlab.graphics.charts.legends import Legend
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors

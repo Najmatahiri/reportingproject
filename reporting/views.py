@@ -99,6 +99,8 @@ class ImportCSV(FormView):
             df = pd.read_csv(fichier_csv)
             df.columns = expected_header
 
+            df['group'] = df['group'].fillna("Hors-Prod")
+
             # Ajouter les champs month_import et year_import
             current_date = datetime.now()
             import_month = current_date.strftime('%m')
@@ -158,6 +160,8 @@ class Dashboard(ListView):
     context_object_name = 'inventaires'
 
     def get_context_data(self, **kwargs):
+        month = datetime.today().strftime('%m')
+        year = datetime.today().strftime('%Y')
         context = super().get_context_data(**kwargs)
         top_20 = get_list_in_support("critical")[:20]
         machine_hs_filtre = get_lit_out_of_support()
@@ -172,6 +176,7 @@ class Dashboard(ListView):
         context['is_in_list_permitted_rhs'] = role in ["Admin RHS", "Manager"]
         context["is_admin_rhs"] = role == "Admin RHS"
         context['total_hs'] = total_hs
+        context['last_update'] = MachineVM.objects.filter(import_month=month, import_year=year).first()
         return context
 
 
@@ -306,5 +311,5 @@ def view_pdf(request):
     month = datetime.today().strftime('%m')
     year = datetime.today().strftime('%Y')
     buffer = create_pdf_buffer(request.user.first_name, request.user.last_name)
-    return FileResponse(buffer, as_attachment=True, filename=f"rapport-{year}-{month}-{day}.pdf")
+    return FileResponse(buffer, as_attachment=False, filename=f"rapport-{year}-{month}-{day}.pdf")
 

@@ -328,7 +328,7 @@ function fetchData() {
       redhat_major_version = getRedHatMajorVersions(data);
       data_tab_patch_os = getStatPatchOS(data);
       vm_supported_list = getListInSupport(data, "nom_machine");
-      console.log(vm_supported_list);
+      console.log(vm_supported_list.length);
       updatePlot(data);
     })
     .catch((error) =>

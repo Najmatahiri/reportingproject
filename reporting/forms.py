@@ -77,6 +77,7 @@ class UploadFileForm(forms.Form):
                         not isinstance(row['moderate'], int) or not isinstance(row['low'], int):
                     raise forms.ValidationError(f"Les types de données de la ligne {index + 1} ne sont pas corrects.")
 
+
             # Sauvegarder le DataFrame corrigé dans le champ cleaned_data
             self.cleaned_data['csv_file'] = df
             print(self.cleaned_data['csv_file'])

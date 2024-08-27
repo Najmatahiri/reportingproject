@@ -29,6 +29,7 @@ def create_data_tab(group):
         raise ValueError("Le groupe ne peut pas être vide")
 
     vm_supported = get_list_in_support()
+    print("length vm supported: ", len(vm_supported))
     try:
         nb_patched = vm_supported.filter(group=group, critical__exact=0).count()
         nb_not_patched = vm_supported.filter(group=group, critical__gt=0).count()
